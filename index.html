@@ -1,1 +1,293 @@
-svvsfvedcxzcbsfvbsdgbsfbsfgbsfg
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>idktoast on curseforge</title>
+  <meta name="description" content="idktoast - mods, builds, and other chaotic creativity on curseforge." />
+  <style>
+    :root{
+      --bg:#0f1720;
+      --card:#0b1220;
+      --muted:#9aa4b2;
+      --accent:#7dd3fc;
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
+      --maxw:900px;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(125,211,252,0.04), transparent 8%),
+        linear-gradient(180deg, #071018 0%, #08101a 60%);
+      color:#e6eef6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--maxw);
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:20px;
+      align-items:start;
+    }
+
+    .main{
+      background:linear-gradient(180deg,var(--card),rgba(11,17,28,0.9));
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow: 0 12px 30px rgba(2,6,12,0.6);
+      min-height:360px;
+      overflow:hidden;
+    }
+
+    header h1{
+      margin:0 0 8px 0;
+      font-size:20px;
+      letter-spacing: -0.02em;
+    }
+    header p.tag{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .hero{
+      display:flex;
+      gap:18px;
+      margin-top:16px;
+    }
+    .cover{
+      width:120px;
+      height:120px;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(125,211,252,0.08), rgba(124,58,237,0.04));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:40px;
+      color:var(--muted);
+      flex-shrink:0;
+      overflow:hidden;
+      box-shadow: inset 0 -6px 18px rgba(2,6,12,0.6);
+    }
+    .meta{flex:1}
+    .meta .desc{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      margin-bottom:12px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:600;
+      text-decoration:none;
+      border:1px solid rgba(255,255,255,0.04);
+      background:var(--glass);
+      color:var(--accent);
+      font-size:14px;
+    }
+    .btn.primary{
+      background:linear-gradient(90deg, rgba(125,211,252,0.08), rgba(124,58,237,0.06));
+      color:#bfefff;
+      border:1px solid rgba(125,211,252,0.12);
+    }
+
+    .info{
+      margin-top:18px;
+      display:grid;
+      gap:10px;
+      grid-template-columns:repeat(auto-fit, minmax(140px,1fr));
+    }
+    .chip{
+      background:rgba(255,255,255,0.02);
+      padding:10px;
+      border-radius:10px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .sidebar{
+      position:relative;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow: 0 10px 28px rgba(2,6,12,0.55);
+      height:min-content;
+      max-height:560px;
+      overflow:auto;
+    }
+
+    .sidebar h3{margin:0 0 12px 0; font-size:14px}
+    .list{display:flex;flex-direction:column;gap:10px}
+    .list .item{
+      background:rgba(255,255,255,0.01);
+      padding:10px;
+      border-radius:8px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    footer{
+      margin-top:18px;
+      font-size:13px;
+      color:var(--muted);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    /* small screens */
+    @media (max-width:900px){
+      .wrap{grid-template-columns:1fr; padding-bottom:60px}
+      .hero{flex-direction:row}
+      .cover{width:96px;height:96px}
+    }
+
+    /* tiny, tasteful scrollbar for messages / sidebar */
+    .sidebar::-webkit-scrollbar, .wrap::-webkit-scrollbar {
+      width:10px; height:10px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(125,211,252,0.06), rgba(124,58,237,0.06));
+      border-radius:10px;
+      border:2px solid transparent;
+      background-clip:padding-box;
+    }
+
+    /* accessibility focus */
+    .btn:focus{outline:2px solid rgba(125,211,252,0.18); outline-offset:3px}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <section class="main" aria-label="idktoast overview">
+      <header>
+        <h1>idktoast on curseforge 💀</h1>
+        <p class="tag">mods, addons, and questionable ideas for people who like chaos</p>
+      </header>
+
+      <div class="hero" aria-hidden="false">
+        <div class="cover" id="cover">
+          <!-- replace with an <img> if you have one -->
+          toast
+        </div>
+
+        <div class="meta">
+          <div class="desc">
+            a tiny hub for my curseforge stuff. downloads, quick notes, and the occasional bad idea. if something breaks, blame the toaster.
+          </div>
+
+          <div class="actions" role="group" aria-label="actions">
+            <!-- change these links to your real curseforge pages -->
+            <a class="btn primary" href="https://www.curseforge.com/members/idktoast" target="_blank" rel="noopener noreferrer">
+              view profile
+            </a>
+            <a class="btn" href="https://www.curseforge.com/members/idktoast/projects" target="_blank" rel="noopener noreferrer">
+              projects
+            </a>
+            <a class="btn" href="mailto:your@email.here" title="email">contact</a>
+          </div>
+
+          <div class="info" aria-hidden="false">
+            <div class="chip">latest: v1.2.3 (example)</div>
+            <div class="chip">game: minecraft</div>
+            <div class="chip">status: actively broken</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <h3 style="margin:0 0 10px 0; font-size:15px">about this mod hub</h3>
+        <p style="color:var(--muted); margin:0 0 12px 0; font-size:14px; line-height:1.5">
+          this is a small landing page for visitors who want the easy things: download links, update notes, and a polite apology written in all lowercase. keep this page simple or chaos will ensue.
+        </p>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a class="btn" href="#changelog">changelog</a>
+          <a class="btn" href="#faq">faq</a>
+          <a class="btn" href="#support">support</a>
+        </div>
+
+        <footer>
+          <div>made by idktoast 🥀</div>
+          <div style="color:var(--muted)">last updated: nov 14, 2025</div>
+        </footer>
+      </div>
+    </section>
+
+    <aside class="sidebar" aria-label="recent updates and files">
+      <h3>recent builds</h3>
+      <div class="list">
+        <div class="item">
+          <div>
+            <div style="font-weight:600; color:#dff6ff">v1.2.3</div>
+            <div style="font-size:12px; color:var(--muted)">tiny fix for potatoes</div>
+          </div>
+          <div><a class="btn" href="#" title="download v1.2.3">dl</a></div>
+        </div>
+
+        <div class="item">
+          <div>
+            <div style="font-weight:600; color:#dff6ff">v1.2.0</div>
+            <div style="font-size:12px; color:var(--muted)">big-ish update, slightly less cursed</div>
+          </div>
+          <div><a class="btn" href="#" title="download v1.2.0">dl</a></div>
+        </div>
+
+        <div class="item">
+          <div>
+            <div style="font-weight:600; color:#dff6ff">v1.1.0</div>
+            <div style="font-size:12px; color:var(--muted)">initial release</div>
+          </div>
+          <div><a class="btn" href="#" title="download v1.1.0">dl</a></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:18px">quick faq</h3>
+      <div style="color:var(--muted); font-size:13px; line-height:1.45">
+        <strong style="color:#dff6ff">q:</strong> is this compatible with fabric/fml/sponge?<br/>
+        <strong style="color:#dff6ff">a:</strong> check the project page. maybe. probably.
+      </div>
+
+      <h3 style="margin-top:14px">support</h3>
+      <p style="color:var(--muted); font-size:13px">for bug reports: open an issue on curseforge or email me. do not send carrier pigeons.</p>
+
+      <div style="margin-top:18px; display:flex; gap:8px;">
+        <a class="btn primary" href="https://www.curseforge.com/members/idktoast" target="_blank" rel="noopener noreferrer">visit curseforge</a>
+        <a class="btn" href="https://discord.gg/yourserver" target="_blank" rel="noopener noreferrer">discord</a>
+      </div>
+    </aside>
+  </div>
+
+  <!-- notes for you:
+       - replace all example links (curseforge, discord, mailto) with your real urls.
+       - to use an image for the cover, replace the cover div with:
+         <img src="path/to/image.jpg" alt="idktoast cover" style="width:100%;height:100%;object-fit:cover;border-radius:12px" />
+       - if you want this as a single file to drag onto curseforge, it will work fine.
+  -->
+</body>
+  </html>
+  
