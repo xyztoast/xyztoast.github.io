@@ -47,6 +47,36 @@
       gap:8px;
       margin-top:16px;
     }
+      .account-link {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    text-decoration: none;
+    color: #f0f0f0;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    background: #212425;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    padding: 4px;
+  }
+
+  .account-text {
+    text-transform: lowercase;
+    user-select: none;
+  }
+
+  .account-link:hover {
+    opacity: .8;
+  }
   </style>
 </head>
 <body>
@@ -65,5 +95,16 @@
     </div>
 
   </div>
+
+  <a class="account-link" href="https://xyztoast.github.io/account">
+  <span class="avatar">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 12.75c1.986 0 3.6-1.614 3.6-3.6S13.986 5.55 12 5.55 8.4 7.164 8.4 9.15s1.614 3.6 3.6 3.6z" fill="#bfc7cc"/>
+      <path d="M4.5 19.2c0-2.64 3.96-4.8 7.5-4.8s7.5 2.16 7.5 4.8v.3H4.5v-.3z" fill="#bfc7cc"/>
+    </svg>
+  </span>
+  <span class="account-text">account</span>
+  </a>
+  
 </body>
 </html>
