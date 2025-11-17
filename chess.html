@@ -29,7 +29,7 @@
   .square.dark{background:var(--dark);box-shadow:inset 0 -6px 18px rgba(0,0,0,0.55)}
   .square:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,0.5)}
   /* stronger, more noticeable highlight */
-  .highlight{box-shadow: 0 5px 40px rgba(0,178,255,0.75), 0 5px 30px rgba(0,178,255,0.75) inset; outline:10px solid rgba(0,178,255,0.75); background-color: rgba(0,178,255,0.25)}
+  .highlight{box-shadow: 0 10px 40px rgba(0,178,255,0.28), 0 8px 30px rgba(0,178,255,0.18) inset; outline:10px solid rgba(0,178,255,0.14); background-color: rgba(0,178,255,0.06)}
 
   /* clone */
   .piece-clone{position:absolute;pointer-events:none;z-index:80;transition:transform 0.28s cubic-bezier(.2,.9,.3,1);display:flex;align-items:center;justify-content:center;font-size:36px;width:72px;height:72px}
@@ -62,7 +62,11 @@
       <div class="controls">
         <div class="row"><button class="btn" id="reset">reset</button><button class="btn" id="flip">flip</button></div>
         <div class="row">
-        <div class="meta">© 2025 toast designs</div>
+          <label class="switch"><input type="checkbox" id="botToggle"> <span class="meta">bot</span></label>
+          <select id="botDifficulty"><option value="easy">easy</option><option value="medium">medium</option><option value="hard">hard</option><option value="chatgpt">chatgpt</option></select>
+        </div>
+        <div class="row"><button class="btn primary" id="hint">hint</button></div>
+        <div class="meta">board colors: <code>--dark: #212425</code>, <code>--light: #323738</code> — accent: <code>#00b2ff</code></div>
       </div>
     </div>
   </div>
