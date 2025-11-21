@@ -1,9 +1,9 @@
 const CACHE_NAME = 'mcbeapk-cache-v1';
 const urlsToCache = [
   '/',
-  '/index.html',
-  '/account.html',
-  '/beta.html',
+  '/app/index.html',
+  '/app/account.html',
+  '/app/beta.html',
   '/mojangles.ttf',
   '/icons/192.png',
   '/icons/512.png'
