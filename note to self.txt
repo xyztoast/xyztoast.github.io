@@ -3,3 +3,10 @@ when creating a page for the app put it in the app folder and put   <link rel="m
 add every new page for the app into sw.js as '/app/pagename'
 
 if in the app add the blocking script:
+
+<script>
+if (!window.matchMedia('(display-mode: standalone)').matches) {
+  
+  window.location.href = 'https://xyztoast.github.io/app';
+}
+</script>
