@@ -4,6 +4,10 @@ const urlsToCache = [
   '/app/index.html',
   '/app/account.html',
   '/app/beta.html',
+  '/dl/android',
+  '/dl/mac',
+  '/dl/ios',
+  'dl/windows',
   '/mojangles.ttf',
   '/icons/192.png',
   '/icons/512.png'
