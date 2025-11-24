@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sign-in</title>
+  <title>Sign in</title>
   <style>
     body {
       display: flex;
-      height: 100vh;
       justify-content: center;
       align-items: center;
+      height: 100vh;
       background: #212425;
       color: #fff;
       font-family: sans-serif;
@@ -22,7 +22,6 @@
       color: #212425;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.2s;
     }
     button:hover { background: #008ecc; }
   </style>
@@ -33,37 +32,24 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    // supabase client setup
-    const supabaseUrl = 'https://cinbonvmvzmnkdvhfsjg.supabase.co/auth/v1/callback'
+    const supabaseUrl = 'https://cinbonvmvzmnkdvhfsjg.supabase.co/auth/v1/callback/'
     const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbmJvbnZtdnptbmtkdmhmc2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5OTI5NjQsImV4cCI6MjA3OTU2ODk2NH0.gzijxk-TpJ9FfEbNXPdQ8ODJksH5TOjaYXxF22rYLc8' // replace with your anon key
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
     const loginBtn = document.getElementById('loginBtn')
-
     loginBtn.addEventListener('click', async () => {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'github'
-      })
-      if (error) {
-        console.error('Login error:', error)
-        alert('Login failed check console')
-      } else {
-        console.log('Redirecting to GitHub...', data)
-      }
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' })
+      if (error) alert('Login failed 💀 check console')
     })
 
-    // check auth state
     supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        console.log('user logged in:', session.user)
         document.body.innerHTML = `<h2>Welcome, ${session.user.user_metadata.full_name || session.user.email}!</h2>
                                    <button id="logoutBtn">Sign out</button>`
         document.getElementById('logoutBtn').addEventListener('click', async () => {
           await supabase.auth.signOut()
           location.reload()
         })
-      } else {
-        console.log('user logged out')
       }
     })
   </script>
