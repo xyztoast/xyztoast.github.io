@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sign-in</title>
+  <style>
+    body {
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      background: #212425;
+      color: #fff;
+      font-family: sans-serif;
+    }
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      background: #00b2ff;
+      color: #212425;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover { background: #008ecc; }
+  </style>
+</head>
+<body>
+  <button id="loginBtn">Sign in with GitHub</button>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    // supabase client setup
+    const supabaseUrl = 'https://cinbonvmvzmnkdvhfsjg.supabase.co'
+    const supabaseAnonKey = 'YOUR_ANON_KEY' // replace with your anon key
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+    const loginBtn = document.getElementById('loginBtn')
+
+    loginBtn.addEventListener('click', async () => {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'github'
+      })
+      if (error) {
+        console.error('Login error:', error)
+        alert('Login failed 💀 check console')
+      } else {
+        console.log('Redirecting to GitHub...', data)
+      }
+    })
+
+    // check auth state
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        console.log('user logged in:', session.user)
+        document.body.innerHTML = `<h2>Welcome, ${session.user.user_metadata.full_name || session.user.email}!</h2>
+                                   <button id="logoutBtn">Sign out</button>`
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+          await supabase.auth.signOut()
+          location.reload()
+        })
+      } else {
+        console.log('user logged out')
+      }
+    })
+  </script>
+</body>
+</html>
