@@ -4,6 +4,7 @@ const urlsToCache = [
   '/app/index.html',
   '/app/account.html',
   '/app/beta.html',
+  '/app/preview.html',
   '/dl/android.html',
   '/dl/mac.html',
   '/dl/ios.html',
