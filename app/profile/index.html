@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile - xyztoast</title>
+<style>
+  body { background: #212425; color: #fff; font-family: sans-serif; margin:0; padding:0; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+  .profile-card { background: #323738; padding: 2rem; border-radius: 12px; width: 320px; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.5);}
+  img.avatar { width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:1rem; }
+  input, textarea { width:100%; padding:0.5rem; margin:0.5rem 0; border-radius:6px; border:none; background:#212425; color:#fff; }
+  button { background:#00b2ff; border:none; padding:0.6rem 1rem; border-radius:6px; cursor:pointer; color:#212425; margin-top:0.5rem; }
+</style>
+</head>
+<body>
+<div class="profile-card" id="profile-card">
+  <img id="avatar" class="avatar" src="default.png" alt="avatar">
+  <input type="file" id="avatarInput">
+  <input type="text" id="nickname" placeholder="Nickname">
+  <textarea id="bio" rows="3" placeholder="Bio"></textarea>
+  <button id="saveBtn">Save</button>
+  <button id="logoutBtn">Logout</button>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabaseUrl = 'https://cinbonvmvzmnkdvhfsjg.supabase.co'
+const supabaseKey = 'sb_publishable_kjtWEoM68CfCbejRl50V-w_xqaaNuon'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+let user, profile
+const pathParts = window.location.pathname.split('/')
+const publicUsername = pathParts[2] || null  // dynamic username from URL
+
+async function loadProfile() {
+  if (!publicUsername) {
+    // own profile
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      alert('please log in to view your profile')
+      window.location.href = '/'
+      return
+    }
+    user = session.user
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+    profile = data || {}
+  } else {
+    // public profile by nickname
+    const { data, error } = await supabase.from('profiles').select('*').eq('nickname', publicUsername).single()
+    if (error || !data) {
+      alert('profile not found!')
+      window.location.href = '/'
+      return
+    }
+    profile = data
+    const { data: { session } } = await supabase.auth.getSession()
+    user = session?.user || null
+  }
+
+  // populate UI
+  document.getElementById('avatar').src = profile.avatar_url || profile.user_metadata?.avatar_url || 'default.png'
+  document.getElementById('nickname').value = profile.nickname || ''
+  document.getElementById('bio').value = profile.bio || ''
+
+  // disable editing if public profile
+  if (publicUsername) {
+    document.getElementById('nickname').disabled = true
+    document.getElementById('bio').disabled = true
+    document.getElementById('avatarInput').style.display = 'none'
+    document.getElementById('saveBtn').style.display = 'none'
+    document.getElementById('logoutBtn').style.display = 'none'
+  }
+}
+
+async function uploadAvatar(file) {
+  if (!user) return null
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${user.id}.${fileExt}`
+  const { data, error } = await supabase.storage.from('avatars').upload(fileName, file, { upsert:true })
+  if (error) { console.error('upload error:', error); return null }
+  const { publicUrl } = supabase.storage.from('avatars').getPublicUrl(fileName)
+  return publicUrl
+}
+
+// events
+document.getElementById('avatarInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+  const url = await uploadAvatar(file)
+  if (url) document.getElementById('avatar').src = url
+})
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  if (!user) return
+  const nickname = document.getElementById('nickname').value
+  const bio = document.getElementById('bio').value
+  const avatar_url = document.getElementById('avatar').src
+
+  const { error } = await supabase.from('profiles').upsert({
+    id: user.id,
+    nickname,
+    bio,
+    avatar_url
+  })
+  if (error) console.error('save error:', error)
+  else alert('profile saved!')
+})
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supabase.auth.signOut()
+  window.location.href = '/'
+})
+
+loadProfile()
+</script>
+</body>
+</html>
