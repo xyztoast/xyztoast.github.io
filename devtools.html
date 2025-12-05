@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevTools</title>
+<style>
+  body {
+    background-color: #212425;
+    color: #fff;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+  }
+  #content {
+    filter: blur(15px);
+    transition: filter 0.3s;
+  }
+  input, button {
+    margin-top: 1em;
+    padding: 0.8em 1.5em;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+  }
+  input {
+    background-color: #323738;
+    color: #fff;
+  }
+  button {
+    background-color: #00b2ff;
+    color: #212425;
+    cursor: pointer;
+  }
+  button:active {
+    transform: scale(0.95);
+  }
+</style>
+</head>
+<body>
+  <div id="content">
+    <h1>devtools</h1>
+    <p>super secret content goes here 🥀</p>
+    <!-- add more dev tools UI here -->
+  </div>
+
+  <input type="password" id="pw" placeholder="enter password"/>
+  <button id="submitBtn">unlock</button>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    // TODO: replace with your Supabase project URL & anon/public key locally
+    const supabaseUrl = 'cinbonvmvzmnkdvhfsjg.supabase.co'
+    const supabaseKey = 'sb_publishable_kjtWEoM68CfCbejRl50V-w_xqaaNuon'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    const btn = document.getElementById('submitBtn')
+    const pwInput = document.getElementById('pw')
+    const content = document.getElementById('content')
+
+    btn.addEventListener('click', async () => {
+      const password = pwInput.value
+      const { data, error } = await supabase
+        .from('devtools')
+        .select('password')
+        .eq('password', password)
+        .single()
+
+      if (data) {
+        content.style.filter = 'none'
+        pwInput.style.display = 'none'
+        btn.style.display = 'none'
+      } else {
+        alert('wrong')
+      }
+    })
+  </script>
+</body>
+</html>
