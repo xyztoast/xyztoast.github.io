@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Install Webapp</title>
+</head>
+<body style="display:flex; justify-content:center; align-items:center; height:100vh; background:#212425; color:#fff;">
+
+  <button id="installBtn" style="padding:20px 40px; font-size:20px; background:#00b2ff; border:none; border-radius:8px; cursor:pointer;">
+    install webapp
+  </button>
+
+  <script>
+    let deferredPrompt;
+    const btn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      btn.style.display = 'block';
+    });
+
+    btn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('User response:', outcome);
+        deferredPrompt = null;
+      } else {
+        alert('this webapp might not be installable 😭');
+      }
+    });
+  </script>
+
+</body>
+</html>
