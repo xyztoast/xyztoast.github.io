@@ -1,129 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>xyztoast auth</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    body {
-      margin: 0;
-      background: #212425;
-      color: white;
-      font-family: system-ui, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .card {
-      background: #323738;
-      padding: 30px;
-      border-radius: 12px;
-      width: 320px;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,.5);
-    }
-
-    button {
-      background: #00b2ff;
-      color: black;
-      border: none;
-      padding: 12px;
-      width: 100%;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    button:hover {
-      opacity: .85;
-    }
-
-    img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-
-    .username {
-      font-size: 1.1em;
-      margin-bottom: 10px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account - xyztoast</title>
+<style>
+  body { background: #212425; color: #fff; font-family: sans-serif; margin:0; padding:0; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+  .account-card { background: #323738; padding: 2rem; border-radius: 12px; width: 320px; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.5); }
+  input { width:100%; padding:0.5rem; margin:0.5rem 0; border-radius:6px; border:none; background:#212425; color:#fff; }
+  button { background:#00b2ff; border:none; padding:0.6rem 1rem; border-radius:6px; cursor:pointer; color:#212425; margin-top:0.5rem; width:100%; }
+  .toggle-pass { cursor:pointer; font-size:0.9rem; color:#00b2ff; text-align:right; display:block; margin-top:-0.4rem; margin-bottom:0.5rem; }
+</style>
 </head>
 <body>
-
-<div class="card">
-  <div id="loggedOut">
-    <h2>login</h2>
-    <button id="loginBtn">login with github</button>
-  </div>
-
-  <div id="loggedIn" class="hidden">
-    <img id="avatar" />
-    <div class="username" id="username"></div>
-    <button id="logoutBtn">logout</button>
-  </div>
+<div class="account-card">
+  <h2>Sign In</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <span id="togglePass" class="toggle-pass">Show password</span>
+  <button id="submitBtn">Submit</button>
 </div>
 
-<script>
-  const supabase = window.supabase.createClient(
-    "https://cinbonvmvzmnkdvhfsjg.supabase.co",
-    "sb_publishable_kjtWEoM68CfCbejRl50V-w_xqaaNuon"
-  );
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loggedIn = document.getElementById("loggedIn");
-  const loggedOut = document.getElementById("loggedOut");
+const supabaseUrl = 'https://cinbonvmvzmnkdvhfsjg.supabase.co'
+const supabaseKey = 'sb_publishable_kjtWEoM68CfCbejRl50V-w_xqaaNuon'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-  const avatar = document.getElementById("avatar");
-  const username = document.getElementById("username");
+const emailInput = document.getElementById('email')
+const passInput = document.getElementById('password')
+const togglePass = document.getElementById('togglePass')
+const submitBtn = document.getElementById('submitBtn')
 
-  loginBtn.onclick = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: window.location.origin
-      }
-    });
-  };
-
-  logoutBtn.onclick = async () => {
-    await supabase.auth.signOut();
-    location.reload();
-  };
-
-  async function checkUser() {
-    const { data } = await supabase.auth.getUser();
-
-    if (data.user) {
-      loggedOut.classList.add("hidden");
-      loggedIn.classList.remove("hidden");
-
-      username.textContent =
-        data.user.user_metadata.user_name ||
-        data.user.user_metadata.name ||
-        data.user.email;
-
-      avatar.src =
-        data.user.user_metadata.avatar_url ||
-        "https://avatars.githubusercontent.com/u/0";
-    }
+// show/hide password
+togglePass.addEventListener('click', () => {
+  if (passInput.type === 'password') {
+    passInput.type = 'text'
+    togglePass.textContent = 'Hide password'
+  } else {
+    passInput.type = 'password'
+    togglePass.textContent = 'Show password'
   }
+})
 
-  checkUser();
+// submit login
+submitBtn.addEventListener('click', async () => {
+  const email = emailInput.value
+  const password = passInput.value
+  if (!email || !password) { alert('Enter email and password'); return }
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error) { alert('Login failed: ' + error.message) }
+  else { window.location.href = '/app/profile' } // redirect on success
+})
 </script>
-
 </body>
 </html>
