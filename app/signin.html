@@ -2,56 +2,128 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign in</title>
+  <title>xyztoast auth</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      margin: 0;
       background: #212425;
-      color: #fff;
-      font-family: sans-serif;
+      color: white;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
-    button {
-      padding: 12px 24px;
-      border: none;
+
+    .card {
+      background: #323738;
+      padding: 30px;
       border-radius: 12px;
-      background: #00b2ff;
-      color: #212425;
-      font-weight: bold;
-      cursor: pointer;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,.5);
     }
-    button:hover { background: #008ecc; }
+
+    button {
+      background: #00b2ff;
+      color: black;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: .85;
+    }
+
+    img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .username {
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
   </style>
 </head>
 <body>
-  <button id="loginBtn">Sign in with GitHub</button>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+<div class="card">
+  <div id="loggedOut">
+    <h2>login</h2>
+    <button id="loginBtn">login with github</button>
+  </div>
 
-    const supabaseUrl = 'https://cinbonvmvzmnkdvhfsjg.supabase.co/auth/v1/callback/'
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbmJvbnZtdnptbmtkdmhmc2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5OTI5NjQsImV4cCI6MjA3OTU2ODk2NH0.gzijxk-TpJ9FfEbNXPdQ8ODJksH5TOjaYXxF22rYLc8' // replace with your anon key
-    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+  <div id="loggedIn" class="hidden">
+    <img id="avatar" />
+    <div class="username" id="username"></div>
+    <button id="logoutBtn">logout</button>
+  </div>
+</div>
 
-    const loginBtn = document.getElementById('loginBtn')
-    loginBtn.addEventListener('click', async () => {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' })
-      if (error) alert('Login failed 💀 check console')
-    })
+<script>
+  const supabase = window.supabase.createClient(
+    "https://cinbonvmvzmnkdvhfsjg.supabase.co",
+    "YOUR_ANON_KEY_HERE"
+  );
 
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        document.body.innerHTML = `<h2>Welcome, ${session.user.user_metadata.full_name || session.user.email}!</h2>
-                                   <button id="logoutBtn">Sign out</button>`
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-          await supabase.auth.signOut()
-          location.reload()
-        })
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loggedIn = document.getElementById("loggedIn");
+  const loggedOut = document.getElementById("loggedOut");
+
+  const avatar = document.getElementById("avatar");
+  const username = document.getElementById("username");
+
+  loginBtn.onclick = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: window.location.origin
       }
-    })
-  </script>
+    });
+  };
+
+  logoutBtn.onclick = async () => {
+    await supabase.auth.signOut();
+    location.reload();
+  };
+
+  async function checkUser() {
+    const { data } = await supabase.auth.getUser();
+
+    if (data.user) {
+      loggedOut.classList.add("hidden");
+      loggedIn.classList.remove("hidden");
+
+      username.textContent =
+        data.user.user_metadata.user_name ||
+        data.user.user_metadata.name ||
+        data.user.email;
+
+      avatar.src =
+        data.user.user_metadata.avatar_url ||
+        "https://avatars.githubusercontent.com/u/0";
+    }
+  }
+
+  checkUser();
+</script>
+
 </body>
 </html>
