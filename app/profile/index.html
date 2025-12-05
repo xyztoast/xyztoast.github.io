@@ -6,10 +6,10 @@
 <title>Profile - xyztoast</title>
 <style>
   body { background: #212425; color: #fff; font-family: sans-serif; margin:0; padding:0; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; }
-  .profile-card { background: #323738; padding: 2rem; border-radius: 12px; width: 320px; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.5); margin-top:2rem; position:relative; }
+  .profile-card { background: #323738; padding: 2rem; border-radius: 12px; width: 320px; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.5); margin-top:2rem; position:relative; display:none; }
   .avatar-container { width:100px; height:100px; margin:0 auto 1rem; position:relative; cursor:pointer; }
   .avatar-container .placeholder { background:#00b2ff; border-radius:50%; width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:#212425; font-weight:bold; font-size:1.2rem; }
-  img.avatar { width:100%; height:100%; border-radius:50%; object-fit:cover; display:block; }
+  img.avatar { width:100%; height:100%; border-radius:50%; object-fit:cover; display:none; }
   input[type="file"] { display:none; }
   input, textarea { width:100%; padding:0.5rem; margin:0.5rem 0; border-radius:6px; border:none; background:#212425; color:#fff; }
   button { background:#00b2ff; border:none; padding:0.6rem 1rem; border-radius:6px; cursor:pointer; color:#212425; margin-top:0.5rem; }
@@ -19,10 +19,10 @@
 <body>
 <div class="profile-card" id="profile-card">
   <div class="search-icon" id="searchIcon">🔍</div>
-  
+
   <div class="avatar-container" id="avatarContainer">
     <div class="placeholder" id="avatarPlaceholder">+</div>
-    <img id="avatar" class="avatar" src="" alt="avatar" style="display:none">
+    <img id="avatar" class="avatar" src="" alt="avatar">
   </div>
   <input type="file" id="avatarInput">
 
@@ -42,17 +42,25 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 let user, profile
 const pathParts = window.location.pathname.split('/')
 const publicUsername = pathParts[2] || null  // dynamic username from URL
+const profileCard = document.getElementById('profile-card')
 
+// check if signed in
+async function checkAuth() {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) {
+    window.location.href = '/app/account' // redirect if not signed in
+    return false
+  }
+  user = session.user
+  return true
+}
+
+// load profile data
 async function loadProfile() {
+  if (!await checkAuth()) return
+
   if (!publicUsername) {
     // own profile
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      alert('please log in to view your profile')
-      window.location.href = '/'
-      return
-    }
-    user = session.user
     const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single()
     profile = data || {}
   } else {
@@ -64,11 +72,12 @@ async function loadProfile() {
       return
     }
     profile = data
-    const { data: { session } } = await supabase.auth.getSession()
-    user = session?.user || null
   }
 
-  // populate UI
+  // show profile card
+  profileCard.style.display = 'block'
+
+  // avatar
   const avatarEl = document.getElementById('avatar')
   const placeholderEl = document.getElementById('avatarPlaceholder')
   if (profile.avatar_url) {
@@ -93,7 +102,7 @@ async function loadProfile() {
   }
 }
 
-// upload avatar to supabase storage
+// upload avatar
 async function uploadAvatar(file) {
   if (!user) return null
   const fileExt = file.name.split('.').pop()
@@ -138,10 +147,9 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
   await supabase.auth.signOut()
-  window.location.href = '/'
+  window.location.href = '/app/account'
 })
 
-// search icon click → prompt for username
 document.getElementById('searchIcon').addEventListener('click', () => {
   const searchUsername = prompt('Enter username to view profile:')
   if (searchUsername) {
