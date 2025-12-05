@@ -13,12 +13,13 @@
       height:100%;
       margin:0;
       font-family:'Roboto', sans-serif;
-      background:#212425;
+      background: #212425;
       color:#00b2ff
     }
     .wrap{
       height:100%;
       display:flex;
+     
       flex-direction:column;
       align-items:center;
       justify-content:top;
@@ -46,72 +47,72 @@
     .beta-btn {
     position: fixed;
     bottom: 15px;
-    left: 15vw;
+    left: 60px;
     display: inline-flex;
-    align-items: center;
+    align-items: left;
     gap: 8px;
     padding: 12px 12px;
     text-decoration: none;
     color: #bebebe;
     font-size: 18px
-  }
+    }
 
      .unreleased-btn {
     position: fixed;
     bottom: 15px;
-    right: 10vw;
+    right: 100px;
     display: inline-flex;
-    align-items: center;
+    align-items: right;
     gap: 8px;
     padding: 12px 12px;
     text-decoration: none;
     color: #bebebe;
     font-size: 18px
-  }
-
+    }
+    
     .footer-panel {
       position: fixed;
       align-items: center;
       left: 0px;
       bottom: 0px;
       width: 100vw;
-      background-color: #323738;
+      background: rgba(33, 36, 37, 0.6);
       padding: 35px;
       text-color: #323738;
-      font-size: 10px
+      font-size: 10px;
+      backdrop-filter: blur(3px);
+      margin-top: 10px;
     }
 
     .header-panel {
-    position: fixed;
-    align-items: center;
-    width: 101vw;
-    left: 0px;
-    top: 0px;
-    background-color: #212425;
-    text-color: #00b2ff;
-    user-select: none;
-    width: 100vw;
-    text-align: center;
-    font-size: 40px
-  }
+      position: fixed;
+      place-items: center;
+      margin: auto;
+      width: 100vw;
+      left: 0px;
+      top: 0px;
+      background-color: rgba(33, 36, 37, 0.7);
+      text-color: #00b2ff;
+      width: 100vw;
+      text-align: center;
+      font-size: 40px;
+      height: 75px;
+      backdrop-filter: blur(3px);
+    }
 
-    .header-panel-text {
-    color: #00b2ff;
-    user-select: none;
-    text-align: center
-  }
-  .unnamed-pack {
-    background-color: #323738;
-    left: 180px;
-    bottom: 200px
-  }
+
+    .unnamed-pack {
+      background-color: #323738;
+      left: 180px;
+      bottom: 200px
+    }
     .file-card {
       background: #323738;
       width: 70vw;
       padding: 20px;
       border-radius: 15px;
-      border: 2px solid #00b2ff;
       margin: auto;
+      margin-bottom: 20px;
     }
 
     .file-name {
@@ -125,14 +126,14 @@
     .file-desc {
       font-size: 15px;
       line-height: 1.4;
+      user-select: none;
     }
     .content {
-      margin-top: 120px;
-      margin-bottom: 120px;
+      top: 100px;
       width: 100vw;
-      height: calc(100vh - 240px);
+      height: calc(100vh - 10px);
       overflow-y: auto;
-      padding-bottom: 20px;
+      padding-bottom: 75px;
       }
       
   </style>
@@ -143,27 +144,14 @@
 
   </a> 
   <div class="footer-panel">
+  </div>
     <div class="header-panel">
+  </div>
+  
       
-    <p> <span class="header-panel-text"><strong>beta<strong><p>
+    <p> <span class="header-panel"><strong>beta<strong><p>
  <div class="content">     
-  <div class="file-card">
-    <div class="file-name"><img src="/app/img/earl" alt="file preview" style="width:100%; border-radius:8px;"></div>
-    <p class="file-desc">unnamed 16x pvp pack</p>
-   </div>
-   <div class="file-card">
-    <div class="file-name"><img src="/app/img/earl" alt="file preview" style="width:100%; border-radius:8px;"></div>
-    <p class="file-desc">unnamed 16x pvp pack</p>
-   </div>
-   <div class="file-card">
-    <div class="file-name"><img src="/app/img/earl" alt="file preview" style="width:100%; border-radius:8px;"></div>
-    <p class="file-desc">unnamed 16x pvp pack</p>
-   </div>
-   <div class="file-card">
-    <div class="file-name"><img src="/app/img/earl" alt="file preview" style="width:100%; border-radius:8px;"></div>
-    <p class="file-desc">unnamed 16x pvp pack</p>
-   </div>
-   <div class="file-card">
+  <br><br><br><br><div class="file-card">
     <div class="file-name"><img src="/app/img/earl" alt="file preview" style="width:100%; border-radius:8px;"></div>
     <p class="file-desc">unnamed 16x pvp pack</p>
    </div>
@@ -175,12 +163,7 @@
   
   </a> 
   <a class="unreleased-btn" href="https://xyztoast.github.io/app/unreleased">unreleased</a>
-<script>
-if (!window.matchMedia('(display-mode: standalone)').matches) {
-  
-  window.location.href = 'https://xyztoast.github.io/app';
-}
-</script>
-      
+      </div>
+    </div>
 </body>
 </html>
