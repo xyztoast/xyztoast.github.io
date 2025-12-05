@@ -34,25 +34,42 @@
 </head>
 <body>
   <h1>download the webapp</h1>
-  <button id="installBtn">install</button>
+  <button id="actionBtn">install</button>
 
   <script>
+    const btn = document.getElementById('actionBtn');
     let deferredPrompt;
-    const btn = document.getElementById('installBtn');
 
+    // detect if PWA can be installed
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
+      btn.textContent = 'install';
       btn.style.display = 'inline-block';
     });
 
-    btn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(() => {
+    // detect if PWA is already installed
+    window.addEventListener('appinstalled', () => {
+      btn.textContent = 'open app';
+      btn.onclick = () => window.location.href = '/app/';
+    });
+
+    // on page load, check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      btn.textContent = 'open app';
+      btn.onclick = () => window.location.href = '/app/';
+    } else {
+      btn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if (choice.outcome === 'accepted') {
+          btn.textContent = 'open app';
+          btn.onclick = () => window.location.href = '/app/';
+        }
         deferredPrompt = null;
       });
-    });
+    }
   </script>
 </body>
 </html>
