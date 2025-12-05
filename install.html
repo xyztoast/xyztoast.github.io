@@ -3,39 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>install</title>
-  <link rel="stylesheet" href="/app/style.css">
+  <title>Install idktoast Mods</title>
+  <style>
+    body {
+      background-color: #212425;
+      color: #fff;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    button {
+      background-color: #00b2ff;
+      border: none;
+      padding: 1em 2em;
+      font-size: 1.2em;
+      color: #212425;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+  </style>
 </head>
 <body>
-  <div class="install-container">
-    <h1>install idktoast mods</h1>
-    <p>get the app on your home screen for a better experience 🥀</p>
-    <button id="installBtn">install</button>
-    <p id="msg"></p>
-  </div>
+  <h1>download the webapp</h1>
+  <button id="installBtn">install</button>
 
   <script>
     let deferredPrompt;
     const btn = document.getElementById('installBtn');
-    const msg = document.getElementById('msg');
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      btn.style.display = 'block';
+      btn.style.display = 'inline-block';
     });
 
     btn.addEventListener('click', async () => {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        msg.textContent = 'thanks for installing! it was successful';
-      } else {
-        msg.textContent = 'didnt work, thats an issue on my part. leave a pull request on the github repo and ill try to fix it';
-      }
-      deferredPrompt = null;
-      btn.style.display = 'none';
+      deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+      });
     });
   </script>
 </body>
