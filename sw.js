@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mcbeapk-cache-v1';
+const CACHE_NAME = 'idktoast-cache';
 const urlsToCache = [
   '/',
   '/app/index.html',
@@ -8,20 +8,44 @@ const urlsToCache = [
   '/dl/android.html',
   '/dl/mac.html',
   '/dl/ios.html',
-  'dl/windows.html',
+  '/dl/windows.html',
   '/mojangles.ttf',
   '/icons/192.png',
   '/icons/512.png'
 ];
 
+// install event - cache everything
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting()) // activate immediately
   );
 });
 
+// activate event - clean old caches
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys => 
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) return caches.delete(key);
+        })
+      )
+    ).then(() => self.clients.claim())
+  );
+});
+
+// fetch event - network first, fallback to cache
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
+    fetch(e.request)
+      .then(res => {
+        // clone response to cache
+        const resClone = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, resClone));
+        return res;
+      })
+      .catch(() => caches.match(e.request)) // fallback to cache
   );
 });
