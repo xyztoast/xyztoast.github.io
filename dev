@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 Not Found</title>
+<style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    padding: 100px 20px;
+    background: #212425;
+    color: #00b2ff;
+  }
+
+  h1 {
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  #devbox {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    font-size: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: transparent;
+    border: none;
+    color: #323738;
+    outline: none;
+    caret-color: auto;
+  }
+</style>
+</head>
+<body>
+  <h1>404</h1>
+  <p>nothing here</p>
+
+  <!-- hidden developer input -->
+  <input type="text" id="devbox" placeholder="dev input">
+
+  <script>
+    const devBox = document.getElementById('devbox');
+
+    // optional: hotkey to focus the input
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey && e.shiftKey && e.code === 'KeyD') {
+        devBox.focus();
+      }
+    });
+
+    // check password and redirect
+    devBox.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const value = devBox.value.trim();
+        if (value === 'visibleik') {
+          window.location.href = 'https://xyztoast.github.io/devcmd';
+        } else {
+          devBox.value = '';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
