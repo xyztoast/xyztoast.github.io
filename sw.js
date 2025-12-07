@@ -1,51 +1,39 @@
 const CACHE_NAME = 'idktoast-cache';
-const urlsToCache = [
-  '/',
-  '/app/index.html',
-  '/app/account.html',
-  '/app/beta.html',
-  '/app/preview.html',
-  '/dl/android.html',
-  '/dl/mac.html',
-  '/dl/ios.html',
-  '/dl/windows.html',
-  '/mojangles.ttf',
-  '/icons/192.png',
-  '/icons/512.png'
-];
 
-// install event - cache everything
+// install - just cache the service worker itself
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting()) // activate immediately
+      .then(cache => cache.add('/sw.js'))
+      .then(() => self.skipWaiting())
   );
 });
 
-// activate event - clean old caches
+// activate - clean old caches
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys => 
+    caches.keys().then(keys =>
       Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) return caches.delete(key);
-        })
+        keys.map(key => key !== CACHE_NAME && caches.delete(key))
       )
     ).then(() => self.clients.claim())
   );
 });
 
-// fetch event - network first, fallback to cache
+// fetch - network first, cache dynamically
 self.addEventListener('fetch', e => {
   e.respondWith(
-    fetch(e.request)
-      .then(res => {
-        // clone response to cache
+    caches.match(e.request).then(cached => {
+      if (cached) return cached;
+
+      return fetch(e.request).then(res => {
         const resClone = res.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(e.request, resClone));
         return res;
-      })
-      .catch(() => caches.match(e.request)) // fallback to cache
+      }).catch(() => {
+        // optional fallback if request fails
+        return caches.match('/app/offline');
+      });
+    })
   );
 });
