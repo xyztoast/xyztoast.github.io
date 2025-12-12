@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>polls</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #212425;
+      color: #fff;
+      padding: 2rem;
+    }
+    #poll {
+      background: #323738;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: 0 auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    label {
+      margin-left: 0.5rem;
+    }
+    button {
+      background: #00b2ff;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-top: 1rem;
+      border-radius: 6px;
+      color: #212425;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    #results p {
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="poll">
+    <h2 id="poll-question">what's your favorite color?</h2>
+    <div id="options"></div>
+    <button id="vote-btn">vote</button>
+    <div id="results" style="display:none;"></div>
+  </div>
+
+  <!-- supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.1.0/dist/supabase.min.js"></script>
+  <script>
+    // initialize supabase
+    const supabaseUrl = 'YOUR_SUPABASE_URL';
+    const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const pollId = '123'; // your poll id
+    const localKey = `poll_${pollId}_vote`;
+
+    const voteBtn = document.getElementById('vote-btn');
+    const optionsContainer = document.getElementById('options');
+    const resultsDiv = document.getElementById('results');
+
+    let pollOptions = [];
+
+    async function fetchPoll() {
+      // get poll options from supabase
+      const { data: options, error } = await supabase
+        .from('poll_options')
+        .select('*')
+        .eq('poll_id', pollId);
+
+      if(error) return console.error(error);
+      pollOptions = options;
+      renderOptions();
+      checkVoted();
+    }
+
+    function renderOptions() {
+      optionsContainer.innerHTML = '';
+      pollOptions.forEach(o => {
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'poll';
+        radio.value = o.id;
+        radio.id = o.id;
+
+        const label = document.createElement('label');
+        label.htmlFor = o.id;
+        label.textContent = o.option_text;
+
+        optionsContainer.appendChild(radio);
+        optionsContainer.appendChild(label);
+        optionsContainer.appendChild(document.createElement('br'));
+      });
+    }
+
+    function checkVoted() {
+      const userVote = localStorage.getItem(localKey);
+      if(userVote) {
+        showResults();
+      } else {
+        voteBtn.addEventListener('click', submitVote);
+      }
+    }
+
+    async function submitVote() {
+      const selected = document.querySelector('input[name="poll"]:checked');
+      if(!selected) return alert('choose an option');
+
+      // insert vote into supabase
+      const { data, error } = await supabase
+        .from('poll_votes')
+        .insert([{ poll_id: pollId, option_id: selected.value }]);
+
+      if(error) return console.error(error);
+
+      localStorage.setItem(localKey, selected.value);
+      showResults();
+    }
+
+    async function showResults() {
+      optionsContainer.style.display = 'none';
+      voteBtn.style.display = 'none';
+      resultsDiv.style.display = 'block';
+      resultsDiv.innerHTML = '';
+
+      // get all votes for this poll
+      const { data: votes } = await supabase
+        .from('poll_votes')
+        .select('*')
+        .eq('poll_id', pollId);
+
+      // count votes per option
+      const counts = {};
+      pollOptions.forEach(o => counts[o.id] = 0);
+      votes.forEach(v => counts[v.option_id] = (counts[v.option_id] || 0) + 1);
+
+      const total = votes.length || 1;
+
+      pollOptions.forEach(o => {
+        const percent = ((counts[o.id] / total) * 100).toFixed(1);
+        const p = document.createElement('p');
+        p.textContent = `${o.option_text}: ${counts[o.id]} vote(s) (${percent}%)`;
+        resultsDiv.appendChild(p);
+      });
+    }
+
+    fetchPoll();
+  </script>
+</body>
+</html>
