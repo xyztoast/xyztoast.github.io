@@ -13,3 +13,9 @@
     body {
         background-color: #212425;
     }
+    h1 {
+        font-family: 'mcfontb';
+    }
+    p {
+        font-family: 'mcfont';
+    }
