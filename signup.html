@@ -2,8 +2,9 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>signup</title>
+  <title>sign up</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body {
       background:#212425;
@@ -13,12 +14,14 @@
       justify-content:center;
       align-items:center;
       height:100vh;
+      margin:0;
     }
     .panel {
       background:#323738;
       padding:20px;
       border-radius:8px;
       width:300px;
+      text-align:center;
     }
     input {
       width:100%;
@@ -36,16 +39,30 @@
       color:#000;
       font-weight:bold;
       cursor:pointer;
+      margin-top:10px;
+    }
+    a {
+      color:#00b2ff;
+      text-decoration:none;
     }
   </style>
 </head>
+
 <body>
   <div class="panel">
     <h2>sign up</h2>
+
     <input id="email" type="email" placeholder="email" />
     <input id="password" type="password" placeholder="password" />
+
     <button onclick="signup()">create account</button>
+
     <p id="msg"></p>
+
+    <p style="margin-top:10px;">
+      already have an account?
+      <a href="https://xyztoast.github.io/login">log in</a>
+    </p>
   </div>
 
   <script>
@@ -58,18 +75,21 @@
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      let { data, error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
-        password
+        password,
+        options: {
+          emailRedirectTo: "https://xyztoast.github.io/login"
+        }
       });
 
       if (error) {
         document.getElementById("msg").textContent = error.message;
       } else {
-        window.location.href = "https://xyztoast.github.io/login";
+        document.getElementById("msg").textContent =
+          "check ur email to confirm";
       }
     }
   </script>
 </body>
 </html>
-
