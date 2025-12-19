@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>sign up</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #212425;
+    font-family: ui-sans-serif, system-ui;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .panel {
+    background: #323738;
+    padding: 30px 40px;
+    border-radius: 14px;
+    width: 350px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #212425;
+    color: #fff;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  button {
+    background: #00b2ff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+
+  button:hover {
+    opacity: .8;
+  }
+
+  .smalltxt {
+    text-align: center;
+    font-size: 13px;
+    color: #aaa;
+  }
+
+  .smalltxt a {
+    color: #00b2ff;
+    text-decoration: none;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+  <h2 style="margin:0; font-size:20px;">sign up</h2>
+
+  <input id="email" type="email" placeholder="email" />
+  <input id="password" type="password" placeholder="password" />
+  <button id="signup">create account</button>
+
+  <div class="smalltxt">
+    already have an account?  
+    <a href="https://xyztoast.github.io/app/login">login</a>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+  const supabase = createClient('cinbonvmvzmnkdvhfsjg.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbmJvbnZtdnptbmtkdmhmc2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5OTI5NjQsImV4cCI6MjA3OTU2ODk2NH0.gzijxk-TpJ9FfEbNXPdQ8ODJksH5TOjaYXxF22rYLc8')
+
+
+  signup.onclick = async () => {
+    const { data, error } = await supabase.auth.signUp({
+      email: email.value,
+      password: password.value
+    })
+    if (error) alert(error.message)
+    else {
+      alert('account created! check your email for confirmation if enabled.')
+      window.location.href = '/login'
+    }
+  }
+</script>
+
+</body>
+</html>
