@@ -1,80 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8" />
-    <title>signup</title>
-    <style>
-        body {
-            background-color: #212425;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .signup-box {
-            background-color: #323738;
-            padding: 32px;
-            border-radius: 8px;
-            width: 300px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 12px;
-            border: none;
-            border-radius: 4px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #00b2ff;
-            color: black;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        a { color: #00b2ff; }
-        #msg {
-            margin-top: 10px;
-            font-size: 14px;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8" />
+  <title>signup</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      background:#212425;
+      color:#fff;
+      font-family:sans-serif;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+    .panel {
+      background:#323738;
+      padding:20px;
+      border-radius:8px;
+      width:300px;
+    }
+    input {
+      width:100%;
+      padding:10px;
+      margin:5px 0;
+      border:none;
+      border-radius:4px;
+    }
+    button {
+      width:100%;
+      padding:10px;
+      border:none;
+      border-radius:4px;
+      background:#00b2ff;
+      color:#000;
+      font-weight:bold;
+      cursor:pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="signup-box">
-        <h2>create account</h2>
-        <input id="email" type="email" placeholder="email" />
-        <input id="password" type="password" placeholder="password" />
-        <button onclick="signup()">sign up</button>
-        <p id="msg"></p>
-        <br>
-        <a href="https://xyztoast.github.io/login">already got an account? login</a>
-    </div>
+  <div class="panel">
+    <h2>sign up</h2>
+    <input id="email" type="email" placeholder="email" />
+    <input id="password" type="password" placeholder="password" />
+    <button onclick="signup()">create account</button>
+    <p id="msg"></p>
+  </div>
 
-    <script>
-        const supabaseUrl = "cinbonvmvzmnkdvhfsjg.supabase.co";
-        const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbmJvbnZtdnptbmtkdmhmc2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5OTI5NjQsImV4cCI6MjA3OTU2ODk2NH0.gzijxk-TpJ9FfEbNXPdQ8ODJksH5TOjaYXxF22rYLc8";
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+  <script>
+    const supabase = supabase.createClient(
+      "https://cinbonvmvzmnkdvhfsjg.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbmJvbnZtdnptbmtkdmhmc2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5OTI5NjQsImV4cCI6MjA3OTU2ODk2NH0.gzijxk-TpJ9FfEbNXPdQ8ODJksH5TOjaYXxF22rYLc8"
+    );
 
-        async function signup() {
-            const email = document.getElementById("email").value;
-            const pw = document.getElementById("password").value;
+    async function signup() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-            const { data, error } = await supabaseClient.auth.signUp({
-                email: email,
-                password: pw
-            });
+      let { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
 
-            if (error) {
-                document.getElementById("msg").innerText = error.message;
-            } else {
-                document.getElementById("msg").innerText = "success 🎉 check your email";
-            }
-        }
-    </script>
+      if (error) {
+        document.getElementById("msg").textContent = error.message;
+      } else {
+        window.location.href = "https://xyztoast.github.io/login";
+      }
+    }
+  </script>
 </body>
 </html>
+
