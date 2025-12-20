@@ -87,33 +87,27 @@
     </p>
   </div>
 
-<script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-  const client = createClient(
+<script>
+  const client = supabase.createClient(
     "https://cinbonvmvzmnkdvhfsjg.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbmJvbnZtdnptbmtkdmhmc2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5OTI5NjQsImV4cCI6MjA3OTU2ODk2NH0.gzijxk-TpJ9FfEbNXPdQ8ODJksH5TOjaYXxF22rYLc8"
-  );
+  )
 
-  async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+  async function signup() {
+    const email = document.getElementById("email").value
+    const password = document.getElementById("password").value
 
-    const { data, error } = await client.auth.signInWithPassword({
+    const { data, error } = await client.auth.signUp({
       email,
-      password,
-    });
+      password
+    })
 
     if (error) {
-      document.getElementById("msg").textContent = error.message;
+      document.getElementById("msg").textContent = error.message
     } else {
-      // successful login – go to profile
-      window.location.href = "https://xyztoast.github.io/profile";
+      window.location.href = "https://xyztoast.github.io/login"
     }
   }
-
-  document.getElementById("loginBtn").addEventListener("click", login);
 </script>
-  
 </body>
 </html>
