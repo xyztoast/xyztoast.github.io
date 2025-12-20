@@ -1,105 +1,97 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>login</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: #212425;
-    font-family: ui-sans-serif, system-ui;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-
-  .panel {
-    background: #323738;
-    padding: 30px 40px;
-    border-radius: 14px;
-    width: 350px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    background: #212425;
-    color: #fff;
-    font-size: 14px;
-    box-sizing: border-box;
-  }
-
-  button {
-    background: #00b2ff;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    color: #000;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity .2s;
-  }
-
-  button:hover {
-    opacity: .8;
-  }
-
-  .github {
-    background: #000;
-    color: #fff;
-  }
-
-  .smalltxt {
-    text-align: center;
-    font-size: 13px;
-    color: #aaa;
-  }
-
-  .smalltxt a {
-    color: #00b2ff;
-    text-decoration: none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>login</title>
+  <script type="module" src="https://esm.sh/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      background: #212425;
+      color: #fff;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #323738;
+      padding: 40px;
+      border-radius: 8px;
+      width: 320px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00b2ff;
+      border: none;
+      border-radius: 4px;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    a {
+      color: #00b2ff;
+      text-decoration: none;
+      font-size: 14px;
+      display: block;
+      margin-top: 12px;
+    }
+    #msg {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #f55;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="panel">
-  <h2 style="margin:0; font-size:20px;">login</h2>
-  <button class="github" id="github">github login</button>
+<div class="container">
+  <h2>login</h2>
+
   <input id="email" type="email" placeholder="email" />
   <input id="password" type="password" placeholder="password" />
-  <button id="login">login</button>
 
-  <div class="smalltxt">
-    don't have an account?  
-    <a href="https://xyztoast.github.io/signup">sign up</a>
-  </div>
+  <button id="login-btn">login</button>
+
+  <p id="msg"></p>
+
+  <a href="https://xyztoast.github.io/signup">dont have an account? sign up</a>
 </div>
 
 <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-  const client = createClient(
+  const supabase = createClient(
     "https://cinbonvmvzmnkdvhfsjg.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbmJvbnZtdnptbmtkdmhmc2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5OTI5NjQsImV4cCI6MjA3OTU2ODk2NH0.gzijxk-TpJ9FfEbNXPdQ8ODJksH5TOjaYXxF22rYLc8"
   );
 
-  async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+  document.getElementById("login-btn").addEventListener("click", async (e) => {
+    e.preventDefault();
 
-    const { data, error } = await client.auth.signInWithPassword({
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+      document.getElementById("msg").textContent = "type email + password 💀";
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -107,14 +99,10 @@
     if (error) {
       document.getElementById("msg").textContent = error.message;
     } else {
-      // successful login – go to profile
       window.location.href = "https://xyztoast.github.io/profile";
     }
-  }
-
-  document.getElementById("loginBtn").addEventListener("click", login);
+  });
 </script>
-  
 
 </body>
 </html>
