@@ -191,13 +191,13 @@ execute positioned 0 0 0 run title @a[r=20] actionbar you are in §4SPAWN</texta
     updateLineNumbers();
   </script>
   <script>
-    document.getElementById('exportCode').addEventListener('click', () => {
-  let fileName = prompt("enter a name for your file:"); // ask user
-  if (!fileName) return; // if cancel or empty, do nothing
-  fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_'); // sanitize filename a bit
-  fileName += '-idktoast.mcfunction'; // add suffix
+document.getElementById('exportCode').addEventListener('click', () => {
+  let fileName = prompt("file name");
+  if (!fileName) return;
+  fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_');
+  fileName += '-idktoast.mcfunction';
 
-  const blob = new Blob([codeArea.value], { type: 'text/plain;charset=utf-8' });
+  const blob = new Blob([codeArea.value], { type: 'application/octet-stream' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
