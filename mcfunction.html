@@ -114,6 +114,29 @@
   .delete {
     color: #ff4d4d;
   }
+
+.sub-dropdown {
+  display: none;
+  flex-direction: column;
+  background-color: #212425;
+  margin-left: 10px;
+  border-radius: 5px;
+  padding: 5px 0;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+#colorFormat:hover .sub-dropdown {
+  display: flex;
+}
+
+.sub-dropdown div {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.sub-dropdown div:hover {
+  background-color: rgba(255,255,255,0.1);
+}
 </style>
 </head>
 <body>
@@ -125,9 +148,35 @@ execute positioned 0 0 0 run title @a[r=20] actionbar you are in §4SPAWN</texta
 
   <div class="top-button" id="menuButton">⋯</div>
   <div class="dropdown" id="dropdownMenu">
+    <div id="colorFormat">color format ▸
+    <div class="sub-dropdown" id="colorMenu">
+    <div data-code="§0">§0 - black</div>
+    <div data-code="§1">§1 - dark blue</div>
+    <div data-code="§2">§2 - dark green</div>
+    <div data-code="§3">§3 - dark aqua</div>
+    <div data-code="§4">§4 - dark red</div>
+    <div data-code="§5">§5 - dark purple</div>
+    <div data-code="§6">§6 - gold</div>
+    <div data-code="§7">§7 - gray</div>
+    <div data-code="§8">§8 - dark gray</div>
+    <div data-code="§9">§9 - blue</div>
+    <div data-code="§a">§a - green</div>
+    <div data-code="§b">§b - aqua</div>
+    <div data-code="§c">§c - red</div>
+    <div data-code="§d">§d - light purple</div>
+    <div data-code="§e">§e - yellow</div>
+    <div data-code="§f">§f - white</div>
+    <div data-code="§k">§k - obfuscated</div>
+    <div data-code="§l">§l - bold</div>
+    <div data-code="§m">§m - strikethrough</div>
+    <div data-code="§n">§n - underline</div>
+    <div data-code="§o">§o - italic</div>
+    <div data-code="§r">§r - reset</div>
     <div id="copyCode">copy code</div>
     <div id="exportCode">export</div>
     <div id="deleteCode" class="delete">delete code</div>
+  </div>
+    </div>
   </div>
 
   <script>
@@ -208,5 +257,20 @@ document.getElementById('exportCode').addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
   </script>
+      <script>
+        const colorMenu = document.getElementById('colorMenu');
+
+colorMenu.querySelectorAll('div').forEach(item => {
+  item.addEventListener('click', () => {
+    const code = item.getAttribute('data-code');
+    const start = codeArea.selectionStart;
+    const end = codeArea.selectionEnd;
+    const text = codeArea.value;
+    codeArea.value = text.slice(0, start) + code + text.slice(end);
+    codeArea.selectionStart = codeArea.selectionEnd = start + code.length;
+    codeArea.focus();
+  });
+});
+      </script>
 </body>
 </html>
