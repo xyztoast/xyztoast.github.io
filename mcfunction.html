@@ -126,6 +126,7 @@ execute positioned 0 0 0 run title @a[r=20] actionbar you are in §4SPAWN</texta
   <div class="top-button" id="menuButton">⋯</div>
   <div class="dropdown" id="dropdownMenu">
     <div id="copyCode">copy code</div>
+    <div id="exportCode">export</div>
     <div id="deleteCode" class="delete">delete code</div>
   </div>
 
@@ -188,6 +189,19 @@ execute positioned 0 0 0 run title @a[r=20] actionbar you are in §4SPAWN</texta
     });
 
     updateLineNumbers();
+  </script>
+  <script>
+    document.getElementById('exportCode').addEventListener('click', () => {
+  const blob = new Blob([codeArea.value], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'idktoastfunction.mcfunction'; // filename
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
   </script>
 </body>
 </html>
