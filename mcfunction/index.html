@@ -272,5 +272,13 @@ colorMenu.querySelectorAll('div').forEach(item => {
   });
 });
       </script>
+  <script type="module">
+  import { loadSyntax } from "./loader.js";
+  import { initEditor } from "./editor.js";
+
+  await loadSyntax();
+  initEditor();
+</script>
+
 </body>
 </html>
