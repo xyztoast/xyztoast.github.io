@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>mcfunction editor</title>
+<title>mcbCode - mcfunction editor for bedrock</title>
 <style>
   body {
     margin: 0;
@@ -104,7 +104,7 @@
   }
 
   .dropdown div:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: #212425;
   }
 
   #exportCode {
@@ -118,32 +118,34 @@
 .sub-dropdown {
   display: none;
   flex-direction: column;
-  background-color: #212425;
+  background-color: #323738;
   margin-left: 10px;
   border-radius: 5px;
   padding: 5px 0;
   box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  font-size: 8px;
 }
 
 #colorFormat:hover .sub-dropdown {
   display: flex;
+  border-radius: 5px;
 }
 
 .sub-dropdown div {
   padding: 6px 12px;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .sub-dropdown div:hover {
-  background-color: rgba(255,255,255,0.1);
+  background-color: #323738;
 }
 </style>
 </head>
 <body>
   <div class="editor">
     <pre class="line-numbers" id="lineNumbers">1</pre>
-    <textarea class="code-area" id="codeArea" spellcheck="false">execute positioned 0 0 0 run effect @a resistance 1 255 true
-execute positioned 0 0 0 run title @a[r=20] actionbar you are in §4SPAWN</textarea>
+    <textarea class="code-area" id="codeArea" spellcheck="false" placeholder="mcbCode made by idktoast"></textarea>
   </div>
 
   <div class="top-button" id="menuButton">⋯</div>
@@ -166,10 +168,9 @@ execute positioned 0 0 0 run title @a[r=20] actionbar you are in §4SPAWN</texta
     <div data-code="§d">§d - light purple</div>
     <div data-code="§e">§e - yellow</div>
     <div data-code="§f">§f - white</div>
+    <div data-code="§g">§g - gold</div>
     <div data-code="§k">§k - obfuscated</div>
     <div data-code="§l">§l - bold</div>
-    <div data-code="§m">§m - strikethrough</div>
-    <div data-code="§n">§n - underline</div>
     <div data-code="§o">§o - italic</div>
     <div data-code="§r">§r - reset</div>
     </div>
