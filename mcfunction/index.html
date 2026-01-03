@@ -272,13 +272,107 @@ colorMenu.querySelectorAll('div').forEach(item => {
   });
 });
       </script>
-  <script type="module">
-  import { loadSyntax } from "./loader.js";
-  import { initEditor } from "./editor.js";
+<script type="module">
+/* ===============================
+   backend loader + registry
+   =============================== */
 
-  await loadSyntax();
-  initEditor();
+import { ArgTypes, CommandShape } from "./backend/commandSchema.js"
+
+// command registry
+const commandRegistry = new Map()
+
+/* -------------------------------
+   validation helpers
+-------------------------------- */
+
+function isTypeValid(type) {
+  return Object.keys(ArgTypes).includes(type)
+}
+
+function validateArg(arg, commandName) {
+  if (!arg.name || typeof arg.name !== "string") {
+    throw new Error(`arg missing name in ${commandName}`)
+  }
+
+  if (!arg.type || !isTypeValid(arg.type)) {
+    throw new Error(
+      `invalid arg type '${arg.type}' in ${commandName}:${arg.name}`
+    )
+  }
+
+  if (arg.type === "enum" && !Array.isArray(arg.values)) {
+    throw new Error(
+      `enum arg '${arg.name}' in ${commandName} must define values[]`
+    )
+  }
+}
+
+function validateCommand(command) {
+  if (!command.name || typeof command.name !== "string") {
+    throw new Error("command missing name")
+  }
+
+  if (!command.syntax || typeof command.syntax !== "string") {
+    throw new Error(`command '${command.name}' missing syntax`)
+  }
+
+  if (!Array.isArray(command.args)) {
+    throw new Error(`command '${command.name}' args must be array`)
+  }
+
+  command.args.forEach(arg => validateArg(arg, command.name))
+}
+
+/* -------------------------------
+   registration
+-------------------------------- */
+
+export function registerCommand(command) {
+  validateCommand(command)
+
+  commandRegistry.set(command.name, command)
+
+  if (Array.isArray(command.aliases)) {
+    command.aliases.forEach(alias => {
+      commandRegistry.set(alias, command)
+    })
+  }
+}
+
+/* -------------------------------
+   accessors (frontend uses these)
+-------------------------------- */
+
+export function getCommand(name) {
+  return commandRegistry.get(name)
+}
+
+export function getAllCommands() {
+  return [...new Set(commandRegistry.values())]
+}
+
+/* ===============================
+   editor hook (read-only for now)
+   =============================== */
+
+const editor = document.getElementById("editor")
+
+editor.addEventListener("input", () => {
+  const text = editor.value
+  // raw text only
+  // syntax + parsing comes later
+})
+
+/* ===============================
+   dev debug (temporary)
+   =============================== */
+
+window.__mcfunction = {
+  registry: commandRegistry,
+  getCommand,
+  getAllCommands
+}
 </script>
-
 </body>
 </html>
