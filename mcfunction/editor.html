@@ -381,5 +381,53 @@ window.__mcfunction = {
 // register it
 registerCommand(setblock)
   </script>
+  <script>
+    function tokenizeLine(line) {
+  const tokens = []
+  let index = 0
+
+  while (index < line.length) {
+    // skip spaces
+    if (line[index] === " ") {
+      index++
+      continue
+    }
+
+    const start = index
+
+    // read until next space
+    while (index < line.length && line[index] !== " ") {
+      index++
+    }
+
+    const value = line.slice(start, index)
+
+    tokens.push({
+      value,
+      start,
+      end: index
+    })
+  }
+
+  return tokens
+    }
+    function tokenizeText(text) {
+  const lines = text.split("\n")
+
+  return lines.map((line, lineNumber) => ({
+    line: lineNumber,
+    raw: line,
+    tokens: tokenizeLine(line)
+  }))
+    }
+    editor.addEventListener("input", () => {
+  const text = editor.value
+  const tokenized = tokenizeText(text)
+
+  // dev only
+  console.log(tokenized)
+})
+    
+  </script>
 </body>
 </html>
