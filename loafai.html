@@ -52,9 +52,14 @@ body {
 }
 
 .bot {
-  align-self: flex-start;
-  background: #2a2e31;
-  border: 1px solid rgba(255,255,255,0.05);
+  align-self: stretch;        /* full width */
+  background: #323738;        /* subtle dark background */
+  color: var(--text);
+  border: none;               /* remove border */
+  border-radius: 8px;         /* small rounded corners */
+  padding: 12px 16px;
+  box-shadow: none;           /* remove glow */
+  max-width: 100%;            /* take full width */
 }
 
 @keyframes pop {
