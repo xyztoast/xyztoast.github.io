@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>loafai</title>
+<style>
+:root {
+  --bg: #212425;
+  --input: #323738;
+  --gold: #ffd700;
+  --text: #eaeaea;
+  --muted: #9aa0a6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chat {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msg {
+  max-width: 70%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  animation: pop 0.25s ease;
+  line-height: 1.4;
+}
+
+.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--gold), #ffb700);
+  color: #1a1400;
+  box-shadow: 0 0 20px rgba(255,215,0,0.35);
+}
+
+.bot {
+  align-self: flex-start;
+  background: #2a2e31;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.input-wrap {
+  padding: 16px;
+  background: linear-gradient(to top, rgba(33,36,37,0.95), rgba(33,36,37,0.6));
+  backdrop-filter: blur(6px);
+  font-size: 70px;
+
+}
+
+.input-bar {
+  background: var(--input);
+  border-radius: 16px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.05),
+              0 0 30px rgba(255,215,0,0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.input-bar:focus-within {
+  box-shadow: 0 0 0 1px var(--gold),
+              0 0 40px rgba(255,215,0,0.25);
+}
+
+textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 15px;
+  resize: none;
+  min-height: 22px;
+  max-height: 140px;
+  line-height: 1.4;
+}
+
+textarea::placeholder {
+  color: var(--muted);
+}
+
+.send {
+  background: linear-gradient(135deg, var(--gold), #ffb700);
+  border: none;
+  color: #1a1400;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 0 20px rgba(255,215,0,0.4);
+}
+
+.send:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(255,215,0,0.6);
+}
+
+.send:active {
+  transform: scale(0.95);
+}
+</style>
+</head>
+<body>
+
+<div class="chat" id="chat"></div>
+
+<div class="input-wrap">
+  <div class="input-bar">
+    <textarea id="input" rows="1" placeholder="hey loafAI, help me code a..."></textarea>
+    <button class="send" id="send">➤</button>
+  </div>
+</div>
+
+<script>
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+const send = document.getElementById("send");
+
+function autoGrow(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+input.addEventListener("input", () => autoGrow(input));
+
+function addMessage(text, type) {
+  const msg = document.createElement("div");
+  msg.className = `msg ${type}`;
+  msg.textContent = text;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// send function now uses Google Apps Script
+async function sendMsg() {
+  if (!input.value.trim()) return;
+  addMessage(input.value, "user");
+  const prompt = input.value;
+  input.value = "";
+  autoGrow(input);
+
+  addMessage("loafai is thinking...", "bot");
+
+  try {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbwikBsiqEngzNSFkCuzaLwLBLcwA6eiq_NAfh_qQcRkgjP21pbDNgrxZ3S4ZTSmrmivUw/exec", { // replace with your deployed Apps Script URL
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    addMessage(data.result, "bot");
+  } catch (err) {
+    addMessage("Error contacting devstral 2: " + err.message, "bot");
+  }
+}
+
+send.onclick = sendMsg;
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMsg();
+  }
+});
+</script>
+
+</body>
+</html>
