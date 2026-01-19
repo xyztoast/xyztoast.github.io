@@ -166,25 +166,46 @@ function addMessage(text, type) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-// send function now uses Google Apps Script
+// store reference to "thinking..." message
+let thinkingMsg = null;
+
 async function sendMsg() {
   if (!input.value.trim()) return;
+
   addMessage(input.value, "user");
   const prompt = input.value;
   input.value = "";
   autoGrow(input);
 
-  addMessage("loafai is thinking...", "bot");
+  // add "thinking..." message
+  thinkingMsg = document.createElement("div");
+  thinkingMsg.className = "msg bot";
+  thinkingMsg.textContent = "loafai is thinking...";
+  chat.appendChild(thinkingMsg);
+  chat.scrollTop = chat.scrollHeight;
 
   try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbwikBsiqEngzNSFkCuzaLwLBLcwA6eiq_NAfh_qQcRkgjP21pbDNgrxZ3S4ZTSmrmivUw/exec", { // replace with your deployed Apps Script URL
+    const res = await fetch("https://loafai.toastdesignshop.workers.dev/", { 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt })
     });
+
     const data = await res.json();
+
+    // remove "thinking..." message
+    if (thinkingMsg) {
+      chat.removeChild(thinkingMsg);
+      thinkingMsg = null;
+    }
+
     addMessage(data.result, "bot");
+
   } catch (err) {
+    if (thinkingMsg) {
+      chat.removeChild(thinkingMsg);
+      thinkingMsg = null;
+    }
     addMessage("Error contacting devstral 2: " + err.message, "bot");
   }
 }
