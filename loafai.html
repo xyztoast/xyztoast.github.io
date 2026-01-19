@@ -224,6 +224,25 @@ input.addEventListener("keydown", e => {
   }
 });
 </script>
+<script>
+  function addMessage(text, type) {
+  const msg = document.createElement("div");
+  msg.className = `msg ${type}`;
 
+  // if bot message contains code (multi-line), wrap it in <pre><code>
+  if (type === "bot" && text.includes("\n")) {
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+    code.textContent = text;  // preserves formatting
+    pre.appendChild(code);
+    msg.appendChild(pre);
+  } else {
+    msg.textContent = text;
+  }
+
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
 </body>
 </html>
