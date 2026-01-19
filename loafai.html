@@ -45,21 +45,22 @@ body {
 }
 
 .user {
-  align-self: flex-end;
-  background: linear-gradient(135deg, var(--gold), #ffb700);
-  color: #1a1400;
-  box-shadow: 0 0 20px rgba(255,215,0,0.35);
+  align-self: flex-start;
+  background: var(--gold);
+  color: #0f0f0fc7;
+  font-weight: 600;
 }
 
 .bot {
-  align-self: stretch;        /* full width */
-  background: #323738;        /* subtle dark background */
+  align-self: end;        
   color: var(--text);
-  border: none;               /* remove border */
-  border-radius: 8px;         /* small rounded corners */
-  padding: 12px 16px;
+  border: none;               
+  border-radius: 14px;         
+  padding: 5px 40px;
+  padding-left: 20vw;
   box-shadow: none;           /* remove glow */
   max-width: 100%;            /* take full width */
+  font-size: 15px;
 }
 
 @keyframes pop {
@@ -88,8 +89,6 @@ body {
   display: flex;
   align-items: flex-end;
   gap: 10px;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.05),
-              0 0 30px rgba(255,215,0,0.08);
   transition: box-shadow 0.3s ease;
 }
 
@@ -119,13 +118,13 @@ textarea::placeholder {
   background: linear-gradient(135deg, var(--gold), #ffb700);
   border: none;
   color: #1a1400;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 30px;
   border-radius: 10px;
   cursor: pointer;
   display: grid;
   place-items: center;
-  font-size: 16px;
+  font-size: 20px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 0 20px rgba(255,215,0,0.4);
 }
@@ -185,7 +184,7 @@ async function sendMsg() {
   // add "thinking..." message
   thinkingMsg = document.createElement("div");
   thinkingMsg.className = "msg bot";
-  thinkingMsg.textContent = "loafai is thinking...";
+  thinkingMsg.textContent = "im thinking...";
   chat.appendChild(thinkingMsg);
   chat.scrollTop = chat.scrollHeight;
 
@@ -225,15 +224,20 @@ input.addEventListener("keydown", e => {
 });
 </script>
 <script>
-  function addMessage(text, type) {
+function addMessage(text, type) {
   const msg = document.createElement("div");
   msg.className = `msg ${type}`;
 
-  // if bot message contains code (multi-line), wrap it in <pre><code>
-  if (type === "bot" && text.includes("\n")) {
+  // check if it's a Markdown code block
+  const codeBlockMatch = text.match(/```(\w*)\n([\s\S]*?)```/);
+  if (type === "bot" && codeBlockMatch) {
+    const lang = codeBlockMatch[1] || "javascript"; // default to JS
+    const codeText = codeBlockMatch[2];
+
     const pre = document.createElement("pre");
     const code = document.createElement("code");
-    code.textContent = text;  // preserves formatting
+    code.className = `language-${lang}`;
+    code.textContent = codeText;  // preserves formatting
     pre.appendChild(code);
     msg.appendChild(pre);
   } else {
