@@ -1,252 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>loafai</title>
-<style>
-:root {
-  --bg: #212425;
-  --input: #323738;
-  --gold: #ffd700;
-  --text: #eaeaea;
-  --muted: #9aa0a6;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>loafAI</title>
+  <style>
+    :root {
+      --accent: #ffd700;
+      --bg-dark: #000000;
+      --bg-main: #ffd700;
+      --panel: #323738;
+      --text: #ffffff;
+      --muted: #b5b5b5;
+    }
 
-* {
-  box-sizing: border-box;
-}
+    * { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  font-family: system-ui, -apple-system, sans-serif;
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-main);
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-.chat {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+    /* hero */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 6vw;
+      background: url('https://xyztoast2.github.io/img/loafai-bg.jpg') center / cover no-repeat;
+      overflow: hidden;
+    }
 
-.msg {
-  max-width: 70%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  animation: pop 0.25s ease;
-  line-height: 1.4;
-}
+    /* remove hero gradient */
+    .hero::before, .hero::after { display: none; }
 
-.user {
-  align-self: flex-start;
-  background: var(--gold);
-  color: #0f0f0fc7;
-  font-weight: 600;
-}
+    .hero > * { position: relative; z-index: 3; }
 
-.bot {
-  align-self: end;        
-  color: var(--text);
-  border: none;               
-  border-radius: 14px;         
-  padding: 5px 40px;
-  padding-left: 20vw;
-  box-shadow: none;           /* remove glow */
-  max-width: 100%;            /* take full width */
-  font-size: 15px;
-}
+    .hero h1 { font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; margin: 0 0 1rem 0; letter-spacing: -0.02em; animation: fadeUp 0.8s ease-out both; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { max-width: 620px; font-size: 1.2rem; color: #e6e6e6; margin-bottom: 2.5rem; animation: fadeUp 0.8s ease-out both; animation-delay: 0.15s; }
 
-@keyframes pop {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
+    /* invisible big text button */
+    .hero .cta {
+      display: block;
+      font-size: 2rem;
+      color: var(--text);
+      text-decoration: none;
+      padding: 2rem 4rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      animation: fadeUp 0.8s ease-out both;
+      animation-delay: 0.3s;
+    }
+    .hero .cta:hover { transform: scale(1.05); }
 
-.input-wrap {
-  padding: 16px;
-  background: linear-gradient(to top, rgba(33,36,37,0.95), rgba(33,36,37,0.6));
-  backdrop-filter: blur(6px);
-  font-size: 70px;
+    /* content section */
+    .section {
+      background: #000000;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-}
+    .section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0));
+      z-index: 2;
+      pointer-events: none;
+    }
 
-.input-bar {
-  background: var(--input);
-  border-radius: 16px;
-  padding: 10px 12px;
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  transition: box-shadow 0.3s ease;
-}
+    .section::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 2;
+      pointer-events: none;
+    }
 
-.input-bar:focus-within {
-  box-shadow: 0 0 0 1px var(--gold),
-              0 0 40px rgba(255,215,0,0.25);
-}
+    .section > * { position: relative; z-index: 3; }
 
-textarea {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text);
-  font-size: 15px;
-  resize: none;
-  min-height: 22px;
-  max-height: 140px;
-  line-height: 1.4;
-}
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
-textarea::placeholder {
-  color: var(--muted);
-}
+    .section { padding: 6rem 6vw; }
+    .section h2 { font-size: 2rem; margin-bottom: 1rem; letter-spacing: -0.01em; color: #fff; }
+    .section h2 span { color: var(--accent); }
+    .section p { max-width: 720px; margin: 0 auto; color: #e6e6e6; }
 
-.send {
-  background: linear-gradient(135deg, var(--gold), #ffb700);
-  border: none;
-  color: #1a1400;
-  width: 40px;
-  height: 30px;
-  border-radius: 10px;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 0 20px rgba(255,215,0,0.4);
-}
+    .cards { margin-top: 3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .card { background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(6px); }
+    .card h3 { margin: 0 0 0.5rem 0; font-size: 1.1rem; }
+    .card h3 span { color: var(--accent); }
+    .card p { font-size: 0.95rem; color: #ccc; }
 
-.send:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 30px rgba(255,215,0,0.6);
-}
+    footer { padding: 3rem 6vw; background: #181a1b; color: #888; font-size: 0.85rem; }
 
-.send:active {
-  transform: scale(0.95);
-}
-</style>
+    .account-btn { position: fixed; top: 20px; right: 20px; z-index: 10; padding: 0.55rem 1rem; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,215,0,0.45); border-radius: 999px; color: var(--text); text-decoration: none; font-size: 0.9rem; font-weight: 500; backdrop-filter: blur(8px); display: inline-flex; align-items: center; gap: 0.45rem; transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease; }
+    .account-btn:hover { transform: translateY(-2px); background: rgba(0,0,0,0.8); box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
+
+  </style>
 </head>
 <body>
 
-<div class="chat" id="chat"></div>
+  <a class="account-btn" href="https://xyztoast.github.io/login"><span class="icon">👤</span> account</a>
 
-<div class="input-wrap">
-  <div class="input-bar">
-    <textarea id="input" rows="1" placeholder="hey loafAI, help me code a..."></textarea>
-    <button class="send" id="send">➤</button>
-  </div>
-</div>
+  <section class="hero">
+    <h1>loaf<span>AI</span></h1>
+    <p>a lightweight ai interface built to stay out of your way and actually get things done.</p>
+    <a class="cta" href="#main">get started</a>
+  </section>
 
-<script>
-const chat = document.getElementById("chat");
-const input = document.getElementById("input");
-const send = document.getElementById("send");
+  <section id="main" class="section">
+    <h2>what it’s <span>for</span></h2>
+    <p>loafAI is built to help with minecraft modding, command logic, and creative problem-solving without burying you in noise.</p>
 
-function autoGrow(el) {
-  el.style.height = "auto";
-  el.style.height = el.scrollHeight + "px";
-}
+    <div class="cards">
+      <div class="card">
+        <h3>minecraft <span>modding</span></h3>
+        <p>help with mcbe addons, commands, behaviors, and debugging logic.</p>
+      </div>
+      <div class="card">
+        <h3>idea <span>generation</span></h3>
+        <p>get unstuck when you don’t know what to build, add, or improve.</p>
+      </div>
+      <div class="card">
+        <h3>dev <span>assist</span></h3>
+        <p>explanations that assume you already know some things.</p>
+      </div>
+    </div>
+  </section>
 
-input.addEventListener("input", () => autoGrow(input));
+  <footer>loafAI · beta</footer>
 
-function addMessage(text, type) {
-  const msg = document.createElement("div");
-  msg.className = `msg ${type}`;
-  msg.textContent = text;
-  chat.appendChild(msg);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-// store reference to "thinking..." message
-let thinkingMsg = null;
-
-async function sendMsg() {
-  if (!input.value.trim()) return;
-
-  addMessage(input.value, "user");
-  const prompt = input.value;
-  input.value = "";
-  autoGrow(input);
-
-  // add "thinking..." message
-  thinkingMsg = document.createElement("div");
-  thinkingMsg.className = "msg bot";
-  thinkingMsg.textContent = "im thinking...";
-  chat.appendChild(thinkingMsg);
-  chat.scrollTop = chat.scrollHeight;
-
-  try {
-    const res = await fetch("https://loafai.toastdesignshop.workers.dev/", { 
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-
-    const data = await res.json();
-
-    // remove "thinking..." message
-    if (thinkingMsg) {
-      chat.removeChild(thinkingMsg);
-      thinkingMsg = null;
-    }
-
-    addMessage(data.result, "bot");
-
-  } catch (err) {
-    if (thinkingMsg) {
-      chat.removeChild(thinkingMsg);
-      thinkingMsg = null;
-    }
-    addMessage("Error contacting devstral 2: " + err.message, "bot");
-  }
-}
-
-send.onclick = sendMsg;
-
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMsg();
-  }
-});
-</script>
-<script>
-function addMessage(text, type) {
-  const msg = document.createElement("div");
-  msg.className = `msg ${type}`;
-
-  // check if it's a Markdown code block
-  const codeBlockMatch = text.match(/```(\w*)\n([\s\S]*?)```/);
-  if (type === "bot" && codeBlockMatch) {
-    const lang = codeBlockMatch[1] || "javascript"; // default to JS
-    const codeText = codeBlockMatch[2];
-
-    const pre = document.createElement("pre");
-    const code = document.createElement("code");
-    code.className = `language-${lang}`;
-    code.textContent = codeText;  // preserves formatting
-    pre.appendChild(code);
-    msg.appendChild(pre);
-  } else {
-    msg.textContent = text;
-  }
-
-  chat.appendChild(msg);
-  chat.scrollTop = chat.scrollHeight;
-}
-</script>
 </body>
 </html>
