@@ -19,7 +19,7 @@
   }
 
   .navi {
-    font-size: 10px;
+    font-size: 14px;
     padding-left: 15px;
     padding: 3 3px;
     user-select: none;
@@ -130,7 +130,7 @@
   }
 
   #exportCode {
-  color: #00b2ff
+    color: #00b2ff;
   }
   
   .delete {
@@ -140,9 +140,11 @@
 .sub-dropdown {
   display: none;
   flex-direction: column;
+  background-color: #323738;
   margin-left: 10px;
+  border-radius: 5px;
   padding: 5px 0;
-  background-color: #212425;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
   font-size: 8px;
 }
 
@@ -157,6 +159,10 @@
   border-radius: 5px;
 }
 
+.sub-dropdown div:hover {
+  background-color: #323738;
+}
+
 .nav-item {
   position: relative;
   display: inline-block;
@@ -167,12 +173,12 @@
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: #323738;
+  background-color: #212425;
   border-radius: 5px;
   padding: 5px 0;
-  min-width: 150px;
-  font-size: 10px;
+  min-width: 100px;
   z-index: 100;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
   flex-direction: column;
 }
 
@@ -182,7 +188,7 @@
 }
 
 .nav-dropdown div:hover {
-  background-color: #505859;
+  background-color: #323738;
 }
 
 .nav-item:hover .nav-dropdown {
@@ -191,43 +197,43 @@
 </style>
 </head>
 <body>
-  <img src="xyztoast.github.io/icons/mcbcode.png" style="width: 10px; height: 10px;"><div class="navi">
+  <div class="navi">
     <div class="nav-item">
-      <button>File</button>    <!      file       >
+      <button>File</button>
       <div class="nav-dropdown">
         <div id="exportCode">export as .mcfunction</div>
         <div id="copyCode">copy code</div>
       </div>
     </div>
     <div class="nav-item">
-      <button>Edit</button>    <!      edit       >
+      <button>Edit</button>
       <div class="nav-dropdown">
-         <div id="deleteCode" class="delete">delete code</div>
-             <div id="colorFormat">color format
-             <div class="sub-dropdown" id="colorMenu">
-             <div data-code="§0">§0 - black</div>
-             <div data-code="§1">§1 - dark blue</div>
-             <div data-code="§2">§2 - dark green</div>
-             <div data-code="§3">§3 - dark aqua</div>
-             <div data-code="§4">§4 - dark red</div>
-             <div data-code="§5">§5 - dark purple</div>
-             <div data-code="§6">§6 - gold</div>
-             <div data-code="§7">§7 - gray</div>
-             <div data-code="§8">§8 - dark gray</div>
-             <div data-code="§9">§9 - blue</div>
-             <div data-code="§a">§a - green</div>
-             <div data-code="§b">§b - aqua</div>
-             <div data-code="§c">§c - red</div>
-             <div data-code="§d">§d - light purple</div>
-             <div data-code="§e">§e - yellow</div>
-             <div data-code="§f">§f - white</div>
-             <div data-code="§g">§g - gold</div>
-             <div data-code="§k">§k - obfuscated</div>
-             <div data-code="§l">§l - bold</div>
-             <div data-code="§o">§o - italic</div>
-             <div data-code="§r">§r - reset</div>
+        <div id="deleteCode" class="delete">delete code</div>
+        <div id="colorFormat">color format
+          <div class="sub-dropdown" id="colorMenu">
+            <div data-code="§0">§0 - black</div>
+            <div data-code="§1">§1 - dark blue</div>
+            <div data-code="§2">§2 - dark green</div>
+            <div data-code="§3">§3 - dark aqua</div>
+            <div data-code="§4">§4 - dark red</div>
+            <div data-code="§5">§5 - dark purple</div>
+            <div data-code="§6">§6 - gold</div>
+            <div data-code="§7">§7 - gray</div>
+            <div data-code="§8">§8 - dark gray</div>
+            <div data-code="§9">§9 - blue</div>
+            <div data-code="§a">§a - green</div>
+            <div data-code="§b">§b - aqua</div>
+            <div data-code="§c">§c - red</div>
+            <div data-code="§d">§d - light purple</div>
+            <div data-code="§e">§e - yellow</div>
+            <div data-code="§f">§f - white</div>
+            <div data-code="§g">§g - gold</div>
+            <div data-code="§k">§k - obfuscated</div>
+            <div data-code="§l">§l - bold</div>
+            <div data-code="§o">§o - italic</div>
+            <div data-code="§r">§r - reset</div>
           </div>
-          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -239,9 +245,6 @@
   <script>
     const codeArea = document.getElementById('codeArea');
     const lineNumbers = document.getElementById('lineNumbers');
-    const menuButton = document.getElementById('menuButton');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    const editorDiv = document.getElementById('editor');
 
     function updateLineNumbers() {
       const lines = codeArea.value.split('\n').length;
@@ -252,15 +255,7 @@
       lineNumbers.textContent = lineContent;
     }
 
-    codeArea.addEventListener('input', (e) => {
-      if (e.inputType === 'insertLineBreak') {
-        lineNumbers.classList.add('fade');
-        codeArea.classList.add('fade');
-        requestAnimationFrame(() => {
-          lineNumbers.classList.remove('fade');
-          codeArea.classList.remove('fade');
-        });
-      }
+    codeArea.addEventListener('input', () => {
       updateLineNumbers();
     });
 
@@ -268,40 +263,43 @@
       lineNumbers.scrollTop = codeArea.scrollTop;
     });
 
-    menuButton.addEventListener('click', () => {
-      dropdownMenu.classList.toggle('show');
-    });
-
+    // copy code
     document.getElementById('copyCode').addEventListener('click', () => {
+      const text = codeArea.value;
+      if (!text) return;
       try {
-        navigator.clipboard.writeText(codeArea.value);
-      } catch (err) {
+        navigator.clipboard.writeText(text);
+      } catch {
         const temp = document.createElement('textarea');
-        temp.value = codeArea.value;
+        temp.value = text;
         document.body.appendChild(temp);
         temp.select();
-        try { document.execCommand('copy'); } catch(e) { alert('Copy failed'); }
+        document.execCommand('copy');
         document.body.removeChild(temp);
+      }
+      alert('Code copied to clipboard');
+    });
+
+    // delete code
+    document.getElementById('deleteCode').addEventListener('click', () => {
+      if(confirm('Are you sure you want to delete all code?')) {
+        codeArea.value = '';
+        updateLineNumbers();
       }
     });
 
-    document.getElementById('deleteCode').addEventListener('click', () => {
-      codeArea.value = '';
-      updateLineNumbers();
-    });
-
+    // export code
     document.getElementById('exportCode').addEventListener('click', () => {
-      let fileName = prompt("file name");
+      if(!codeArea.value) return alert('Nothing to export');
+      let fileName = prompt('Enter file name');
       if (!fileName) return;
-      fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_');
-      fileName += ' mcbCode.mcfunction';
+      fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_') + '-idktoast.mcfunction';
       const blob = new Blob([codeArea.value], { type: 'application/octet-stream' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = fileName;
-      document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
     });
 
     const colorMenu = document.getElementById('colorMenu');
@@ -310,8 +308,7 @@
         const code = item.getAttribute('data-code');
         const start = codeArea.selectionStart;
         const end = codeArea.selectionEnd;
-        const text = codeArea.value;
-        codeArea.value = text.slice(0, start) + code + text.slice(end);
+        codeArea.value = codeArea.value.slice(0, start) + code + codeArea.value.slice(end);
         codeArea.selectionStart = codeArea.selectionEnd = start + code.length;
         codeArea.focus();
       });
