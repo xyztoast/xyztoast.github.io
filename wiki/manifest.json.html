@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MCFunction Pack Guide</title>
+
+<!-- theme -->
+<link rel="stylesheet" href="https://xyztoast.github.io/theme.css">
+
+<style>
+  html, body {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-weight: normal !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 48px 24px;
+    background-color: #323738;
+    color: #eaeaea;
+    font-family: mcfont, system-ui, sans-serif;
+    line-height: 1.75;
+    font-weight: normal !important;
+  }
+
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  h1, h2, h3 {
+    font-family: mcfont, mcfont, system-ui, sans-serif;
+    color: #00b2ff;
+    margin-top: 2em;
+    letter-spacing: 0.4px;
+    font-weight: normal !important;
+
+  }
+
+  h1 { font-size: 2.3em; margin-top: 0; }
+
+  a { color: #00b2ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  hr { border: none; border-top: 1px solid #212425; margin: 36px 0; }
+
+  /* cards for sections */
+  .card {
+    background-color: #242829;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  cw {           
+    font-family: mcfont;
+    background-color: #212425;
+    color: #00b2ff;
+    padding: 5px 6px;
+    border-radius: 5px;
+    font-size: 01.em;
+  }
+  
+  cw2 {
+    font-family: mcfont;
+    background-color: #212425;
+    color: #d64040;
+    padding: 5px 6px;
+    border-radius: 5px;
+    font-size: 01.em;
+  }
+  
+  cw3 {
+    font-family: mcfont;
+    background-color: #212425;
+    color: #b340d6;
+    padding: 5px 6px;
+    border-radius: 5px;
+    font-size: 01.em;
+  }
+  
+  cw4 {
+    font-family: mcfont;
+    color: #565e61;
+    padding: 0px 0px;
+    font-size: 01em;
+  }
+  
+  cbh {
+    color: #03fc20;
+  }
+  
+  cbd {
+    color: #858585;
+  }
+
+  codeblock {
+    display: block;
+    background-color: #1f2123;
+    border-left: 2px dashed #00b2ff;
+    padding: 16px 18px;
+    margin: 16px 0;
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    border-radius: 30px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  .note {
+    background: #2a2d2f;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin: 16px 0;
+  }
+
+  ul { padding-left: 20px; }
+
+  footer { margin-top: 64px; font-size: 0.8em; opacity: 0.6; }
+</style>
+</head>
+
+<body>
+<div class="page">
+<h1>manifest.json</h1>
+<p>manifest.json is the file that contains subpack names, pack names, and pack descriptions</p>
+
+<hr>
+
+<div class="card">
+  <h2>Location</h2>
+  <p>Where <cw>manifest.json</cw> can be found</p>
+  <codeblock>
+example-rp/
+  └─ manifest.json
+  </codeblock>
+  <div class="note">
+    This file is found in the <cw>root</cw> of the <cw2>resource pack</cw2> file <cw4>if your pack is an addon</cw4>.
+  </div>
+</div>
+
+<div class="card">
+  <h2>Example</h2>
+  <p>Example of a simple function:</p>
+  <codeblock>
+{
+  "format_version": 2,
+  "header": {
+    "description": "example pack description",
+    "name": "example pack name",
+    "uuid": "PACK-UUID",
+    "version": [1,0,0]
+  },
+  "modules": [
+    {
+      "description": "name this whatever",
+      "type": "data",
+      "uuid": "DIFFERENT-PACK-UUID",
+      "version": [1,0,0]
+    }
+  ]
+}
+  </codeblock>
+  <div class="note">Note: <cw>PACK-UUID</cw> and <cw>PACK-UUID2</cw> must be different. If you don't know what, where, or how to find one, click <a href="https://www.uuidgenerator.net/" title="uuidgenerator.net">here</a>.</div>
+</div>
+
+<div class="card">
+  <h2>Adding subpacks</h2>
+  <p>Subpacks are a big part of resource packs <cw4>and behavior packs</cw4>. They are simple to implement into your manifest too.</p>
+  <codeblock>
+<cbd>{
+  "format_version": 2,
+  "header": {
+    "description": "My awesome MCFunction pack",
+    "name": "Example Pack",
+    "uuid": "YOUR-PACK-UUID",
+    "version": [1,0,0]
+  },
+  "modules": [
+    {
+      "description": "Functions",
+      "type": "data",
+      "uuid": "ANOTHER-UUID",
+      "version": [1,0,0]
+    }
+  ]</cbd><cbh>,
+    "subpacks": [
+    {
+      "folder_name": "folder_subpack1",
+      "name": "example subpack",
+      "memory_tier": 0
+        },
+    
+    {
+      "folder_name": "folder_subpack2",
+      "name": "example subpack 2",
+      "memory_tier": 0
+    }
+  ]</cbh>
+}
+  </codeblock>
+  <div class="note">
+    There is no limit to the amount of subpacks you can add. With the manifest.json only=, your subpacks will not show up. For your subpacks to show in game, click <a href="/wiki/subpacks">here</a>.
+  </div></div>
+
+<footer>last updated: January 25th, 2026</footer>
+</div>
+</body>
+</html>
