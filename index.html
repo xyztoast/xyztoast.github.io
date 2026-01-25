@@ -25,14 +25,12 @@
       text-align:center;
     }
     h1{
-      font-weight:700;
       margin:0;
       font-family: "mcfontb", sans-serif;
     }
     a{
       color:#00b2ff;
       text-decoration:none;
-      color: #0f0f0f
       font-weight:400;
       padding:6px 5px;
       border-radius:6px;
@@ -60,6 +58,23 @@
     color: #f0f0f0;
   }
 
+  .mcbc {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    height: 50px;
+    width: 50px;
+    animation-duration: 0.5s;
+    animation-name: slide;
+  }
+  @keyframes slide {
+    0% {
+      transform: translateY(-100px); /* Start position */
+    }
+    100% {
+      transform: translateY(0px); /* End position */
+    }
+  }
   .avatar {
     width: 32px;
     height: 32px;
@@ -108,6 +123,6 @@
   </span>
   <span class="account-text">account</span>
   </a>
-
+ <div class="mcbc"><a style="background-color: #212425;" href="https://xyztoast.github.io/mcfunction/editor"><img src="https://xyztoast.github.io/icons/mcbcode.png" style="height:40px;width:40px;border-radius:5px;" title="mcbCode editor"></a></div>
 </body>
 </html>
