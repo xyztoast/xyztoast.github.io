@@ -18,9 +18,31 @@
     align-items: flex-start;
   }
 
+  .navi {
+    font-size: 10px;
+    padding-left: 15px;
+    padding: 3 3px;
+    user-select: none;
+    display: flex;
+  }
+
+  button {
+    background-color: #323738;
+    border: none;
+    color: #f0f0f0;
+    user-select: none;
+  }
+  
+  button:hover {
+    background-color: #505859;
+    border: none;
+    color: #f0f0f0;
+    user-select: none;
+  }
+  
   .line-numbers {
     background-color: #323738;
-    padding: 0 5px;
+    padding: 0 3px;
     user-select: none;
     overflow: hidden;
     text-align: right;
@@ -34,7 +56,7 @@
 
   .code-area {
     flex: 1;
-    padding: 0 10px;
+    padding: 0 2px;
     background-color: #212425;
     color: #bebebe;
     outline: none;
@@ -118,11 +140,9 @@
 .sub-dropdown {
   display: none;
   flex-direction: column;
-  background-color: #323738;
   margin-left: 10px;
-  border-radius: 5px;
   padding: 5px 0;
-  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  background-color: #212425;
   font-size: 8px;
 }
 
@@ -137,47 +157,90 @@
   border-radius: 5px;
 }
 
-.sub-dropdown div:hover {
+.nav-item {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
   background-color: #323738;
+  border-radius: 5px;
+  padding: 5px 0;
+  min-width: 150px;
+  font-size: 10px;
+  z-index: 100;
+  flex-direction: column;
+}
+
+.nav-dropdown div {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.nav-dropdown div:hover {
+  background-color: #505859;
+}
+
+.nav-item:hover .nav-dropdown {
+  display: flex;
 }
 </style>
 </head>
 <body>
-  <div class="editor">
+  <img src="xyztoast.github.io/icons/mcbcode.png" style="width:10px; height: 10px;"><div class="navi">
+    <div class="nav-item">
+      <button>File</button>    <!      file       >
+      <div class="nav-dropdown">
+        <div id="exportCode">export as .mcfunction</div>
+        <div id="copyCode">copy code</div>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button>Edit</button>    <!      edit       >
+      <div class="nav-dropdown">
+         <div id="deleteCode" class="delete">delete code</div>
+             <div id="colorFormat">color format
+             <div class="sub-dropdown" id="colorMenu">
+             <div data-code="§0">§0 - black</div>
+             <div data-code="§1">§1 - dark blue</div>
+             <div data-code="§2">§2 - dark green</div>
+             <div data-code="§3">§3 - dark aqua</div>
+             <div data-code="§4">§4 - dark red</div>
+             <div data-code="§5">§5 - dark purple</div>
+             <div data-code="§6">§6 - gold</div>
+             <div data-code="§7">§7 - gray</div>
+             <div data-code="§8">§8 - dark gray</div>
+             <div data-code="§9">§9 - blue</div>
+             <div data-code="§a">§a - green</div>
+             <div data-code="§b">§b - aqua</div>
+             <div data-code="§c">§c - red</div>
+             <div data-code="§d">§d - light purple</div>
+             <div data-code="§e">§e - yellow</div>
+             <div data-code="§f">§f - white</div>
+             <div data-code="§g">§g - gold</div>
+             <div data-code="§k">§k - obfuscated</div>
+             <div data-code="§l">§l - bold</div>
+             <div data-code="§o">§o - italic</div>
+             <div data-code="§r">§r - reset</div>
+          </div>
+          </div>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button>View</button>    <!      view       >
+      <div class="nav-dropdown">
+        <div>Zoom In</div>
+        <div>Zoom Out</div>
+      </div>
+    </div>
+  </div>
+  <div class="editor" id="editor">
     <pre class="line-numbers" id="lineNumbers">1</pre>
     <textarea class="code-area" id="codeArea" spellcheck="false" placeholder="mcbCode made by idktoast"></textarea>
-  </div>
-
-  <div class="top-button" id="menuButton">⋯</div>
-  <div class="dropdown" id="dropdownMenu">
-    <div id="colorFormat">color format
-    <div class="sub-dropdown" id="colorMenu">
-    <div data-code="§0">§0 - black</div>
-    <div data-code="§1">§1 - dark blue</div>
-    <div data-code="§2">§2 - dark green</div>
-    <div data-code="§3">§3 - dark aqua</div>
-    <div data-code="§4">§4 - dark red</div>
-    <div data-code="§5">§5 - dark purple</div>
-    <div data-code="§6">§6 - gold</div>
-    <div data-code="§7">§7 - gray</div>
-    <div data-code="§8">§8 - dark gray</div>
-    <div data-code="§9">§9 - blue</div>
-    <div data-code="§a">§a - green</div>
-    <div data-code="§b">§b - aqua</div>
-    <div data-code="§c">§c - red</div>
-    <div data-code="§d">§d - light purple</div>
-    <div data-code="§e">§e - yellow</div>
-    <div data-code="§f">§f - white</div>
-    <div data-code="§g">§g - gold</div>
-    <div data-code="§k">§k - obfuscated</div>
-    <div data-code="§l">§l - bold</div>
-    <div data-code="§o">§o - italic</div>
-    <div data-code="§r">§r - reset</div>
-    </div>
-    </div>
-    <div id="copyCode">copy code</div>
-    <div id="exportCode">export</div>
-    <div id="deleteCode" class="delete">delete code</div>
   </div>
 
   <script>
@@ -185,6 +248,7 @@
     const lineNumbers = document.getElementById('lineNumbers');
     const menuButton = document.getElementById('menuButton');
     const dropdownMenu = document.getElementById('dropdownMenu');
+    const editorDiv = document.getElementById('editor');
 
     function updateLineNumbers() {
       const lines = codeArea.value.split('\n').length;
@@ -215,7 +279,6 @@
       dropdownMenu.classList.toggle('show');
     });
 
-    // Fallback copy method in case Clipboard API is blocked
     document.getElementById('copyCode').addEventListener('click', () => {
       try {
         navigator.clipboard.writeText(codeArea.value);
@@ -224,11 +287,7 @@
         temp.value = codeArea.value;
         document.body.appendChild(temp);
         temp.select();
-        try {
-          document.execCommand('copy');
-        } catch(e) {
-          alert('Copy failed');
-        }
+        try { document.execCommand('copy'); } catch(e) { alert('Copy failed'); }
         document.body.removeChild(temp);
       }
     });
@@ -238,196 +297,34 @@
       updateLineNumbers();
     });
 
+    document.getElementById('exportCode').addEventListener('click', () => {
+      let fileName = prompt("file name");
+      if (!fileName) return;
+      fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_');
+      fileName += ' mcbCode.mcfunction';
+      const blob = new Blob([codeArea.value], { type: 'application/octet-stream' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    const colorMenu = document.getElementById('colorMenu');
+    colorMenu.querySelectorAll('div').forEach(item => {
+      item.addEventListener('click', () => {
+        const code = item.getAttribute('data-code');
+        const start = codeArea.selectionStart;
+        const end = codeArea.selectionEnd;
+        const text = codeArea.value;
+        codeArea.value = text.slice(0, start) + code + text.slice(end);
+        codeArea.selectionStart = codeArea.selectionEnd = start + code.length;
+        codeArea.focus();
+      });
+    });
+
     updateLineNumbers();
-  </script>
-  <script>
-document.getElementById('exportCode').addEventListener('click', () => {
-  let fileName = prompt("file name");
-  if (!fileName) return;
-  fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_');
-  fileName += '-idktoast.mcfunction';
-
-  const blob = new Blob([codeArea.value], { type: 'application/octet-stream' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-});
-  </script>
-      <script>
-        const colorMenu = document.getElementById('colorMenu');
-
-colorMenu.querySelectorAll('div').forEach(item => {
-  item.addEventListener('click', () => {
-    const code = item.getAttribute('data-code');
-    const start = codeArea.selectionStart;
-    const end = codeArea.selectionEnd;
-    const text = codeArea.value;
-    codeArea.value = text.slice(0, start) + code + text.slice(end);
-    codeArea.selectionStart = codeArea.selectionEnd = start + code.length;
-    codeArea.focus();
-  });
-});
-      </script>
-<script type="module">
-/* ===============================
-   backend loader + registry
-   =============================== */
-
-import { ArgTypes, CommandShape } from "./backend/commandSchema.js"
-
-// command registry
-const commandRegistry = new Map()
-
-/* -------------------------------
-   validation helpers
--------------------------------- */
-
-function isTypeValid(type) {
-  return Object.keys(ArgTypes).includes(type)
-}
-
-function validateArg(arg, commandName) {
-  if (!arg.name || typeof arg.name !== "string") {
-    throw new Error(`arg missing name in ${commandName}`)
-  }
-
-  if (!arg.type || !isTypeValid(arg.type)) {
-    throw new Error(
-      `invalid arg type '${arg.type}' in ${commandName}:${arg.name}`
-    )
-  }
-
-  if (arg.type === "enum" && !Array.isArray(arg.values)) {
-    throw new Error(
-      `enum arg '${arg.name}' in ${commandName} must define values[]`
-    )
-  }
-}
-
-function validateCommand(command) {
-  if (!command.name || typeof command.name !== "string") {
-    throw new Error("command missing name")
-  }
-
-  if (!command.syntax || typeof command.syntax !== "string") {
-    throw new Error(`command '${command.name}' missing syntax`)
-  }
-
-  if (!Array.isArray(command.args)) {
-    throw new Error(`command '${command.name}' args must be array`)
-  }
-
-  command.args.forEach(arg => validateArg(arg, command.name))
-}
-
-/* -------------------------------
-   registration
--------------------------------- */
-
-export function registerCommand(command) {
-  validateCommand(command)
-
-  commandRegistry.set(command.name, command)
-
-  if (Array.isArray(command.aliases)) {
-    command.aliases.forEach(alias => {
-      commandRegistry.set(alias, command)
-    })
-  }
-}
-
-/* -------------------------------
-   accessors (frontend uses these)
--------------------------------- */
-
-export function getCommand(name) {
-  return commandRegistry.get(name)
-}
-
-export function getAllCommands() {
-  return [...new Set(commandRegistry.values())]
-}
-
-/* ===============================
-   editor hook (read-only for now)
-   =============================== */
-
-const editor = document.getElementById("editor")
-
-editor.addEventListener("input", () => {
-  const text = editor.value
-  // raw text only
-  // syntax + parsing comes later
-})
-
-/* ===============================
-   dev debug (temporary)
-   =============================== */
-
-window.__mcfunction = {
-  registry: commandRegistry,
-  getCommand,
-  getAllCommands
-}
-</script>
-  <script>
-    import setblock from "./commands/setblock.js"
-
-// register it
-registerCommand(setblock)
-  </script>
-  <script>
-    function tokenizeLine(line) {
-  const tokens = []
-  let index = 0
-
-  while (index < line.length) {
-    // skip spaces
-    if (line[index] === " ") {
-      index++
-      continue
-    }
-
-    const start = index
-
-    // read until next space
-    while (index < line.length && line[index] !== " ") {
-      index++
-    }
-
-    const value = line.slice(start, index)
-
-    tokens.push({
-      value,
-      start,
-      end: index
-    })
-  }
-
-  return tokens
-    }
-    function tokenizeText(text) {
-  const lines = text.split("\n")
-
-  return lines.map((line, lineNumber) => ({
-    line: lineNumber,
-    raw: line,
-    tokens: tokenizeLine(line)
-  }))
-    }
-    editor.addEventListener("input", () => {
-  const text = editor.value
-  const tokenized = tokenizeText(text)
-
-  // dev only
-  console.log(tokenized)
-})
-    
   </script>
 </body>
 </html>
