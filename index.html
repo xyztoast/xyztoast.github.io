@@ -83,6 +83,26 @@
     border-radius: 5px;
     }
     
+  .wiki-icon {
+    position: fixed;
+    line-height: 0;
+    left: 55px;
+    top: 10px;
+    height: 50px;
+    width: 50px;
+    animation-duration: 1.2s;
+    animation-delay: 0s;
+    animation-name: slide2;
+  }
+  @keyframes slide2 {
+    0% {
+      transform: translateY(-1000px); /* Start position */
+    }
+    100% {
+      transform: translateY(0px); /* End position */
+    }
+  }
+    
   .avatar {
     width: 32px;
     height: 32px;
@@ -132,5 +152,6 @@
   <span class="account-text">account</span>
   </a>
  <div class="mcbc"><a style="background-color: #212425;" href="https://xyztoast.github.io/mcfunction/editor"><img src="https://xyztoast.github.io/icons/mcbcode.png" style="height:40px;width:40px;" title="mcbCode editor"></a></div>
+<div class="wiki-icon"><a style="background-color: #212425;" href="https://xyztoast.github.io/wiki/"><img src="https://xyztoast.github.io/icons/wiki-icon.png" style="height:40px;width:40px;" title="MCBE Dev Mini Wiki"></a><p><br>New!</p></div>
 </body>
 </html>
