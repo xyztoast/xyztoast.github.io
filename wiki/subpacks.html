@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<link rel="icon" href="https://xyztoast.github.io/icons/wiki-icon.png">
+<title>subpacks - mcbe mini wiki</title>
+
+<!-- theme -->
+<link rel="stylesheet" href="https://xyztoast.github.io/theme.css">
+
+<style>
+  html, body {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-weight: normal !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 48px 24px;
+    background-color: #323738;
+    color: #eaeaea;
+    font-family: mcfont, system-ui, sans-serif;
+    line-height: 1.75;
+    font-weight: normal !important;
+  }
+
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  h1, h2, h3 {
+    font-family: mcfont, mcfont, system-ui, sans-serif;
+    color: #00b2ff;
+    margin-top: 2em;
+    letter-spacing: 0.4px;
+    font-weight: normal !important;
+
+  }
+
+  h1 { font-size: 2.3em; margin-top: 0; }
+
+  a { color: #00b2ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  hr { border: none; border-top: 1px solid #212425; margin: 36px 0; }
+
+  /* cards for sections */
+  .card {
+    padding: 0px 24px;
+    padding-bottom: 40px;
+    margin: 24px 0;
+  }
+
+  cw {           
+    font-family: mcfont;
+    background-color: #212425;
+    color: #00b2ff;
+    padding: 5px 6px;
+    border-radius: 5px;
+    font-size: 01.em;
+  }
+  
+  cw2 {
+    font-family: mcfont;
+    background-color: #212425;
+    color: #d64040;
+    padding: 5px 6px;
+    border-radius: 5px;
+    font-size: 01.em;
+  }
+  
+  cw3 {
+    font-family: mcfont;
+    background-color: #212425;
+    color: #eba134;
+    padding: 5px 6px;
+    border-radius: 5px;
+    font-size: 01.em;
+  }
+  
+  cw4 {
+    font-family: mcfont;
+    color: #565e61;
+    padding: 0px 0px;
+    font-size: 01em;
+  }
+  
+  cbh {
+    color: #03fc20;
+  }
+  
+  cbd {
+    color: #858585;
+  }
+
+  codeblock {
+    display: block;
+    background-color: #1f2123;
+    border-left: 2px dashed #00b2ff;
+    padding: 16px 18px;
+    margin: 16px 0;
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    border-radius: 30px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  .note {
+    background: #2a2d2f;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin: 16px 0;
+  }
+
+  ul { padding-left: 20px; }
+
+  footer { margin-top: 64px; font-size: 0.8em; opacity: 0.6; }
+</style>
+</head>
+
+<body>
+<div class="page">
+<h1>subpacks</h1>
+<p>Subpacks are configurations within the same file as your resource or behavior pack.</p>
+
+<hr>
+
+<div class="card">
+  <h2>Location</h2>
+  <p>Where <cw>subpacks</cw> can be found</p>
+  <codeblock>
+example-rp-or-bp/
+  └─ subpacks
+       ├─subpack1
+       ├─subpack2
+       └─ add_as_many_as_you_want
+  </codeblock>
+  <div class="note">
+    This folder is found in the <cw>root</cw> of the <cw2>resource pack</cw2> or <cw2>behavior pack</cw2>.
+  </div>
+</div>
+
+<div class="card">
+  <h2>Adding subpacks</h2>
+  <p>Subpacks are a big part of resource packs and behavior packs. They will not appear in game, unless you implement into your manifest too.</p>
+  <codeblock>
+<cbd>{
+  "format_version": 2,
+  "header": {
+    "description": "example pack description",
+    "name": "example pack name",
+    "uuid": "PACK-UUID",
+    "version": [1,0,0]
+  },
+  "modules": [
+    {
+      "description": "whatever you want",
+      "type": "data",
+      "uuid": "PACK-UUID2",
+      "version": [1,0,0]
+    }
+  ]</cbd><cbh>,
+    "subpacks": [
+    {
+      "folder_name": "subpack1",
+      "name": "example "subpack display name",
+      "memory_tier": 0
+        },
+    
+    {
+      "folder_name": "subpack2",
+      "name": "example subpack display name 2",
+      "memory_tier": 0
+    }
+  ]</cbh>
+}
+  </codeblock>
+  <div class="note">
+    There is no limit to the amount of subpacks you can add. Make sure that the <codeblock>"folder_name": <cbh>"subpack-folder-name"</cbh>   (not the display name)</codeblock> value (in this case, "subpack-folder-name") matches the folder name in /rp-or-bp/subpacks. The value set to<codeblock>"name": <cbh>"subpack display name"</cbh>   (display name)</codeblock> is simply the display name for the subpack that shows up in game. For more info on manifest.json, click <a href="/wiki/manifest">here</a>.
+  </div></div>
+
+<footer>last updated: January 26th, 2026</footer>
+</div>
+</body>
+</html>
