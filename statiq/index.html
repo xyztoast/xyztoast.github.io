@@ -87,26 +87,31 @@
       max-width: 900px;
     }
     
-    .acc-switch {
-        border-radius: 500px;
-        width: 100px;
-        height: 30px;
-        background-color: #303030;
-    }
-    
-    .log-in {
-        justify-content: center;
-        display: flex-start;
-        font-size: 12px;
-    }
-        .sign-up {
-        justify-content: center;
-        display: flex-end;
-        font-size: 12px;
-    }
+    span {
+color: var(--accent);
+}
+.acc-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 500px;
+  background-color: #303030;
+}
 
+.log-in,
+.sign-up {
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.login:hover
+   background-color: var(--bg-main)
     h1 span {
       color: var(--accent);
+      text-decoration: none;
     }
   </style>
 </head>
@@ -116,8 +121,8 @@
     <div class="logo"><a href="https://xyztoast.github.io/statiq"><img src="https://xyztoast.github.io/statiq/logo.png" style="height:100px;"></a></div>
     <button>button</button>
     <div class="acc-switch">
-        <div class="log-in">Log In</div>
-        <div class="sign-up">Log In</div>
+        <div class="log-in"><a href="https://xyztoast.github.io/statiq/login" style="color:#f0f0f0">login</a></div>
+        <div class="sign-up">signup</div>
     </div>
   </nav>
 
@@ -129,4 +134,3 @@
   </main>
 </body>
 </html>
-
