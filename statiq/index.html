@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>statiq</title>
+
+  <style>
+    :root {
+      --bg-main: #4d4d4d;
+      --bg-secondary: #303030;
+      --accent: #9bff61;
+      --text-main: #f5f5f5;
+      --text-muted: #cfcfcf;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, blinkmacsystemfont, "segoe ui",
+        roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(
+        180deg,
+        var(--bg-main),
+        var(--bg-secondary)
+      );
+      color: var(--text-main);
+    }
+
+    /* top nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 64px;
+      backdrop-filter: blur(12px);
+      background: rgba(48, 48, 48, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 10;
+    }
+
+    nav .logo {
+      font-weight: 5;
+      letter-spacing: 0.4px;
+    }
+
+    nav button {
+      background: transparent;
+      color: var(--accent);
+      padding: 8px 14px;
+      cursor: pointer;
+      border:none;
+      font-size: 10px
+      border-radius:10px;
+      transition: background 0.15s ease, border 0.15s ease;
+    }
+
+    nav button:hover {
+      background: rgba(155, 255, 97, 0.1);
+      border-color: var(--accent);
+    }
+
+    /* hero */
+    main {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 140px 24px 24px; /* pushed hero up */
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      max-width: 900px;
+    }
+    
+    .acc-switch {
+        border-radius: 500px;
+        width: 100px;
+        height: 30px;
+        background-color: #303030;
+    }
+    
+    .log-in {
+        justify-content: center;
+        display: flex-start;
+        font-size: 12px;
+    }
+        .sign-up {
+        justify-content: center;
+        display: flex-end;
+        font-size: 12px;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="logo"><a href="https://xyztoast.github.io/statiq"><img src="https://xyztoast.github.io/statiq/logo.png" style="height:100px;"></a></div>
+    <button>button</button>
+    <div class="acc-switch">
+        <div class="log-in">Log In</div>
+        <div class="sign-up">Log In</div>
+    </div>
+  </nav>
+
+  <main>
+    <h1>
+      the <span>best</span> place to<br>
+      dump your code
+    </h1>
+  </main>
+</body>
+</html>
 
