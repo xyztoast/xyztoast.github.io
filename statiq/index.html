@@ -10,6 +10,8 @@
       --bg-main: #4d4d4d;
       --bg-secondary: #303030;
       --accent: #9bff61;
+      --accent2: #6CE028;
+      --blue-accent: #3a5770;
       --text-main: #f5f5f5;
       --text-muted: #cfcfcf;
     }
@@ -24,6 +26,11 @@
     a {
       text-decoration: none;
     }
+    
+    p {
+      color: var(--text-main);
+      
+    }
     body {
       min-height: 100vh;
       background: linear-gradient(
@@ -32,6 +39,7 @@
         var(--bg-secondary)
       );
       color: var(--text-main);
+      user-select: none;
     }
 
     /* top nav */
@@ -40,7 +48,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 64px;
+      height: 50px;
       backdrop-filter: blur(12px);
       background: rgba(48, 48, 48, 0.6);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -49,6 +57,7 @@
       justify-content: space-between;
       padding: 0 24px;
       z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);;
     }
 
     nav .logo {
@@ -63,6 +72,7 @@
       cursor: pointer;
       border:none;
       font-size: 10px
+      border-radius: 10px;
       border-radius:10px;
       transition: background 0.15s ease, border 0.15s ease;
     }
@@ -77,8 +87,8 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      min-height: 100vh;
-      padding: 140px 24px 24px; /* pushed hero up */
+      min-height: 50vh;
+      padding: 140px 24px 124px; /* pushed hero up */
       text-align: center;
     }
 
@@ -90,53 +100,108 @@
     }
 
     h2 {
-      display: flex;
       justify-content: center;
       text-align: center;
-      margin-top: auto;
-      padding-top: 0;
       margin: auto;
-      
+      font-size: 30px;
     }
     
+    h4 {
+      font-size: 20px;
+      font-weight: 500;
+      max-width: 900px;
+      justify-content: center;
+      text-align: center;
+      padding-top: 50px;
+    }
+    
+    .panelwrap {
+      display: flex;
+      justify-content: center; /* Centers the 3 panels in the middle of the screen */
+      align-items: flex-start; /* Aligns them at the top if heights differ */
+      width: 100%;
+      flex-wrap: wrap; /* Allows them to stack on small screens */
+      gap: 10px; /* Provides space between panels without using margin on children */
+    }
+
+    .panel {
+       border-radius: 15px;
+       min-height: 125px;
+       padding: 12px 12px;
+       margin: 10px;
+       width: 25vw;
+       background-color: #303030;
+       border: none;
+       resize: none;
+       line-height: 1.4;
+       opacity: 1;
+       transition: opacity 0.1s ease-in-out;
+       color: var(--accent);
+       animation-name: rise;
+       animation-duration: 1s;
+}
+
+@keyframes rise {
+
+  from {
+    transform: translateY(10px);
+  }
+
+  to {
+    transform: translateY(0px);
+  }
+}
+
+
+  .panel:hover {
+    opacity: 0.8;
+  }
     span {
 color: var(--accent);
+}
+    span2 {
+color: var(--accent2);
 }
 .acc-switch {
   display: flex;
   align-items: center;
+  text-align: center;
   justify-content: space-between;
   width: 100px;
-  height: 30px;
-  padding: 0 10px;
-  border-radius: 500px;
+  height: 35px;
+  padding: 0 12px;
+  font-size: 15px;
+  border-radius: 10px;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
   background-color: #303030;
+  color: var(--text-main);
 }
 
-.log-in,
-.sign-up {
-  font-size: 12px;
-  text-decoration: none;
+.acc-switch:hover {
+  background-color: var(--blue-accent);
+  color: #adcde9;
 }
-
   </style>
 </head>
 
 <body>
   <nav>
     <div class="logo"><a href="https://xyztoast.github.io/statiq"><img src="https://xyztoast.github.io/statiq/logo.png" style="height:100px;"></a></div>
-    <button>button</button>
-    <div class="acc-switch">
-        <div class="log-in"><a href="https://xyztoast.github.io/statiq/login" style="color:#f0f0f0">login</a></div>
-        <div class="sign-up"><a href="https://xyztoast.github.io/statiq/signup" style="color: #f0f0f0">signup</a></div>
-    </div>
+    <button>About</button>
+    <button>Browse</button>
+    <button>Pricing</button>
+    <button></button>
+    <a href="https:/xyztoast.github.io/statiq/dashboard"><div class="acc-switch">Dashboard</div></a>
   </nav>
  <main>
-       <h1>
-      the <span>best place</span> to<br>
-      dump your code
-    </h1>
+       <h1>the <span>best place</span> to<br>dump your code</h1>
  </main>
-   <h2>Static web hosting for free.</h2>
+   <h2>static web hosting made <span>easy</span> and <span2>for free</span>.<br><br></h2>
+     <div class="panelwrap">
+       <div class="panel"><h3>Custom Domains</h3><p><br><strong>FREE</strong> custom domain connection.</p></div>       
+       <div class="panel"><h3>Easy Uploads</h3><p><br>Simple and easy to use HTML editor.</p></div>
+       <div class="panel"><h3>Private Code</h3><p><br>Safe place to keep your data.</p></div>
+       </div>
+
 </body>
 </html>
