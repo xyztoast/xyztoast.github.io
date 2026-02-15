@@ -30,15 +30,33 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      user-select: none;
     }
 
+    .back {
+      position: fixed;
+      color: var(--text-main);
+      top: 10px;
+      left: 10px;
+      background: var(--bg-secondary);
+      padding: 6px;
+      border-radius: 18px;
+      transition: 0.2s ease;
+
+    }
+    
+    .back:hover {
+        background-color: #b52626;
+        color: #fabebe;
+    }
+    
     .auth-wrapper {
       background: var(--bg-secondary);
       padding: 48px;
       border-radius: 18px;
       width: 400px;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
     }
+
 
     .tabs {
       display: flex;
@@ -46,6 +64,7 @@
       background: var(--bg-main);
       border-radius: 12px;
       padding: 6px;
+      gap: 6px;
     }
 
     .tab {
@@ -55,8 +74,13 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
+      gap: 10px;
       color: var(--text-muted);
       transition: 0.2s ease;
+    }
+    
+    .tab:hover {
+        background-color: #404040;
     }
 
     .tab.active {
@@ -85,7 +109,7 @@
     }
 
     input {
-      width: 100%;
+      width: 100%;;
       padding: 14px;
       margin-bottom: 16px;
       border-radius: 10px;
@@ -118,6 +142,7 @@
   </style>
 </head>
 <body>
+    <a href="https://xyztoast.github.io/statiq"><div class="back">< Home</div></a>
   <div class="auth-wrapper">
     <div class="tabs">
       <div class="tab active" data-tab="login">Login</div>
