@@ -128,6 +128,7 @@
       <h1>Welcome Back</h1>
       <p>Sign in to continue to Statiq</p>
       <form method="POST" action="/login">
+      <input type="hidden" name="action" value="login" />
         <input type="email" name="email" placeholder="Email" required />
         <input type="password" name="password" placeholder="Password" required minlength="8" />
         <button type="submit">Login</button>
@@ -138,6 +139,7 @@
       <h1>Create Account</h1>
       <p>Join Statiq and start building</p>
       <form method="POST" action="/signup">
+      <input type="hidden" name="action" value="signup" />
         <input type="email" name="email" placeholder="Email" required />
         <input type="password" name="password" placeholder="Password" required minlength="8" />
         <button type="submit">Sign Up</button>
