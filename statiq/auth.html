@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statiq Auth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #4d4d4d;
+      --bg-secondary: #303030;
+      --accent: #9bff61;
+      --accent2: #6CE028;
+      --blue-accent: #3a5770;
+      --text-main: #f5f5f5;
+      --text-muted: #cfcfcf;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .auth-wrapper {
+      background: var(--bg-secondary);
+      padding: 48px;
+      border-radius: 18px;
+      width: 400px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 32px;
+      background: var(--bg-main);
+      border-radius: 12px;
+      padding: 6px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: 0.2s ease;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #1a1a1a;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: var(--bg-main);
+      color: var(--text-main);
+      transition: 0.2s ease;
+    }
+
+    input:focus {
+      border: 1px solid var(--accent);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      background: var(--accent);
+      color: #1a1a1a;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--accent2);
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="tabs">
+      <div class="tab active" data-tab="login">Login</div>
+      <div class="tab" data-tab="signup">Sign Up</div>
+    </div>
+
+    <div class="panel active" id="login">
+      <h1>Welcome Back</h1>
+      <p>Sign in to continue to Statiq</p>
+      <form method="POST" action="/login">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required minlength="8" />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <div class="panel" id="signup">
+      <h1>Create Account</h1>
+      <p>Join Statiq and start building</p>
+      <form method="POST" action="/signup">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required minlength="8" />
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
