@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>statiq</title>
+  <title>statiq - new project</title>
 
   <style>
     :root {
@@ -29,6 +29,7 @@
     
     p {
       color: var(--text-main);
+      padding: 2px;
       
     }
     body {
@@ -178,11 +179,12 @@
     }
 
     select {
-      padding: 4px 8px;
+      padding: 6px 12px;
       border-radius: 12px;
       border: 1px solid white;
       background-color: var(--bg-secondary);
       color: white;
+      width: 250px;
       font-size: 14px;
       outline: none;
       cursor: pointer;
@@ -197,6 +199,26 @@
       border-color: var(--accent);
       box-shadow: none; /* kills default browser glow */
     }
+
+    /* cancel button styling */
+.cancel {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: none;
+  width: 250px;
+  background-color: #bd1c1c;
+  color: #4f0b0b;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  margin-top: 12px; /* spacing from other fields */
+}
+
+/* hover effect */
+.cancel:hover {
+  background-color: #991515; /* slightly different so it feels interactive */
+}
+    
   </style>
 </head>
 
@@ -206,22 +228,31 @@
       <textarea placeholder="Max Characters: 20" maxlength="20">New Project</textarea>
       <br>
       <p>Description</p>
-      <textarea placeholder="Max Characters: 200" maxlength="20">This is a cool new project</textarea>
+      <textarea placeholder="Max Characters: 50" maxlength="50">This is a new project</textarea>
       <br>
-      <label for="visibility">Visibility</label>
+      <p>Project Visibilit/Code Viewing</p>
       <select id="visibility">
-        <option value="private">Public</option>
-        <option value="public">Private</option>
+        <option value="private">Public - Anybody can view</option>
+        <option value="public">Private - Only me and whoever I invite</option>
       </select>
+      <br><br><br>
+        <button class="cancel">Cancel</button>
+      <br>
+      </div>
       </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.querySelector('.new');
   const menu = document.querySelector('.menu');
+  const cancel = document.querySelector('.cancel'); // new line
 
   btn.addEventListener('click', () => {
     menu.classList.toggle('active');
+  });
+
+  cancel.addEventListener('click', () => {
+    menu.classList.remove('active'); // hide the menu
   });
 });
 </script>
