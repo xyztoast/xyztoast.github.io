@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>statiq</title>
+
+  <style>
+    :root {
+      --bg-main: #4d4d4d;
+      --bg-secondary: #303030;
+      --accent: #9bff61;
+      --accent2: #6CE028;
+      --blue-accent: #3a5770;
+      --text-main: #f5f5f5;
+      --text-muted: #cfcfcf;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, blinkmacsystemfont, "segoe ui", roboto, sans-serif;
+    } 
+    a {
+      text-decoration: none;
+    }
+    
+    p {
+      color: var(--text-main);
+      
+    }
+    body {
+      min-height: 100vh;
+      background: var(--bg-secondary);
+      color: var(--text-main);
+      user-select: none;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      max-width: 900px;
+    }
+
+    h2 {
+      font-size: 50px;
+    }
+    h4 {
+      font-size: 20px;
+      font-weight: 500;
+      max-width: 900px;
+      justify-content: center;
+      text-align: center;
+      padding-top: 50px;
+    }
+    
+    .panelwrap {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      padding-top: 45px;
+      border: 1px solid rgba(77, 77, 77, 1);
+      border-radius: 20px;
+      border-bottom-right-radius: 35px;
+      border-top-left-radius: 0px;
+      transition: left 0.2s ease-in-out;
+    }
+
+    .panel {
+       border-radius: 15px;
+       height: 45px;
+       padding: 12px 12px;
+       margin: 10px;
+       width: 200px;
+       background-color: var(--bg-secondary);
+       border: 1px solid rgba(77, 77, 77, 0.2) ;
+       transition: background-color 0.1s ease-in-out;
+       color: var(--text-main);
+}
+
+    .spanel {
+      border-radius: 15px;
+      border-bottom-right-radius: 35px;
+      height: 45px;
+      padding: 12px 12px;
+      margin: 10px;
+      width: 200px;
+      background-color: var(--bg-secondary);
+      border: 1px solid rgba(77, 77, 77, 0.2) ;
+      transition: background-color 0.1s ease-in-out;
+      color: var(--text-main);
+    }
+  .panel:hover {
+    background-color: var(--bg-main);
+  }
+      .spanel:hover {
+    background-color: var(--bg-main);
+  }
+
+/* Style the menu toggle button */
+.toggle-button {
+  padding: 15px 20px;
+  color: white;
+  display: inline-block;
+  width: auto;
+  font-size: 20px;
+  cursor: pointer;
+  display: block;
+  position: fixed;
+  z-index: 100;
+}
+
+/* Hide the sidebar content by default */
+.panelwrap {
+  left: 10px;
+  transition: left 0.2s ease-in-out;
+}
+
+.sidebar-toggle:checked ~ .panelwrap {
+  left: -300px;
+}
+
+    .content {
+      margin-left: 250px;
+      margin-top: 100px;
+    }
+    textarea {
+      border: none;
+      padding: 5px 5px;
+      border-radius: 10px;
+      width: 750px;
+      font-size: 30px;
+      background-color: var(--bg-main);
+      color: #bebebe;
+      resize: none;
+    }
+
+    textarea:focus {
+      border: none;
+    }
+
+  </style>
+</head>
+<body>
+<div class="sidebar-container">
+  <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle" hidden />
+  
+  <div class="panelwrap">
+     <div class="panel" style="background-color: #2c322d" title="You're already on this page!">Overview</div>
+     <a href="https://xyztoast.github.io/statiq/dashboard/pages"><div class="panel">Pages</div></a>
+     <a href="https://xyztoast.github.io/statiq/dashboard/details"><div class="panel">Details</div>
+     <a href="https://xyztoast.github.io/statiq/dashboard/pricing"><div class="panel">Pricing</div>
+     <a href="https://xyztoast.github.io/statiq/dashboard/settings"><div class="spanel">Settings</div></a>    
+  </div>
+    
+  <label for="sidebar-toggle" class="toggle-button">☰</label>
+
+       <div class="content">
+         <h2>Project Name</h2>
+           <textarea placeholder="My Project"></textarea>
+<br><br><br>
+         <h2>Project URL</h2>
+             <textarea spellcheck="false" placeholder="myproject.statiq.host" maxlength="25" style="display: flex"></textarea>
+             <h5 style="display: flex">.statiq.host</h5>
+           </div>
+</body>
+</html>
