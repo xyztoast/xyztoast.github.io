@@ -154,23 +154,34 @@ tabs.forEach(tab => {
   });
 });
 
-// form submit
+// form submit with fetch + credentials
 document.querySelectorAll('.panel form').forEach(form => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const formData = new FormData(form);
     const action = form.dataset.action;
-
     formData.append("action", action);
 
     try {
       const res = await fetch("https://statiq-auth.micahpcal.workers.dev/auth", {
         method: "POST",
         body: formData,
-        credentials: "include"
+        credentials: "include",
+        mode: "cors"
       });
+
+      if (!res.ok) {
+        const text = await res.text();
+        showToast(text, false);
+        return;
+      }
+
       const text = await res.text();
-      showToast(text, res.ok);
+      showToast(text, true);
+
+      // optional: clear inputs on success
+      form.querySelectorAll("input").forEach(i => i.value = "");
+
     } catch (err) {
       showToast("Network error", false);
     }
