@@ -9,14 +9,14 @@
   <title>idktoast mods</title>
   <style>
     html,body{
-      height:100%;
+      min-height:100%;
       margin:0;
       font-family:'mcfont', sans-serif;
       background:#212425;
       color:#bebebe;
     }
     .wrap{
-      height:100%;
+      min-height:100%;
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -27,7 +27,8 @@
     h1{
       margin:0;
       font-family: "mcfontb", sans-serif;
-      font-size: 40px
+      font-size: 40px;
+      margin-top: 20vh;
     }
     
     h2 {
@@ -101,45 +102,16 @@
   .spacing {
     padding-top: 50px
     }
-    
-  .tab-group {
-    display: flex;
-    user-select: none;
-    }
-    
-  .tab {
-    font-size: 16px;
-    background-color: #212425;
-    display: inline-flex;
-    padding: 6px 8px;
-    user-select: none;
-    transition: background-color 0.1s ease-in-out;
-    cursor: pointer;
-    }
-    
-  .tab.active {
+
+  .tab-content {
     background-color: #3e4344;
-    }
-    
-    .tab:not(.active):hover {
-      background-color: #1b2021;
-      cursor: pointer;
-    }
-
-    .tab.active {
-      background-color: #3e4344; 
-      cursor: default; /* Optional: shows it's already selected */
-    }
-
-    
-    .tab-content {
-      background-color: #3e4344;
-      padding: 12px;
-      display: flex;
-      width: 470px;
-      flex-direction: row;
-      flex-wrap: wrap;  
-      overflow-y: hidden;
+    padding: 12px;
+    margin-top: 0;
+    display: flex;
+    width: 470px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: auto;
     }
 
     
@@ -160,6 +132,8 @@
     color: #000000;
     margin-top: 10px;
     }
+    
+    
   </style>
 </head>
 <body>
@@ -168,8 +142,7 @@
     
     
     <p>im a small minecraft bedrock mod creator and i like experimenting with code. <br><br>my links are below</p>
-    <div class="links">
-      
+     <div class="links">
       <div class="thing">
       <a href="https://www.curseforge.com/members/idktoast/projects" target="_blank" rel="noopener noreferrer"><img src="https://cdn2.unrealengine.com/egs-curseforge-overwolf-ic1-400x400-efe6f7172cef.png?resize=1&w=480&h=270&quality=medium" style="width:15px;">
  curseforge</a>
@@ -194,7 +167,7 @@
   
     
     
-<div class="spacing"/>
+<div class="spacing" style="padding-top:100px;"/>
     <h2>popular projects</h2>
 
 </div>
@@ -202,24 +175,50 @@
     
     
 <div class="tab-content">
-  <div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1357/813/256/256/638881985200731048.jpg" style="width: 120px"><br>infinite backrooms<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 10,000</dl></div>    
+<!--backrooms-->
+<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1357/813/256/256/638881985200731048.jpg" style="width: 120px"><br>infinite backrooms<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 10,000</dl></div>    
   
   
-
+<!--totemless-->
   <div class="mod"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoqxYwxO4bLXE8d08t4DpkQeepkLjW8alHkQ&s" style="width: 120px"><br>totemless survival<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,500</dl></div>
   
   
   
-  
-  <div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1632/412/256/256/639046079134890666.png" style="width: 120px"><br>visible cobwebs<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,000</dl></div>
+
+<!--crimson-->
+<div class="mod"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG0e_mg7hV4JdGmzZRLTRdCA7m1hyW581cvA&s" style="width: 120px"><br>survival world<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,500</dl></div>
 
   
 <div class="spacing" />
 
 
+  </div>
+  </div>
+  <div class="tab-content" style="padding-bottom: 0px;">
+    
+    
 
 
-  <div class="mod"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG0e_mg7hV4JdGmzZRLTRdCA7m1hyW581cvA&s" style="width: 120px"><br>survival world<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,000</dl></div>
+<!--toast skinpack-->
+<div class="mod"><img src="https://media.forgecdn.net/attachments/1244/908/art_20250707_091336_0000-png.png" style="width: 120px;aspect-ratio:1 / 1;object-fit:cover;"><br>survival world<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,500</dl></div>
+
+    
+    
+    
+
+<!--cobwebs-->
+  <div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1632/412/256/256/639046079134890666.png" style="width: 120px"><br>visible cobwebs<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,500</dl></div>
+    
+    
+    
+
+<!--fov-->
+<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1603/462/256/256/639035782637432315.png" style="width: 120px"><br>quick fov<br><br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 750</dl></div>
+    
+    
+    
+
+
   </div>
   <div class="spacing">
 </body>
