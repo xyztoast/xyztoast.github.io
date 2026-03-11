@@ -27,18 +27,39 @@
     h1{
       margin:0;
       font-family: "mcfontb", sans-serif;
+      font-size: 40px
     }
-    a{
+    
+    h2 {
+     font-size: 25px; 
+    }
+    
+    a {
       color:#00b2ff;
       text-decoration:none;
       font-weight:400;
-      padding:6px 5px;
-      border-radius:6px;
+      padding:8px 8px;
+      white-space: nowrap;
+      gap-top: 50px;
       background-color: #323738;
+      transition: background-color 0.1s ease-in-out, padding 0.1s ease-in-out;
+    }
+    
+    a:hover {
+      background-color: #44494a;
+      color: #5acaff;
+      padding: 8px 26px;
+
+    }
+    
+    p {
+      padding: 6px;
+      
     }
     .links{
       display:flex;
       gap:12px;
+      user-select: none;
     }
     .download-wrap{
       display:flex;
@@ -46,6 +67,7 @@
       gap:8px;
       margin-top:16px;
     }
+    
       .account-link {
     position: fixed;
     top: 16px;
@@ -64,90 +86,141 @@
     top: 10px;
     height: 50px;
     width: 50px;
-    animation-duration: 1s;
-    animation-delay: 0s;
-    animation-name: slide;
   }
-  @keyframes slide {
-    0% {
-      transform: translateY(-1000px); /* Start position */
-    }
-    100% {
-      transform: translateY(0px); /* End position */
-    }
-  }
-  img:hover {
-    filter: brightness(120%);
-    }
-  img {
-    border-radius: 5px;
-    }
     
   .wiki-icon {
     position: fixed;
     line-height: 0;
-    left: 55px;
-    top: 10px;
+    left: 5px;
+    top: 60px;
     height: 50px;
     width: 50px;
-    animation-duration: 1.2s;
-    animation-delay: 0s;
-    animation-name: slide2;
-  }
-  @keyframes slide2 {
-    0% {
-      transform: translateY(-1000px); /* Start position */
-    }
-    100% {
-      transform: translateY(0px); /* End position */
-    }
   }
     
-  .avatar {
-    width: 32px;
-    height: 32px;
-    background: #212425;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    padding: 4px;
-  }
-
-  .account-text {
-    text-transform: lowercase;
+    
+  .spacing {
+    padding-top: 50px
+    }
+    
+  .tab-group {
+    display: flex;
     user-select: none;
-  }
+    }
+    
+  .tab {
+    font-size: 16px;
+    background-color: #212425;
+    display: inline-flex;
+    padding: 6px 8px;
+    user-select: none;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
+    }
+    
+  .tab.active {
+    background-color: #3e4344;
+    }
+    
+    .tab:not(.active):hover {
+      background-color: #1b2021;
+      cursor: pointer;
+    }
 
-  .account-link:hover {
-    opacity: .8;
-  }
+    .tab.active {
+      background-color: #3e4344; 
+      cursor: default; /* Optional: shows it's already selected */
+    }
+
+    
+    .tab-content {
+      background-color: #3e4344;
+      padding: 12px;
+      display: flex;
+      width: 470px;
+      flex-direction: row;
+      flex-wrap: wrap;  
+      overflow-y: hidden;
+    }
+
+    
+  .mod {
+    width: 140px;
+    padding: 8px 8px;
+    transition: background-color 0.1s ease-in-out;
+    }
+   
+  .mod:hover {
+    background-color: #4c5152;
+    cursor: pointer;
+    }
+    
+  dl {
+    background-color: #00d84f;
+    padding: 2px 4px;
+    color: #000000;
+    margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>idktoast mods</h1>
-    <p>im a small minecraft bedrock mod creator and like experimenting with code.<br> <br>you can download my mods by clicking the first two buttons.</p>
+    <h1><img src="https://media.forgecdn.net/avatars/1645/362/639050852084521204.png" style="width:40px; border-radius: 10px;"> idktoast</h1>
+    
+    
+    <p>im a small minecraft bedrock mod creator and i like experimenting with code. <br><br>my links are below</p>
     <div class="links">
-      <a href="https://www.curseforge.com/members/idktoast/projects" target="_blank" rel="noopener noreferrer">curseforge</a>
-      <a href="https://mcpedl.com/user/idktoast" target="_blank" target="_blank" rel="noopener noreferrer">mcpedl</a>
-      <a href="https://github.com/xyztoast/xyztoast.github.io" target="_blank" rel="noopener noreferrer">github repository</a>
+      
+      <div class="thing">
+      <a href="https://www.curseforge.com/members/idktoast/projects" target="_blank" rel="noopener noreferrer"><img src="https://cdn2.unrealengine.com/egs-curseforge-overwolf-ic1-400x400-efe6f7172cef.png?resize=1&w=480&h=270&quality=medium" style="width:15px;">
+ curseforge</a>
+      
+      
+      <a href="https://mcpedl.com/user/idktoast" target="_blank" target="_blank" rel="noopener noreferrer"><img src="https://play-lh.googleusercontent.com/TceQB0Nblpisd_9lviAXli7-POotAtrx7E7RCMvBVZQkFntzOSQl94_xJkW3_14vSS0" style="width:15px"> mcpedl</a>
+      
+      
+      <a href="https://github.com/xyztoast/xyztoast.github.io" target="_blank" rel="noopener noreferrer"><img src="https://cdn-icons-png.flaticon.com/256/25/25231.png" style="width:15px"> github repository</a>
+      
+      </div>
     </div>
+    
+    
+     <div class="mcbc"><a style="background-color: #212425;padding:8px 8px;" href="https://xyztoast.github.io/mcfunction/editor"><img src="https://xyztoast.github.io/icons/mcbcode.png" style="height:40px;width:40px;padding:0;" title="mcbCode editor"></a></div>
+  
+  
+<div class="wiki-icon"><a style="background-color: #212425;padding:8px 8px;
+" href="https://xyztoast.github.io/wiki/"><img src="https://xyztoast.github.io/icons/wiki-icon.png" style="height:40px;width:40px;" title="MCBE Dev Mini Wiki"></a></div>
+  
+  
+  
+    
+    
+<div class="spacing"/>
+    <h2>popular projects</h2>
 
-    <div class="download-wrap">
-      <div>try out the new AI (its probably broken)</div></div>
-      <a href="loafai" rel="noopener noreferrer">loafAI (beta)</a>
-    </div>
-  <a class="account-link" href="https://xyztoast.github.io/account">
-  <a class="account-link" href="https://xyztoast.github.io/login">
-  <span class="avatar">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M12 12.75c1.986 0 3.6-1.614 3.6-3.6S13.986 5.55 12 5.55 8.4 7.164 8.4 9.15s1.614 3.6 3.6 3.6z" fill="#bfc7cc"/>
-      <path d="M4.5 19.2c0-2.64 3.96-4.8 7.5-4.8s7.5 2.16 7.5 4.8v.3H4.5v-.3z" fill="#bfc7cc"/>
-    </svg>
-  </span>
-  <span class="account-text">account</span>
-  </a>
- <div class="mcbc"><a style="background-color: #212425;" href="https://xyztoast.github.io/mcfunction/editor"><img src="https://xyztoast.github.io/icons/mcbcode.png" style="height:40px;width:40px;" title="mcbCode editor"></a></div>
-<div class="wiki-icon"><a style="background-color: #212425;" href="https://xyztoast.github.io/wiki/"><img src="https://xyztoast.github.io/icons/wiki-icon.png" style="height:40px;width:40px;" title="MCBE Dev Mini Wiki"></a></div>
+</div>
+
+    
+    
+<div class="tab-content">
+  <div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1357/813/256/256/638881985200731048.jpg" style="width: 120px"><br>infinite backrooms<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 10,000</dl></div>    
+  
+  
+
+  <div class="mod"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoqxYwxO4bLXE8d08t4DpkQeepkLjW8alHkQ&s" style="width: 120px"><br>totemless survival<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,500</dl></div>
+  
+  
+  
+  
+  <div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1632/412/256/256/639046079134890666.png" style="width: 120px"><br>visible cobwebs<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,000</dl></div>
+
+  
+<div class="spacing" />
+
+
+
+
+  <div class="mod"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG0e_mg7hV4JdGmzZRLTRdCA7m1hyW581cvA&s" style="width: 120px"><br>survival world<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2,000</dl></div>
+  </div>
+  <div class="spacing">
 </body>
 </html>
