@@ -69,17 +69,7 @@
       margin-top:16px;
     }
     
-      .account-link {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    text-decoration: none;
-    color: #f0f0f0;
-  }
+
 
   .mcbc {
     position: fixed;
@@ -162,7 +152,45 @@
     margin-top: 0px;
     }
 
+  textarea {
+    resize: none;
+    outline: none;
+    border: none;
+    font-size: 16px;
+    height: 100px;
+    font-family: mcfont;
+    background-color: #323738;
+    color: #ffffff;
+    width: 100%;
+    padding: 8px;
+    overflow-x: hidden;
+    }
 
+.mod-ideas {
+  display: flex;
+  width: 103.5%;
+  gap: 8px;
+}
+
+#name {
+  flex: 1;
+  height: 20px;
+}
+
+.submit {
+  background-color: #00b2ff;
+  color: #000000;
+  font-size: 16px;
+  padding: 8px;
+  user-select: none;
+  border:none;
+  transition: background-color 0.1s ease-in-out;
+}
+
+.submit:hover {
+  background-color: #5acaff;
+}
+    
   </style>
 </head>
 <body>
@@ -226,7 +254,7 @@
 
   </div>
   </div>
-  <div class="tab-content" style="padding-bottom: 0px;">
+  <div class="tab-content">
     
     
 
@@ -257,13 +285,22 @@
   <div class="spacing">
 
 
+<h2>if only this was a mod...</h2>
+<p>drop your mod ideas here</p>
 
-
+<textarea id="idea" placeholder="what if you made a..."></textarea>
+<div class="spacing" style="padding: 2px;"></div>
+    <div class="mod-ideas">
+<textarea id="name" placeholder="name" maxlength="20"></textarea>
+<button id="submit" class="submit">Submit</button>
+    </div>
+    
+    
+    
+    
+<div class="spacing"/>
+    
 <script data-goatcounter="https://idktoast.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
-
-
-
-
