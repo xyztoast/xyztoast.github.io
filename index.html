@@ -54,7 +54,7 @@
     }
     
     p {
-      padding: 6px;
+      padding: 20px;
       
     }
     .links{
@@ -86,7 +86,7 @@
     left: 5px;
     top: 10px;
     height: 50px;
-    width: 50px;
+    max-width: 50px;
   }
     
   .wiki-icon {
@@ -95,7 +95,7 @@
     left: 5px;
     top: 60px;
     height: 50px;
-    width: 50px;
+    max-width: 50px;
   }
     
     
@@ -108,7 +108,9 @@
     padding: 6px;
     margin-top: 0;
     display: flex;
-    width: 470px;
+    align-items: center;   /* horizontal center */
+    justify-content: center; /* vertical center if it has height */
+    max-width: 470px;
     flex-direction: row;
     flex-wrap: wrap;
     overflow-x: auto;
@@ -116,7 +118,7 @@
 
     
   .mod {
-    width: 140px;
+    max-width: 140px;
     padding: 8px 8px;
     transition: background-color 0.1s ease-in-out;
     font-size: 12px;
