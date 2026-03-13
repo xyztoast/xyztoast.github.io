@@ -321,7 +321,7 @@ submitBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch("https://your-worker-url.workers.dev", {
+    const res = await fetch("https://micahpcal.workers.dev", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idea, name })
@@ -337,7 +337,7 @@ submitBtn.addEventListener("click", async () => {
     }
   } catch (e) {
     console.error(e);
-    formMessage.textContent = "network error 🥀";
+    formMessage.textContent = "network error";
   }
 });
 </script>
