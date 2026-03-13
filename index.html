@@ -300,7 +300,49 @@
     
     
 <div class="spacing"/>
-    
+
+
+<script>
+const submitBtn = document.querySelector(".submit");
+const ideaText = document.querySelector("#name");
+const username = document.querySelector("#name"); // if you only have one #name, might need a separate field for user name
+const formMessage = document.createElement("div");
+formMessage.style.color = "#fff";
+formMessage.style.marginTop = "4px";
+submitBtn.parentNode.appendChild(formMessage);
+
+submitBtn.addEventListener("click", async () => {
+  const idea = ideaText.value.trim();
+  const name = username.value.trim() || "anonymous"; // fallback if no separate name field
+
+  if (!idea) {
+    formMessage.textContent = "please write something first 🥀";
+    return;
+  }
+
+  try {
+    const res = await fetch("https://your-worker-url.workers.dev", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idea, name })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      formMessage.textContent = `idea submitted! id: ${data.id}`;
+      ideaText.value = "";
+    } else {
+      formMessage.textContent = "oops, something went wrong!";
+    }
+  } catch (e) {
+    console.error(e);
+    formMessage.textContent = "network error 🥀";
+  }
+});
+</script>
+
+
 <script data-goatcounter="https://idktoast.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </body>
