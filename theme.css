@@ -1,5 +1,5 @@
 /* how to use this in other files */
-/* put <> into the head */
+/* put <link rel="stylesheet" href="https://xyztoast.github.io/theme.css"> into the <head> of the html file */
 
     @font-face {
       font-family: 'mcfont';
