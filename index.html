@@ -304,7 +304,7 @@
 
 <script>
 const submitBtn = document.querySelector(".submit");
-const ideaText = document.querySelector("#name");
+const ideaText = document.querySelector("idea");
 const username = document.querySelector("#name"); // if you only have one #name, might need a separate field for user name
 const formMessage = document.createElement("div");
 formMessage.style.color = "#fff";
@@ -316,7 +316,7 @@ submitBtn.addEventListener("click", async () => {
   const name = username.value.trim() || "anonymous"; // fallback if no separate name field
 
   if (!idea) {
-    formMessage.textContent = "please write something first 🥀";
+    formMessage.textContent = "please write something first";
     return;
   }
 
