@@ -302,21 +302,25 @@
 <div class="spacing"/>
 
 
+
+
 <script>
-const submitBtn = document.querySelector(".submit");
-const ideaText = document.querySelector("idea");
-const username = document.querySelector("#name"); // if you only have one #name, might need a separate field for user name
-const formMessage = document.createElement("div");
+const submitBtn = document.querySelector("#submit"); // your button
+const ideaText = document.querySelector("#idea");    // the mod idea textarea
+const nameInput = document.querySelector("#name");   // the name textarea
+let formMessage = document.createElement("div");     // feedback div
 formMessage.style.color = "#fff";
 formMessage.style.marginTop = "4px";
 submitBtn.parentNode.appendChild(formMessage);
 
-submitBtn.addEventListener("click", async () => {
-  const idea = ideaText.value.trim();
-  const name = username.value.trim() || "anonymous"; // fallback if no separate name field
+submitBtn.addEventListener("click", async (e) => {
+  e.preventDefault(); // prevent the default form submission
 
-  if (!idea) {
-    formMessage.textContent = "please write something first";
+  const idea = ideaText.value.trim();
+  const name = nameInput.value.trim() || "anonymous";
+
+  if (!idea || !name) {
+    formMessage.textContent = "please fill in both fields 🥀";
     return;
   }
 
@@ -332,17 +336,22 @@ submitBtn.addEventListener("click", async () => {
     if (data.success) {
       formMessage.textContent = `idea submitted! id: ${data.id}`;
       ideaText.value = "";
+      nameInput.value = "";
     } else {
       formMessage.textContent = "oops, something went wrong!";
     }
-  } catch (e) {
-    console.error(e);
-    formMessage.textContent = "network error";
+  } catch (err) {
+    console.error(err);
+    formMessage.textContent = "network error 🥀";
   }
 });
 </script>
 
 
+
+
+
+  
 <script data-goatcounter="https://idktoast.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </body>
