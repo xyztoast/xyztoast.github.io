@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="icon" href="favicon.png">
+  <link rel="stylesheet" href="https://xyztoast.github.io/theme.css">
+  <meta charset="utf-8" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>idktoast mods</title>
+  <style>
+    html,body{
+      min-height:100%;
+      margin:0;
+      font-family:'mcfont', sans-serif;
+      background:#212425;
+      font-weight: 0;
+      color:#bebebe;
+    }
+    .wrap{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      text-align:center;
+    }
+    h1{
+      margin:0;
+      font-family: "mcfontb", sans-serif;
+      font-size: 40px;
+      margin-top: 20vh;
+    }
+    
+    h2 {
+     font-size: 25px; 
+    }
+    
+    a {
+      color:#00b2ff;
+      text-decoration:none;
+      padding:8px 8px;
+      white-space: nowrap;
+      gap-top: 50px;
+      background-color: #323738;
+      transition: background-color 0.1s ease-in-out, padding 0.1s ease-in-out;
+    }
+    
+    a:hover {
+      background-color: #44494a;
+      color: #5acaff;
+      padding: 8px 26px;
+
+    }
+    
+    p {
+      padding: 6px;
+      
+    }
+    .links{
+      display:flex;
+      gap:12px;
+      user-select: none;
+    }
+    .download-wrap{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:16px;
+    }
+    
+
+
+  .mcbc {
+    position: fixed;
+    left: 5px;
+    top: 10px;
+    height: 50px;
+    width: 50px;
+  }
+    
+  .wiki-icon {
+    position: fixed;
+    line-height: 0;
+    left: 5px;
+    top: 60px;
+    height: 50px;
+    width: 50px;
+  }
+    
+    
+  .spacing {
+    padding-top: 50px
+    }
+
+  .tab-content {
+    background-color: #3e4344;
+    padding: 6px;
+    margin-top: 0;
+    display: flex;
+    width: 470px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    }
+
+    
+  .mod {
+    width: 140px;
+    padding: 8px 8px;
+    transition: background-color 0.1s ease-in-out;
+    font-size: 12px;
+    }
+   
+  .mod:hover {
+    background-color: #4c5152;
+    cursor: pointer;
+    }
+    
+  dl {
+    background-color: #00d84f;
+    padding: 2px 4px;
+    color: #000000;
+    margin-top: 10px;
+    }
+
+  addon {
+    background-color: #de7a3d;
+    padding: 4px 8px;
+    color: #000000;
+    margin-top: 0px;
+    }
+
+  texture {
+    background-color: #eac625;
+    padding: 4px 8px;
+    color: #000000;
+    margin-top: 0px;
+    }
+
+  skin {
+    background-color: #00b68b;
+    padding: 4px 8px;
+    color: #000000;
+    margin-top: 0px;
+    }
+
+  world {
+    background-color: #b575ee;
+    padding: 4px 8px;
+    color: #000000;
+    margin-top: 0px;
+    }
+
+  textarea {
+    resize: none;
+    outline: none;
+    border: none;
+    font-size: 16px;
+    height: 100px;
+    font-family: mcfont;
+    background-color: #323738;
+    color: #ffffff;
+    width: 100%;
+    padding: 8px;
+    overflow-x: hidden;
+    }
+
+.mod-ideas {
+  display: flex;
+  width: 103.5%;
+  gap: 8px;
+}
+
+#name {
+  flex: 1;
+  height: 20px;
+}
+
+.submit {
+  background-color: #00b2ff;
+  color: #000000;
+  font-size: 16px;
+  padding: 8px;
+  user-select: none;
+  border:none;
+  transition: background-color 0.1s ease-in-out;
+}
+
+.submit:hover {
+  background-color: #5acaff;
+}
+    
+    
+    .form {
+    margin-left: 20%;
+    margin-right: 20%;
+    text-align: center;
+    }
+    
+    
+    .idea-post {
+      background-color: #323738;
+      margin-left: 5%;
+      margin-right: 5%;
+      padding: 12px 16px;
+      text-align: right;
+    }
+    
+    .username {
+      color: #ffffff;
+    }
+    
+    .idea {
+      text-align: right;
+    }
+    
+    .check_box {
+      /* Hide the default checkbox visually while keeping it accessible */
+      display: none;
+    }
+
+    .check_box + label {
+      /* Initial state (unchecked) */
+      background: url('https://xyztoast2.github.io/icon/noupvote.png') no-repeat;
+      background-size: cover; /* Adjust as needed */
+      height: 20px; /* Must match image height */
+      width: 20px; /* Must match image width */
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .check_box:checked + label {
+      /* Checked state */
+      background: url('https://xyztoast2.github.io/icon/upvote.png') no-repeat;
+      background-size: cover; /* Adjust as needed */
+    }
+  </style>
+</head>
+<body>
+
+
+  </div>
+  <div class="spacing" style="padding-top: 5%;">
+
+<div class="form">
+<h2>if only this was a mod...</h2>
+<p>drop your mod ideas here</p>
+<form>
+<textarea id="idea" placeholder="what if you made a..." required></textarea>
+<div class="spacing" style="padding: 2px;"></div>
+    <div class="mod-ideas">
+<textarea id="name" placeholder="name" maxlength="20" required></textarea>
+<button id="submit" type="submit" class="submit">submit</button>
+    </div>
+</form>
+    
+  <div class="spacing" style="padding-top: 200px;">
+  <h2>other ideas</h2>
+  <p>more ideas made by other people</p>
+    
+      </div>
+    </div>
+<div class="spacing"/>
+
+    <div class="idea-post">
+      <div id="name" class="username">username</div>
+      <br>
+      <div id="idea" class="idea">cool mod idea made by a person</div>
+      <br>
+      <div style="display: flex; justify-content: right;">
+        <input type="checkbox" id="upvote" class="check_box"/>
+        <label for="upvote"></label>
+      </div>
+      </div>
+    
+    
+    
+    
+    
+    </div>
+<div class="spacing"/>
+
+<script>
+const submitBtn = document.querySelector("#submit"); // your button
+const ideaText = document.querySelector("#idea");    // the mod idea textarea
+const nameInput = document.querySelector("#name");   // the name textarea
+let formMessage = document.createElement("div");     // feedback div
+formMessage.style.color = "#fff";
+formMessage.style.marginTop = "4px";
+submitBtn.parentNode.appendChild(formMessage);
+
+submitBtn.addEventListener("click", async (e) => {
+  e.preventDefault(); // prevent the default form submission
+
+  const idea = ideaText.value.trim();
+  const name = nameInput.value.trim() || "anonymous";
+
+  if (!idea || !name) {
+    formMessage.textContent = "please fill in both fields";
+    return;
+  }
+
+  try {
+    const res = await fetch("https://modideas.micahpcal.workers.dev", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idea, name })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      formMessage.textContent = `<br>idea submitted!`;
+      ideaText.value = "";
+      nameInput.value = "";
+    } else {
+      formMessage.textContent = "oops, something went wrong!";
+    }
+  } catch (err) {
+    console.error(err);
+    formMessage.textContent = "network error";
+  }
+});
+</script>
+
+
+
+
+
+  
+<script data-goatcounter="https://idktoast.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
