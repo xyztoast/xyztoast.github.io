@@ -320,7 +320,7 @@ submitBtn.addEventListener("click", async (e) => {
   const name = nameInput.value.trim() || "anonymous";
 
   if (!idea || !name) {
-    formMessage.textContent = "please fill in both fields 🥀";
+    formMessage.textContent = "please fill in both fields";
     return;
   }
 
@@ -334,7 +334,7 @@ submitBtn.addEventListener("click", async (e) => {
     const data = await res.json();
 
     if (data.success) {
-      formMessage.textContent = `idea submitted! id: ${data.id}`;
+      formMessage.textContent = `<br>idea submitted!`;
       ideaText.value = "";
       nameInput.value = "";
     } else {
@@ -342,7 +342,7 @@ submitBtn.addEventListener("click", async (e) => {
     }
   } catch (err) {
     console.error(err);
-    formMessage.textContent = "network error 🥀";
+    formMessage.textContent = "network error";
   }
 });
 </script>
