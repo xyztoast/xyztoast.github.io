@@ -6,17 +6,15 @@
 
 <h3>what you will find here</h3>
 <ul>
-  <li> - <strong>legacy versions:</strong> older builds of my bedrock addons that are no longer supported.</li>
-  <li> - <strong>scrapped prototypes:</strong> experimental mechanics or features that were eventually abandoned.</li>
-  <li> - <strong>unorganized assets:</strong> various textures, scripts, and models used during development phases.</li>
-  <li> - <strong>historical logs:</strong> documentation or notes from earlier stages of my work.</li>
+  <li><strong>scrapped pages or assets:</strong> old pages, media, or features that were eventually abandoned.</li>
+  <li><strong>unorganized assets:</strong> various files used previously.</li>
 </ul>
 
-<h3>a quick heads-up</h3>
+<h3>how this works</h3>
 <ul>
-  <li> - <strong>no support:</strong> these files are provided "as-is" and will not receive updates or bug fixes.</li>
-  <li> - <strong>compatibility issues:</strong> older mcbe files may not function correctly with current versions of the game.</li>
-  <li> - <strong>clutter:</strong> this folder is naturally unorganized, so browse at your own risk.</li>
+  <li><strong>no support:</strong> these files are provided "as-is" and will not receive updates or bug fixes.</li>
+  <li><strong>compatibility issues:</strong> older mcbe files may not function correctly with current versions of the game.</li>
+  <li><strong>clutter:</strong> this folder is naturally unorganized, so browse at your own risk.</li>
 </ul>
 
 <hr>
