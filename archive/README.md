@@ -25,3 +25,15 @@
     old files i didnt want to delete, maybe if i want to bring it back or something similar.
   </em>
 </p>
+<br><br><br>
+<hr>
+
+<h3>license & usage</h3>
+<p>
+  you are free to use, modify, or share any code or assets found in this archive, provided that you give <strong>full credit</strong> to the original creator. 
+</p>
+<ul>
+  <li> - <strong>attribution:</strong> if you use these files in your own project, please include a link back to this repository or my profile.</li>
+  <li> - <strong>as-is:</strong> remember that these are archived files and come with no warranties or guarantees.</li>
+</ul>
+
