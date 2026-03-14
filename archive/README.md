@@ -21,6 +21,6 @@
 
 <p>
   <em>
-    i believe in preserving the development process. seeing where a project started helps me appreciate how far it has come, and these files might still offer inspiration or utility to others in the mcbe community.
+    old files i didnt want to delete, maybe if i want to bring it back or something similar.
   </em>
 </p>
