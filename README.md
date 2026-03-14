@@ -11,5 +11,5 @@
   you are free to use, modify, or share any code or assets found in this archive, provided that you give <strong>full credit</strong> to the original creator. 
 </p>
 <ul>
-  <li> - <strong>attribution:</strong> if you use these files in your own project, you must include a link back to the repository or exact link to the files used.</li>
+  <li><strong>attribution:</strong> if you use these files in your own project, you must include a link back to the repository or exact link to the files used.</li>
 </ul>
