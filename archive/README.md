@@ -1,7 +1,7 @@
 <h1>archive</h1>
 
 <p>
-  this folder serves as a digital attic for my project history. it contains <strong>older versions</strong> of my mcbe mods, experiments that didn't make the cut, and miscellaneous files i couldn't bring myself to delete.
+  this folder serves as a digital attic for repository history. it contains <strong>older, unused, or useless versions</strong> of files or pages.
 </p>
 
 <h3>what you will find here</h3>
