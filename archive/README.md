@@ -12,7 +12,7 @@
 
 <h3>how this works</h3>
 <ul>
-  <li><strong>exact file path:</strong> files that were previously in othe folders are not placed in the /archive root. (e.g. /app/beta.html is placed in /archive/app/beta.html)</li>
+  <li><strong>exact file path:</strong> files that were previously in other folders are not placed in the /archive root. (e.g. /app/beta.html is placed in /archive/app/beta.html)</li>
   <li><strong>no changes:</strong> these files are placed here as it was before the move and will not receive updates or bug fixes (unless brought back).</li>
   <li><strong>compatibility issues:</strong> older files may have outdated links or file paths and may not function correctly.</li>
   <li><strong>clutter:</strong> this folder is naturally unorganized, so browse at your own risk.</li>
