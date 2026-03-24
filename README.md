@@ -8,7 +8,7 @@
 
 <h3>license & usage</h3>
 <p>
-  you are free to use, modify, or share any code or assets found in this archive, provided that you give <strong>full credit</strong> to the original creator. 
+  you are free to use, modify, or share any code or assets found in the archive, provided that you give <strong>full credit</strong> to the original creator. 
 </p>
 <ul>
   <li><strong>attribution:</strong> if you use these files in your own project, you must include a link back to the repository or exact link to the files used.</li>
