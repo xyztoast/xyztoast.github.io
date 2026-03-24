@@ -1,13 +1,3 @@
-const editor = document.getElementById("codeArea");
-const highlighted = document.getElementById("highlighted");
-
-editor.addEventListener("input", () => {
-  highlighted.textContent = editor.value;
-  hljs.highlightElement(highlighted);
-});
-
-
-
 hljs.registerLanguage('mcfunction', function(hljs) {
   return {
     name: 'MCFunction',
@@ -23,12 +13,10 @@ hljs.registerLanguage('mcfunction', function(hljs) {
         className: 'selector',
         begin: /@[pares]/
       },
-
       {
         className: 'number',
         begin: /\b\d+\b/
       },
-
       {
         className: 'string',
         begin: /"/,
@@ -38,14 +26,13 @@ hljs.registerLanguage('mcfunction', function(hljs) {
   };
 });
 
-// wait until page loads before grabbing elements
 window.addEventListener("DOMContentLoaded", () => {
 
   const editor = document.getElementById("codeArea");
   const highlighted = document.getElementById("highlighted");
 
   if (!editor || !highlighted) {
-    console.error("editor or highlighted element missing");
+    console.error("missing codeArea or highlighted element");
     return;
   }
 
