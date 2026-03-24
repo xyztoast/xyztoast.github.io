@@ -309,7 +309,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
   <div class="editor" id="editor">
     <pre class="line-numbers" id="lineNumbers">1</pre>
     <textarea class="code-area" id="codeArea" spellcheck="false" placeholder="title @a title mcbCode by idktoast">tellraw @a {"rawtext":[{"text":"mcbCode by idktoast"}]}
-give @a bread 64</textarea>
+give @a bread 64
+
+
+
+welcome to mcbCode, the first exclusively bedrock mcfunction code editor.
+
+adding syntax coloring/highlighting soon. maybe autocorrect updates in the future.</textarea>
   </div>
 
 <pre>
@@ -317,8 +323,6 @@ give @a bread 64</textarea>
 </pre>
 
 <script src="backend/scripts.js"></script>
-
-
 
 
 <!--settings panel-->
@@ -342,19 +346,16 @@ const closeBtn = document.getElementById('closebutton');
 const panel = document.querySelector('.settings-panel');
 const backdrop = document.getElementById('settingsBackdrop');
 
-// Function to open everything
 openBtn.onclick = () => {
     panel.classList.add('open');
     backdrop.classList.add('open');
 };
 
-// Function to close everything
 closeBtn.onclick = () => {
     panel.classList.remove('open');
     backdrop.classList.remove('open');
 };
-
-// Bonus: Close when clicking the blurred area
+/* close when blurred area is clicked (thanks chatgpt) */
 backdrop.onclick = () => {
     panel.classList.remove('open');
     backdrop.classList.remove('open');
@@ -363,6 +364,11 @@ backdrop.onclick = () => {
 </script>
 
 <!--settings panel over-->
+
+
+
+
+
 
 
 
