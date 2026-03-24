@@ -350,9 +350,9 @@
   </div>
 
 <!--code area-->
-   <pre class="line-numbers" id="lineNumbers">1</pre>
+  
     <div class="editor-wrapper">
-
+ <pre class="line-numbers" id="lineNumbers">1</pre>
   <pre class="highlight-layer">
     <code id="highlighted" class="language-mcfunction"></code>
   </pre>
@@ -414,22 +414,7 @@ backdrop.onclick = () => {
 
 
 
-
-
-
-
-
-<script>
-const editor = document.getElementById("codeArea");
-const highlighted = document.getElementById("highlighted");
-
-editor.addEventListener("input", () => {
-  highlighted.textContent = editor.value;
-  hljs.highlightElement(highlighted);
-});
-</script>
-
-
+   
   <script>
     const codeArea = document.getElementById('codeArea');
     const lineNumbers = document.getElementById('lineNumbers');
