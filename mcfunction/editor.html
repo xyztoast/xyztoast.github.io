@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +22,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
     background-color: #323738;
     font-family: monospace;
     color: #fff;
+
   }
 
   .editor {
@@ -189,6 +191,68 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
   font-family: monospace;
   }
    
+  
+  .settings-panel {
+      display: none;
+      border-radius: 18px;
+      position: fixed;
+      background-color: #323738;
+      margin: auto;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      padding: 14px 14px;
+      width: 80%;
+      height: 80%;
+      opacity: 0.8;
+      z-index: 500;
+  }
+  
+  .settings-panel.open {
+      display: block;
+  }
+  
+  .settings-blur {
+      
+  }
+  
+  .settings-x {
+      color: #ffffff;
+      display: flex;
+      font-size: 12px;
+      justify-content: flex-end;
+      border-radius: 8px;
+      background-color: #8b281f;
+      padding: 6px 8px;
+  }
+  
+  .settings-x:hover {
+      background-color: #75100a;
+      color: #f98777;
+  }
+  
+  
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);           
+    -webkit-backdrop-filter: blur(5px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 499;
+}
+
+.backdrop.open {
+    opacity: 1;
+    visibility: visible;
+}
+
 </style>
 </head>
 <body>
@@ -235,6 +299,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
           </div>
         </div>
       </div>
+      <div class="nav-item">
+        <button id="opensettings">Settings</button>
+          </div>
+      </div>
     </div>
   </div>
 
@@ -249,6 +317,54 @@ give @a bread 64</textarea>
 </pre>
 
 <script src="backend/scripts.js"></script>
+
+
+
+
+<!--settings panel-->
+<div class="backdrop" id="settingsBackdrop"></div>
+
+<div class="settings-panel">
+<div class="wrapper" style="justify-content: space-between; align-items: center; display: flex; padding-left: 12px; padding-right: 12px;">
+    <h3>mcbCode Settings</h3>
+<button id="closebutton" class="settings-x">Close</button>
+</div>
+<br>
+<input type="checkbox" id="fontToggle">
+<label for="fontToggle">Use Mojangles Font</label>
+</div>
+
+
+
+<script>
+const openBtn = document.getElementById('opensettings');
+const closeBtn = document.getElementById('closebutton');
+const panel = document.querySelector('.settings-panel');
+const backdrop = document.getElementById('settingsBackdrop');
+
+// Function to open everything
+openBtn.onclick = () => {
+    panel.classList.add('open');
+    backdrop.classList.add('open');
+};
+
+// Function to close everything
+closeBtn.onclick = () => {
+    panel.classList.remove('open');
+    backdrop.classList.remove('open');
+};
+
+// Bonus: Close when clicking the blurred area
+backdrop.onclick = () => {
+    panel.classList.remove('open');
+    backdrop.classList.remove('open');
+};
+
+</script>
+
+<!--settings panel over-->
+
+
 
 
 <script>
