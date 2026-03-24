@@ -252,6 +252,50 @@
     visibility: visible;
 }
 
+.editor-wrapper {
+  position: relative;
+  width: 100%;
+  height: 400px;
+}
+
+.highlight-layer {
+  position: absolute;
+  inset: 0;
+
+  background: #212425;
+
+  padding: 12px;
+  overflow: auto;
+
+  pointer-events: none;
+}
+
+.highlight-layer code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.code-editor {
+  position: absolute;
+  inset: 0;
+
+  background: transparent;
+  color: transparent;
+
+  caret-color: #00b2ff;
+
+  padding: 12px;
+
+  border: none;
+  outline: none;
+  resize: none;
+
+  font-family: monospace;
+  font-size: 14px;
+
+  overflow: auto;
+  white-space: pre-wrap;
+}
 </style>
 </head>
 <body>
