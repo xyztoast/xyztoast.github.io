@@ -11,7 +11,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
 <!--ok thats it now its over-->
 
    <meta name="viewport" content="width=device-width,initial-scale=1" />
-  
+
 <meta charset="UTF-8">
 <link rel="icon" href="/icons/mcbcode.png">
 <title>mcbCode - mcfunction editor for bedrock</title>
@@ -53,7 +53,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
     margin: 0;
     padding-top: 1px
   }
-  
+
   img {
     padding-top: 0px;
     padding-left: 0px;
@@ -66,14 +66,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
     user-select: none;
     margin: 0;
   }
-  
+
   button:hover {
     background-color: #505859;
     border: none;
     color: #f0f0f0;
     user-select: none;
   }
-  
+
   .line-numbers {
     background-color: #323738;
     padding: 0 7px;
@@ -88,68 +88,22 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
     justify-content: flex-end;
   }
 
-.editor {
-  position: relative;
-  flex: 1;
-}
-
-/* highlighted layer underneath */
-#highlighted {
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  padding: 0 2px;
-
-  background-color: #212425;
-
-  font-family: monospace;
-  font-size: 12px;
-  line-height: 1.2em;
-
-  white-space: pre;
-  overflow: hidden;
-
-  color: #bebebe;
-
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* textarea layer on top */
-.code-area {
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  padding: 0 2px;
-
-  background-color: transparent;
-
-  color: transparent;
-  caret-color: #bebebe;
-
-  outline: none;
-  border: none;
-  resize: none;
-
-  font-family: monospace;
-  font-size: 12px;
-  line-height: 1.2em;
-
-  white-space: pre;
-  overflow: hidden;
-
-  margin: 0;
-
-  z-index: 2;
-}
+  .code-area {
+    flex: 1;
+    padding: 0 2px;
+    background-color: #212425;
+    color: #bebebe;
+    outline: none;
+    border: none;
+    resize: none;
+    font-family: monospace;
+    overflows: hidden;
+    line-height: 1.2em;
+    white-space: pre;
+    margin: 0;
+    font-size: 12px;
+    height: 100%;
+  }
 
   .fade {
     opacity: 0;
@@ -220,7 +174,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
   #exportCode {
     color: #00b2ff;
   }
-  
+
   .delete {
     color: #ff4d4d;
   }
@@ -289,7 +243,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
     <textarea class="code-area" id="codeArea" spellcheck="false" placeholder="title @a title mcbCode by idktoast">tellraw @a {"rawtext":[{"text":"mcbCode by idktoast"}]}
 give @a bread 64</textarea>
   </div>
-  
+
 <pre>
 <code id="highlighted" class="language-mcfunction"></code>
 </pre>
