@@ -232,7 +232,18 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one
 <pre>
 <code id="highlighted" class="language-mcfunction"></code>
 </pre>
-  
+
+<script>
+const editor = document.getElementById("codeArea");
+const highlighted = document.getElementById("highlighted");
+
+editor.addEventListener("input", () => {
+  highlighted.textContent = editor.value;
+  hljs.highlightElement(highlighted);
+});
+</script>
+
+
   <script>
     const codeArea = document.getElementById('codeArea');
     const lineNumbers = document.getElementById('lineNumbers');
