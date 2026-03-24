@@ -21,7 +21,7 @@ hljs.registerLanguage('mcfunction', function(hljs) {
     contains: [
       {
         className: 'selector',
-        begin: /@[pares]/  
+        begin: /@[pares]/
       },
 
       {
@@ -38,10 +38,20 @@ hljs.registerLanguage('mcfunction', function(hljs) {
   };
 });
 
-const editor = document.getElementById("editor");
-const highlighted = document.getElementById("highlighted");
+// wait until page loads before grabbing elements
+window.addEventListener("DOMContentLoaded", () => {
 
-editor.addEventListener("input", () => {
-  highlighted.textContent = editor.value;
-  hljs.highlightElement(highlighted);
+  const editor = document.getElementById("codeArea");
+  const highlighted = document.getElementById("highlighted");
+
+  if (!editor || !highlighted) {
+    console.error("editor or highlighted element missing");
+    return;
+  }
+
+  editor.addEventListener("input", () => {
+    highlighted.textContent = editor.value;
+    hljs.highlightElement(highlighted);
+  });
+
 });
