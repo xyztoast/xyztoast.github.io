@@ -6,24 +6,26 @@ function updateHighlight() {
 
   let code = textarea.value;
 
+  // escape html
   code = code
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
-  highlighted.innerHTML = hljs.highlight(
-    code,
-    { language: "mcfunction" }
-  ).value;
+  highlighted.innerHTML =
+    hljs.highlight(code, {
+      language: "mcfunction"
+    }).value;
 }
 
-textarea.addEventListener("input", updateHighlight);
-
-// sync scrolling
+// sync scroll positions
 textarea.addEventListener("scroll", () => {
   highlightLayer.scrollTop = textarea.scrollTop;
   highlightLayer.scrollLeft = textarea.scrollLeft;
 });
 
-// first run
+// update highlighting
+textarea.addEventListener("input", updateHighlight);
+
+// run once on load
 updateHighlight();
