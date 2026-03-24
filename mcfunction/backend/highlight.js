@@ -1,4 +1,3 @@
-<script>
 hljs.registerLanguage("mcfunction", function(hljs) {
   return {
     name: "mcfunction",
@@ -29,10 +28,9 @@ hljs.registerLanguage("mcfunction", function(hljs) {
 
       {
         className: "number",
-        begin: /(~-?\d*\.?\d+|\^-?\d*\.?\d+)/
+        begin: /(~-?\\d*\\.?\\d+|\\^-?\\d*\\.?\\d+)/
       }
 
     ]
   };
 });
-</script>
