@@ -1,27 +1,28 @@
 const codeArea = document.getElementById('codeArea');
 const highlighted = document.getElementById('highlighted');
+const highlightLayer = document.getElementById('highlight-layer');
 const lineNumbers = document.getElementById('lineNumbers');
 
-function syncEditor() {
-    // 1. Sync Text
-    highlighted.textContent = codeArea.value;
-    
-    // 2. Apply Syntax Highlighting
+function updateEditor() {
+    const text = codeArea.value;
+
+    // 1. Update Highlighted Text (escaping manually for safety)
+    highlighted.textContent = text;
     hljs.highlightElement(highlighted);
 
-    // 3. Sync Line Numbers
-    const lines = codeArea.value.split('\n').length;
+    // 2. Update Line Numbers
+    const lines = text.split('\n').length;
     lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => i + 1).join('<br>');
 }
 
-// Listen for typing
-codeArea.addEventListener('input', syncEditor);
-
-// Sync scrolling so highlighting matches the textarea position
+// Sync scrolling so the highlight layer moves with the textarea
 codeArea.addEventListener('scroll', () => {
-    highlighted.scrollTop = codeArea.scrollTop;
+    highlightLayer.scrollTop = codeArea.scrollTop;
+    highlightLayer.scrollLeft = codeArea.scrollLeft;
     lineNumbers.scrollTop = codeArea.scrollTop;
 });
 
+codeArea.addEventListener('input', updateEditor);
+
 // Initial run
-syncEditor();
+updateEditor();
