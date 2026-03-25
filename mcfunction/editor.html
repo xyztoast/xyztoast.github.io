@@ -441,26 +441,6 @@ editor.addEventListener("input", () => {
 
 
   <script>
-    const codeArea = document.getElementById('codeArea');
-    const lineNumbers = document.getElementById('lineNumbers');
-
-    function updateLineNumbers() {
-      const lines = codeArea.value.split('\n').length;
-      let lineContent = '';
-      for (let i = 1; i <= lines; i++) {
-        lineContent += i + '\n';
-      }
-      lineNumbers.textContent = lineContent;
-    }
-
-    codeArea.addEventListener('input', () => {
-      updateLineNumbers();
-    });
-
-    codeArea.addEventListener('scroll', () => {
-      lineNumbers.scrollTop = codeArea.scrollTop;
-    });
-
     document.getElementById('copyCode').addEventListener('click', () => {
       const text = codeArea.value;
       if (!text) return;
