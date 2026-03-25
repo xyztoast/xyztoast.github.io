@@ -4,7 +4,7 @@ const highlightLayer = document.querySelector(".highlight-layer");
 
 function updateHighlight() {
 
-  let code = textarea.value.replace(/^\n+/, "");
+  highlighted.innerHTML = highlighted.innerHTML.replace(/^\n+/, "")
 
   // escape html
   code = code
