@@ -1,32 +1,27 @@
-const textarea = document.getElementById("codeArea");
-const highlighted = document.getElementById("highlighted");
-const highlightLayer = document.querySelector(".highlight-layer");
+const codeArea = document.getElementById('codeArea');
+const highlighted = document.getElementById('highlighted');
+const lineNumbers = document.getElementById('lineNumbers');
 
-function updateHighlight() {
+function syncEditor() {
+    // 1. Sync Text
+    highlighted.textContent = codeArea.value;
+    
+    // 2. Apply Syntax Highlighting
+    hljs.highlightElement(highlighted);
 
-  let code = textarea.value;
-  let code = textarea.value.replace(/^\n+/, "");
-
-  // escape html
-  code = code
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  highlighted.innerHTML =
-    hljs.highlight(code, {
-      language: "mcfunction"
-    }).value;
+    // 3. Sync Line Numbers
+    const lines = codeArea.value.split('\n').length;
+    lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => i + 1).join('<br>');
 }
 
-// sync scroll positions
-textarea.addEventListener("scroll", () => {
-  highlightLayer.scrollTop = textarea.scrollTop;
-  highlightLayer.scrollLeft = textarea.scrollLeft;
+// Listen for typing
+codeArea.addEventListener('input', syncEditor);
+
+// Sync scrolling so highlighting matches the textarea position
+codeArea.addEventListener('scroll', () => {
+    highlighted.scrollTop = codeArea.scrollTop;
+    lineNumbers.scrollTop = codeArea.scrollTop;
 });
 
-// update highlighting
-textarea.addEventListener("input", updateHighlight);
-
-// run once on load
-updateHighlight();
+// Initial run
+syncEditor();
