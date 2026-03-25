@@ -453,7 +453,7 @@ backdrop.onclick = () => {
       if(!codeArea.value) return alert('Nothing to export');
       let fileName = prompt('Enter file name');
       if (!fileName) return;
-      fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_') + '-idktoast.mcfunction';
+      fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_') + '.mcfunction';
       const blob = new Blob([codeArea.value], { type: 'application/octet-stream' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
