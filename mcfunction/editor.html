@@ -181,15 +181,24 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-d
     color: #ff4d4d;
   }
 
-  #highlighted {
-  display: block;
-  white-space: pre;
-  min-height: 200px;
-  background: #323738;
-  padding: 10px;
-  color: white;
+/* Match the textarea style so they align */
+#highlighted {
+  margin: 0;
+  padding: 0 2px; /* Match .code-area padding */
+  font-size: 12px;
+  line-height: 1.2em;
   font-family: monospace;
-  }
+  background-color: #212425; /* Match .code-area bg */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Optional: If you want to overlay them later, you'd use absolute positioning. 
+   For now, this just ensures the colors look right. */
+.hljs {
+  background: transparent !important; /* Let your editor bg show through */
+}
+
    
   
   .settings-panel {
@@ -317,12 +326,6 @@ welcome to mcbCode, the first exclusively bedrock mcfunction code editor.
 
 adding syntax coloring/highlighting soon. maybe autocorrect updates in the future.</textarea>
   </div>
-
-<pre>
-<code id="highlighted" class="language-mcfunction"></code>
-</pre>
-
-<script src="backend/scripts.js"></script>
 
 
 <!--settings panel-->
