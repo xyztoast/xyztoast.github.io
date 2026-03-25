@@ -6,13 +6,6 @@ contains: [
     begin: /^(give|tp|say|execute|summon|fill|clone|setblock|function|scoreboard|title|tellraw|playsound|particle)\b/
   },
 
-  // comments
-  {
-    className: "comment",
-    begin: /#/,
-    end: /$/
-  },
-
   // strings
   {
     className: "string",
