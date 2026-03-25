@@ -193,6 +193,20 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-d
   word-wrap: break-word;
 }
 
+/* Ensure both layers are identical in size and font */
+.code-area, #highlighted {
+    font-family: 'monospace';
+    font-size: 12px;
+    line-height: 1.2em;
+    padding: 0 2px;
+    margin: 0;
+    tab-size: 4;
+}
+
+/* Optional: To make it feel like a real editor, you can 
+   overlay the textarea on top of the highlighted text 
+   with 'color: transparent' and 'caret-color: white' */
+   
 /* Optional: If you want to overlay them later, you'd use absolute positioning. 
    For now, this just ensures the colors look right. */
 .hljs {
@@ -262,6 +276,46 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-d
     visibility: visible;
 }
 
+
+/* Core alignment for both layers */
+.code-area, #highlight-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 5px;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.2em;
+  white-space: pre; /* Essential for alignment */
+  overflow: hidden; /* We'll handle scroll via JS or the textarea */
+  border: none;
+  box-sizing: border-box;
+}
+
+/* The Textarea (Top Layer) */
+.code-area {
+  background: transparent; /* Show layer below */
+  color: transparent;      /* Hide raw text */
+  caret-color: #fff;       /* Keep cursor visible */
+  z-index: 2;
+  resize: none;
+  outline: none;
+}
+
+/* The Highlighted Code (Bottom Layer) */
+#highlight-layer {
+  background-color: #212425;
+  z-index: 1;
+  pointer-events: none; /* Let clicks pass through to textarea */
+}
+
+#highlighted {
+  padding: 0; /* Clear highlight.js default padding */
+}
+
 </style>
 </head>
 <body>
@@ -315,17 +369,16 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-d
     </div>
   </div>
 
-  <div class="editor" id="editor">
-    <pre class="line-numbers" id="lineNumbers">1</pre>
-    <textarea class="code-area" id="codeArea" spellcheck="false" placeholder="title @a title mcbCode by idktoast">tellraw @a {"rawtext":[{"text":"mcbCode by idktoast"}]}
-give @a bread 64
-
-
-
-welcome to mcbCode, the first exclusively bedrock mcfunction code editor.
-
-adding syntax coloring/highlighting soon. maybe autocorrect updates in the future.</textarea>
+<div class="editor">
+  <pre class="line-numbers" id="lineNumbers">1</pre>
+  <div class="container" style="position: relative; flex: 1; height: 100%;">
+    <!-- The Highlighted Layer (Bottom) -->
+    <pre id="highlight-layer" aria-hidden="true"><code id="highlighted" class="language-mcfunction"></code></pre>
+    <!-- The Input Layer (Top) -->
+    <textarea class="code-area" id="codeArea" spellcheck="false" placeholder="title @a title mcbCode"></textarea>
   </div>
+</div>
+
 
 
 <!--settings panel-->
