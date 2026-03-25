@@ -4,7 +4,8 @@
 <head>
 
 <!-- highlight.js script here DO NOT TOUCH -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
@@ -252,50 +253,6 @@
     visibility: visible;
 }
 
-.editor-wrapper {
-  position: relative;
-  width: 100%;
-  height: 500px;
-}
-
-.highlight-layer {
-  position: absolute;
-  inset: 0;
-
-  background: #212425;
-  color: #ffffff;    /* yo yo yo yo yo yo yo yo yo yo yo yo yo yo yo code is here yo yo yo yo yo yo yo yo yo yo yo yo yo yo yo*/
-  padding: 12px;
-  overflow: auto;
-
-  pointer-events: none;
-}
-
-.highlight-layer code {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-.code-editor {
-  position: absolute;
-  inset: 0;
-
-  background: transparent;
-  color: transparent;
-
-  caret-color: #00b2ff;
-
-  padding: 12px;
-
-  border: none;
-  outline: none;
-  resize: none;
-
-  font-family: monospace;
-  font-size: 14px;
-
-  overflow: auto;
-  white-space: pre-wrap;
-}
 </style>
 </head>
 <body>
@@ -349,26 +306,24 @@
     </div>
   </div>
 
-<!--code area-->
-  
-    <div class="editor-wrapper">
- <pre class="line-numbers" id="lineNumbers">1</pre>
-  <pre class="highlight-layer">
-    <code id="highlighted" class="language-mcfunction"></code>
-  </pre>
+  <div class="editor" id="editor">
+    <pre class="line-numbers" id="lineNumbers">1</pre>
+    <textarea class="code-area" id="codeArea" spellcheck="false" placeholder="title @a title mcbCode by idktoast">tellraw @a {"rawtext":[{"text":"mcbCode by idktoast"}]}
+give @a bread 64
 
-  <textarea 
-    class="code-editor" 
-    id="codeArea"
-    spellcheck="false">title @a title mcbCode
-title @a subtitle by idktoast</textarea>
-<!--end code area-->
-       
-</div>
+
+
+welcome to mcbCode, the first exclusively bedrock mcfunction code editor.
+
+adding syntax coloring/highlighting soon. maybe autocorrect updates in the future.</textarea>
   </div>
 
-<script src="backend/highlight.js"></script>
-<script src="backend/sync.js"></script>
+<pre>
+<code id="highlighted" class="language-mcfunction"></code>
+</pre>
+
+<script src="backend/scripts.js"></script>
+
 
 <!--settings panel-->
 <div class="backdrop" id="settingsBackdrop"></div>
@@ -413,7 +368,22 @@ backdrop.onclick = () => {
 
 
 
-   
+
+
+
+
+
+<script>
+const editor = document.getElementById("codeArea");
+const highlighted = document.getElementById("highlighted");
+
+editor.addEventListener("input", () => {
+  highlighted.textContent = editor.value;
+  hljs.highlightElement(highlighted);
+});
+</script>
+
+
   <script>
     const codeArea = document.getElementById('codeArea');
     const lineNumbers = document.getElementById('lineNumbers');
@@ -452,7 +422,7 @@ backdrop.onclick = () => {
       if(!codeArea.value) return alert('Nothing to export');
       let fileName = prompt('Enter file name');
       if (!fileName) return;
-      fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_') + '.mcfunction';
+      fileName = fileName.replace(/[^a-z0-9_\-]/gi, '_') + '-idktoast.mcfunction';
       const blob = new Blob([codeArea.value], { type: 'application/octet-stream' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
