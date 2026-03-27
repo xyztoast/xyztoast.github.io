@@ -12,7 +12,7 @@
       min-height:100%;
       margin:0;
       font-family:'mcfont', sans-serif;
-      background:#212425;
+      background: transparent;
       font-weight: 0;
       color:#bebebe;
     }
@@ -244,8 +244,8 @@
   <div class="spacing" style="padding-top: 5%;">
 
 <div class="form">
-<h2>if only this was a mod...</h2>
-<p>drop your mod ideas here</p>
+<h2 style="color: #00b2ff">if only this was a mod...</h2>
+<p style="color: #ffffff;">drop your mod ideas here</p>
 <form>
 <textarea id="idea" placeholder="what if you made a..." required></textarea>
 <div class="spacing" style="padding: 2px;"></div>
@@ -279,7 +279,7 @@ submitBtn.addEventListener("click", async (e) => {
   }
 
   try {
-    const res = await fetch("https://modideas.micahpcal.workers.dev", {
+    const res = await fetch("https://ideas-idktoast.vercel.app", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idea, name })
