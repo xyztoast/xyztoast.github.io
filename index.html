@@ -325,7 +325,7 @@ submitBtn.addEventListener("click", async (e) => {
   }
 
   try {
-    const res = await fetch("https://modideas.micahpcal.workers.dev", {
+    const res = await fetch("https://ideas-idktoast.vercel.app/api/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idea, name })
