@@ -1,282 +1,407 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HTML Preview</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro HTML Live Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #1e1e1e;
+            --border-color: #333;
+            --accent: #007acc;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        #app-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+        #editor-container {
+            height: 100%;
+            border-right: 1px solid var(--border-color);
+        }
+        #preview-container {
+            height: 100%;
+            background: white;
+            position: relative;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        
+        /* Floating Draggable Settings Button */
+        #floating-settings-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            cursor: move;
+            z-index: 1000;
+            transition: transform 0.2s, background 0.2s;
+        }
+        #floating-settings-btn:hover {
+            background: #0088e0;
+        }
+        #floating-settings-btn:active {
+            transform: scale(0.95);
+        }
 
-<!-- Highlight.js -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16-classic-dark.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+        /* Settings Sidebar */
+        #settings-panel {
+            position: fixed;
+            right: -320px;
+            top: 0;
+            width: 320px;
+            height: 100vh;
+            background: #252526;
+            border-left: 1px solid var(--border-color);
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1100;
+            padding: 1.5rem;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+        #settings-panel.open {
+            right: 0;
+        }
+        .settings-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1050;
+        }
+        .settings-overlay.open {
+            display: block;
+        }
 
-<style>
-:root {
-    --accent: #00b2ff;
-    --bg: #212425;
-    --panel: #323738;
-}
+        /* Utility classes */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .status-saved { background: #4caf50; }
+        .status-typing { background: #ff9800; }
 
-body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    background: var(--bg);
-    color: white;
-    font-family: monospace;
-    overflow: hidden;
-}
+        input[type=range] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
 
-/* Editor Wrapper */
-#editorWrapper {
-    position: relative;
-    width: 50%;
-    height: 100%;
-}
-
-/* Highlight Layer */
-#highlightLayer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding: 12px;
-    font-size: 14px;
-    line-height: 1.4;
-    margin: 0;
-    overflow: auto;
-    pointer-events: none;
-    white-space: pre-wrap;
-    background: var(--panel);
-    z-index: 0;
-}
-
-#highlightLayer code {
-    margin: 0;
-    display: block;
-}
-
-/* Editor */
-#editor {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    resize: none;
-    color: transparent;
-    caret-color: white;
-    padding: 12px;
-    font-size: 14px;
-    line-height: 1.4;
-    overflow: auto;
-    white-space: pre-wrap;
-    z-index: 1;
-}
-
-#preview {
-    width: 50%;
-    height: 100%;
-    border: none;
-    background: var(--bg);
-}
-
-/* Settings Menu */
-#settingsMenu {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--panel);
-    padding: 20px;
-    border-radius: 12px;
-    border: 2px solid var(--accent);
-    display: none;
-    width: 320px;
-    z-index: 999;
-    box-shadow: 0 0 20px rgba(0,0,0,0.6);
-}
-
-.setting {
-    margin-bottom: 15px;
-}
-
-.setting label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="range"] {
-    width: 100%;
-    z-index: 1000;
-}
-
-.toggle {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-input[type="checkbox"] {
-    transform: scale(1.2);
-}
-
-/* Mobile Button */
-#mobileSettingsBtn {
-    position: fixed;
-    bottom: 16px;
-    left: 16px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--accent);
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    z-index: 999;
-}
-
-</style>
+        /* Custom Scrollbar */
+        #settings-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+        #settings-panel::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="editorWrapper">
-    <pre id="highlightLayer"><code class="language-html"></code></pre>
-    <textarea id="editor" placeholder="Write HTML here..."></textarea>
-</div>
+    <div id="app-container">
+        <div id="editor-container" style="width: 50%;"></div>
+        <div id="preview-container" style="width: 50%;">
+            <iframe id="preview-frame" sandbox="allow-scripts"></iframe>
+        </div>
+    </div>
 
-<iframe id="preview"></iframe>
+    <!-- Floating Draggable Button -->
+    <div id="floating-settings-btn" title="Settings (Drag to move)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+    </div>
 
-<div id="settingsMenu">
+    <!-- Settings Overlay -->
+    <div id="settings-overlay" class="settings-overlay" onclick="toggleSettings()"></div>
 
-<div class="setting">
-<label>Preview Size (%)</label>
-<input type="range" id="previewSize" min="0" max="100" value="50">
-</div>
+    <!-- Settings Sidebar -->
+    <aside id="settings-panel">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold">Editor Settings</h2>
+            <button onclick="toggleSettings()" class="text-gray-400 hover:text-white">&times;</button>
+        </div>
+        
+        <div class="space-y-6">
+            <!-- Status Info -->
+            <div class="bg-[#1e1e1e] p-3 rounded-lg border border-gray-700">
+                <div class="flex items-center text-sm text-gray-300">
+                    <span id="save-status-dot" class="status-dot status-saved"></span>
+                    <span id="save-status-text">All changes synced</span>
+                </div>
+            </div>
 
-<div class="setting toggle">
-<label>Highlighting</label>
-<input type="checkbox" id="highlightToggle" checked>
-</div>
+            <!-- Layout Slider -->
+            <div>
+                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Split Ratio (<span id="ratio-label">50</span>%)</label>
+                <input type="range" id="layout-slider" min="5" max="95" value="50" oninput="updateLayout(this.value)">
+            </div>
 
-<div class="setting toggle">
-<label>Live Preview</label>
-<input type="checkbox" id="liveToggle" checked>
-</div>
+            <hr class="border-gray-700">
 
-<div class="setting toggle">
-<label>Wrap Text</label>
-<input type="checkbox" id="wrapToggle" checked>
-</div>
+            <!-- Font Size -->
+            <div>
+                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Font Size</label>
+                <select id="font-size" class="w-full bg-[#1e1e1e] border border-gray-700 rounded px-2 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" onchange="updateEditorSetting('fontSize', parseInt(this.value))">
+                    <option value="12">12px</option>
+                    <option value="14" selected>14px</option>
+                    <option value="16">16px</option>
+                    <option value="18">18px</option>
+                    <option value="20">22px</option>
+                </select>
+            </div>
 
-</div>
+            <!-- Preview Theme -->
+            <div>
+                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Preview Canvas Bg</label>
+                <div class="flex gap-2">
+                    <button onclick="setPreviewBg('white')" class="w-8 h-8 rounded-full border border-gray-600 bg-white" title="Light"></button>
+                    <button onclick="setPreviewBg('#121212')" class="w-8 h-8 rounded-full border border-gray-600 bg-[#121212]" title="Dark"></button>
+                    <button onclick="setPreviewBg('#f0f0f0')" class="w-8 h-8 rounded-full border border-gray-600 bg-[#f0f0f0]" title="Gray"></button>
+                </div>
+            </div>
 
-<button id="mobileSettingsBtn">⚙</button>
+            <!-- Editor Features -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-400 uppercase tracking-wider">Line Numbers</label>
+                    <input type="checkbox" id="line-numbers" checked onchange="updateEditorSetting('lineNumbers', this.checked ? 'on' : 'off')">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-400 uppercase tracking-wider">Word Wrap</label>
+                    <input type="checkbox" id="word-wrap" checked onchange="updateEditorSetting('wordWrap', this.checked ? 'on' : 'off')">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-400 uppercase tracking-wider">Minimap</label>
+                    <input type="checkbox" id="show-minimap" onchange="updateMinimap(this.checked)">
+                </div>
+            </div>
+            
+            <hr class="border-gray-700">
 
-<script>
+            <!-- Actions -->
+            <div class="space-y-2">
+                <button onclick="downloadCode()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4M7 10l5 5 5-5M12 15V3"/></svg>
+                    Download HTML
+                </button>
+                <button onclick="clearEditor()" class="w-full py-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded text-sm font-medium transition-colors border border-red-900/50">
+                    Clear Editor
+                </button>
+            </div>
+        </div>
+    </aside>
 
-const editor = document.getElementById("editor");
-const preview = document.getElementById("preview");
-const menu = document.getElementById("settingsMenu");
-
-const highlightLayer = document.querySelector("#highlightLayer code");
-const highlightBox = document.getElementById("highlightLayer");
-
-const previewSize = document.getElementById("previewSize");
-const highlightToggle = document.getElementById("highlightToggle");
-const liveToggle = document.getElementById("liveToggle");
-const wrapToggle = document.getElementById("wrapToggle");
-
-let liveEnabled = true;
-
-function updatePreview() {
-    if (!liveEnabled) return;
-
-    const code = editor.value;
-    const doc = preview.contentDocument || preview.contentWindow.document;
-
-    doc.open();
-    doc.write(code);
-    doc.close();
-}
-
-function updateHighlight() {
-    if (!highlightToggle.checked) {
-        highlightLayer.textContent = editor.value;
-        return;
+    <script>
+        let editor;
+        let previewUrl = null;
+        let saveTimeout;
+        
+        const defaultCode = `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #0f172a;
+      color: white;
     }
-
-    const highlighted = hljs.highlight(editor.value, {
-        language: "html"
-    }).value;
-
-    highlightLayer.innerHTML = highlighted;
-}
-
-editor.addEventListener("input", () => {
-    updatePreview();
-    updateHighlight();
-});
-
-editor.addEventListener("scroll", () => {
-    highlightBox.scrollTop = editor.scrollTop;
-    highlightBox.scrollLeft = editor.scrollLeft;
-});
-
-previewSize.addEventListener("input", () => {
-    const percent = previewSize.value;
-
-    preview.style.width = percent + "%";
-    document.getElementById("editorWrapper").style.width = (100 - percent) + "%";
-});
-
-highlightToggle.addEventListener("change", () => {
-    updateHighlight();
-});
-
-liveToggle.addEventListener("change", () => {
-    liveEnabled = liveToggle.checked;
-    updatePreview();
-});
-
-wrapToggle.addEventListener("change", () => {
-    if (wrapToggle.checked) {
-        editor.style.whiteSpace = "pre-wrap";
-        highlightBox.style.whiteSpace = "pre-wrap";
-    } else {
-        editor.style.whiteSpace = "pre";
-        highlightBox.style.whiteSpace = "pre";
+    .glow-text {
+      font-size: 3rem;
+      text-shadow: 0 0 20px #38bdf8;
+      color: #38bdf8;
+      margin-bottom: 1rem;
     }
-});
-
-// Alt + Q menu toggle
-window.addEventListener("keydown", (e) => {
-    if (e.altKey && e.key.toLowerCase() === "q") {
-        menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    .container {
+      text-align: center;
+      padding: 2rem;
+      border: 1px solid #334155;
+      background: #1e293b;
+      border-radius: 1rem;
     }
-});
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="glow-text">Live Preview</h1>
+    <p>Everything you type appears here instantly.</p>
+  </div>
+</body>
+</html>`;
 
-// Mobile button toggle
-const mobileBtn = document.getElementById("mobileSettingsBtn");
+        // DRAGGABLE LOGIC
+        const dragBtn = document.getElementById('floating-settings-btn');
+        let isDragging = false;
+        let dragStartX, dragStartY;
+        let btnStartX, btnStartY;
 
-mobileBtn.addEventListener("click", () => {
-    menu.style.display = (menu.style.display === "block") ? "none" : "block";
-});
+        dragBtn.addEventListener('mousedown', (e) => {
+            isDragging = false; // Reset on mousedown
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            btnStartX = dragBtn.offsetLeft;
+            btnStartY = dragBtn.offsetTop;
+            
+            const onMouseMove = (moveEvent) => {
+                const dx = moveEvent.clientX - dragStartX;
+                const dy = moveEvent.clientY - dragStartY;
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                    isDragging = true;
+                    dragBtn.style.left = (btnStartX + dx) + 'px';
+                    dragBtn.style.top = (btnStartY + dy) + 'px';
+                    dragBtn.style.right = 'auto';
+                    dragBtn.style.bottom = 'auto';
+                }
+            };
 
-// Initial render
-updatePreview();
-updateHighlight();
+            const onMouseUp = () => {
+                window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('mouseup', onMouseUp);
+                if (!isDragging) {
+                    toggleSettings();
+                }
+            };
 
-</script>
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
+        });
 
+        // Initialize Monaco
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            editor = monaco.editor.create(document.getElementById('editor-container'), {
+                value: defaultCode,
+                language: 'html',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                fontSize: 14,
+                tabSize: 2,
+                wordWrap: 'on',
+                minimap: { enabled: false },
+                padding: { top: 20 },
+                lineNumbers: 'on',
+                cursorBlinking: 'smooth',
+                cursorSmoothCaretAnimation: "on",
+                smoothScrolling: true
+            });
+
+            editor.onDidChangeModelContent(() => {
+                handleEditorChange();
+            });
+
+            updatePreview();
+        });
+
+        function handleEditorChange() {
+            // Update status indicator
+            const dot = document.getElementById('save-status-dot');
+            const text = document.getElementById('save-status-text');
+            dot.className = 'status-dot status-typing';
+            text.innerText = 'Syncing...';
+
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                updatePreview();
+                dot.className = 'status-dot status-saved';
+                text.innerText = 'All changes synced';
+            }, 500);
+        }
+
+        function updatePreview() {
+            if (!editor) return;
+            const code = editor.getValue();
+            const iframe = document.getElementById('preview-frame');
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+            const blob = new Blob([code], { type: 'text/html' });
+            previewUrl = URL.createObjectURL(blob);
+            iframe.src = previewUrl;
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            const overlay = document.getElementById('settings-overlay');
+            panel.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        function updateLayout(value) {
+            const editorCont = document.getElementById('editor-container');
+            const previewCont = document.getElementById('preview-container');
+            const label = document.getElementById('ratio-label');
+            editorCont.style.width = value + '%';
+            previewCont.style.width = (100 - value) + '%';
+            label.innerText = value;
+            if (editor) editor.layout();
+        }
+
+        function updateEditorSetting(key, value) {
+            if (editor) {
+                const options = {};
+                options[key] = value;
+                editor.updateOptions(options);
+            }
+        }
+
+        function updateMinimap(enabled) {
+            if (editor) editor.updateOptions({ minimap: { enabled } });
+        }
+
+        function setPreviewBg(color) {
+            document.getElementById('preview-container').style.backgroundColor = color;
+            const iframe = document.getElementById('preview-frame');
+            iframe.style.backgroundColor = color;
+        }
+
+        function clearEditor() {
+            if (confirm('Are you sure you want to clear all code?')) {
+                editor.setValue('');
+            }
+        }
+
+        function downloadCode() {
+            const text = editor.getValue();
+            const blob = new Blob([text], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'project.html';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        window.addEventListener('resize', () => {
+            if (editor) editor.layout();
+        });
+    </script>
 </body>
 </html>
