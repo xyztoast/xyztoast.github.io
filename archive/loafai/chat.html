@@ -189,7 +189,7 @@ async function sendMsg() {
   chat.scrollTop = chat.scrollHeight;
 
   try {
-    const res = await fetch("https://loafai.toastdesignshop.workers.dev/", { 
+    const res = await fetch("https://loafai.[redacted].workers.dev/", { 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt })
