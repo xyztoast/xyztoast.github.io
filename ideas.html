@@ -281,49 +281,85 @@
     </div>
 <div class="spacing"/>
 
+<div id="ideas-container">
+  </div>
+
 <script>
-const submitBtn = document.querySelector("#submit"); // your button
-const ideaText = document.querySelector("#idea");    // the mod idea textarea
-const nameInput = document.querySelector("#name");   // the name textarea
-let formMessage = document.createElement("div");     // feedback div
-formMessage.style.color = "#fff";
-formMessage.style.marginTop = "4px";
-submitBtn.parentNode.appendChild(formMessage);
+const API_URL = "https://ideas-idktoast.vercel.app/api/send"; // Use your actual Worker URL
+const submitBtn = document.querySelector("#submit");
+const ideaText = document.querySelector("#idea");
+const nameInput = document.querySelector("#name");
 
+// 1. Load ideas from DB
+async function loadIdeas() {
+  const container = document.getElementById("ideas-container");
+  try {
+    const res = await fetch(API_URL);
+    const ideas = await res.json();
+    
+    container.innerHTML = ideas.map(post => `
+      <div class="idea-post" style="margin-bottom: 10px;">
+        <div class="username">${escapeHTML(post.name)}</div>
+        <div class="idea">${escapeHTML(post.idea)}</div>
+        <div style="display: flex; justify-content: right; align-items: center; gap: 8px;">
+          <span id="count-${post.id}">${post.upvotes}</span>
+          <input type="checkbox" id="upvote-${post.id}" class="check_box" onchange="handleUpvote(${post.id}, this)"/>
+          <label for="upvote-${post.id}"></label>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error("Load error:", err);
+  }
+}
+
+// 2. Handle Upvoting
+async function handleUpvote(id, checkbox) {
+  if (!checkbox.checked) return; // Only allow adding likes for now
+  
+  try {
+    await fetch(API_URL, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id })
+    });
+    
+    // Update the UI number immediately
+    const countSpan = document.getElementById(`count-${id}`);
+    countSpan.textContent = parseInt(countSpan.textContent) + 1;
+    checkbox.disabled = true; // Prevent double-liking
+  } catch (err) {
+    console.error("Upvote failed:", err);
+  }
+}
+
+// 3. Submit new idea
 submitBtn.addEventListener("click", async (e) => {
-  e.preventDefault(); // prevent the default form submission
-
+  e.preventDefault();
   const idea = ideaText.value.trim();
   const name = nameInput.value.trim() || "anonymous";
 
-  if (!idea || !name) {
-    formMessage.textContent = "please fill in both fields";
-    return;
-  }
+  if (!idea) return;
 
-  try {
-    const res = await fetch("https://ideas-idktoast.vercel.app/api/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idea, name })
-    });
+  await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ idea, name })
+  });
 
-    const data = await res.json();
-
-    if (data.success) {
-      formMessage.textContent = `<br>idea submitted!`;
-      ideaText.value = "";
-      nameInput.value = "";
-    } else {
-      formMessage.textContent = "oops, something went wrong!";
-    }
-  } catch (err) {
-    console.error(err);
-    formMessage.textContent = "network error";
-  }
+  ideaText.value = "";
+  loadIdeas(); // Refresh the list
 });
-</script>
 
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Initial Load
+loadIdeas();
+</script>
 
 
 
