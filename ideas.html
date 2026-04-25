@@ -107,37 +107,17 @@
       border-left: 4px solid #00b2ff;
     }
     .username {
-      color: #ffffff;
-      font-weight: bold;
+      color: #00b2ff;
+      font-family: mcfontb;
       font-size: 14px;
     }
     .idea-text {
       margin-top: 8px;
-      color: #e0e0e0;
+      color: #fffff;
       word-wrap: break-word;
+      font-weight: 0 !important;
     }
     
-    /* Checkbox/Upvote Styling */
-    .check_box { display: none; }
-    .check_box + label {
-      background: url('https://xyztoast2.github.io/icon/noupvote.png') no-repeat;
-      background-size: cover;
-      height: 20px;
-      width: 20px;
-      display: inline-block;
-      cursor: pointer;
-    }
-    .check_box:checked + label {
-      background: url('https://xyztoast2.github.io/icon/upvote.png') no-repeat;
-      background-size: cover;
-    }
-    .upvote-section {
-      display: flex; 
-      justify-content: flex-end; 
-      align-items: center; 
-      gap: 8px;
-      margin-top: 10px;
-    }
   </style>
 </head>
 <body>
@@ -193,11 +173,6 @@
           <div class="idea-post">
             <div class="username">${escapeHTML(post.name || "anonymous")}</div>
             <div class="idea-text">${escapeHTML(post.idea)}</div>
-            <div class="upvote-section">
-              <span id="count-${post.id}">${post.upvotes || 0}</span>
-              <input type="checkbox" id="upvote-${post.id}" class="check_box" onchange="handleUpvote(${post.id}, this)"/>
-              <label for="upvote-${post.id}"></label>
-            </div>
           </div>
         `).join('');
       } catch (err) {
