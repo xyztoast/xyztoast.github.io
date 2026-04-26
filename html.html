@@ -3,369 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Editor</title>
+    <title>HTML Editor | v2</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Monaco Editor Loader -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #1e1e1e;
-            --border-color: #333;
-            --accent: #007acc;
-        }
         body, html {
-            margin: 0;
-            padding: 0;
             height: 100%;
+            margin: 0;
             overflow: hidden;
-            background-color: var(--bg-dark);
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #1e1e1e;
         }
-        #app-container {
+        .main-container {
             display: flex;
             height: 100vh;
-            width: 100%;
-        }
-        #editor-container {
-            height: 100%;
-            border-right: 1px solid var(--border-color);
-        }
-        #preview-container {
-            height: 100%;
-            background: white;
+            width: 100vw;
+            overflow: hidden;
             position: relative;
         }
-        iframe {
-            width: 100%;
+        #editor-pane {
             height: 100%;
-            border: none;
-            background: white;
+            min-width: 100px;
+            width: 50%;
         }
-        
-        /* Floating Draggable Settings Button */
-        #floating-settings-btn {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
-            background: var(--accent);
+        #preview-pane {
+            flex-grow: 1;
+            height: 100%;
+            background: white;
+            min-width: 100px;
+        }
+        #resizer {
+            width: 8px;
+            cursor: col-resize;
+            background-color: #2d2d2d;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            position: relative;
+        }
+        #resizer:hover, .resizing #resizer {
+            background-color: #3b82f6;
+        }
+        #resizer::after {
+            content: "";
+            width: 2px;
+            height: 30px;
+            background-color: #444;
+            border-radius: 2px;
+        }
+
+        /* Gear Button */
+        #settings-trigger {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            cursor: move;
-            z-index: 1000;
-            transition: transform 0.2s, background 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 30;
+            transition: transform 0.2s;
         }
-        #floating-settings-btn:hover {
-            background: #0088e0;
-        }
-        #floating-settings-btn:active {
-            transform: scale(0.95);
+        #settings-trigger:hover {
+            transform: translateX(-50%) scale(1.1) rotate(45deg);
         }
 
-        /* Settings Sidebar */
+        /* Settings Panel */
         #settings-panel {
-            position: fixed;
-            right: -320px;
-            top: 0;
-            width: 320px;
-            height: 100vh;
+            position: absolute;
+            bottom: 60px;
+            left: -136px; 
+            width: 280px;
+            max-height: 70vh;
             background: #252526;
-            border-left: 1px solid var(--border-color);
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1100;
-            padding: 1.5rem;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
-            overflow-y: auto;
-        }
-        #settings-panel.open {
-            right: 0;
-        }
-        .settings-overlay {
+            border: 1px solid #454545;
+            border-radius: 8px;
+            z-index: 40;
             display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1050;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+            cursor: default;
         }
-        .settings-overlay.open {
-            display: block;
+        #settings-panel.active {
+            display: flex;
         }
-
-        /* Utility classes */
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
+        .settings-content {
+            overflow-y: auto;
+            padding: 16px;
         }
-        .status-saved { background: #4caf50; }
-        .status-typing { background: #ff9800; }
-
-        input[type=range] {
-            width: 100%;
-            accent-color: var(--accent);
+        .setting-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
-
-        /* Custom Scrollbar */
-        #settings-panel::-webkit-scrollbar {
-            width: 8px;
+        .setting-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #888;
+            font-weight: bold;
         }
-        #settings-panel::-webkit-scrollbar-thumb {
-            background: #444;
+        select, input {
+            background: #3c3c3c;
+            border: 1px solid #555;
+            color: white;
+            padding: 4px 8px;
             border-radius: 4px;
+            font-size: 13px;
+            outline: none;
         }
+        select:focus { border-color: #3b82f6; }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .resizing { cursor: col-resize; user-select: none; }
+        .resizing iframe { pointer-events: none; }
     </style>
 </head>
-<body>
+<body class="text-white">
 
-    <div id="app-container">
-        <div id="editor-container" style="width: 50%;"></div>
-        <div id="preview-container" style="width: 50%;">
-            <iframe id="preview-frame" sandbox="allow-scripts"></iframe>
+    <div class="main-container" id="container">
+        <!-- Code Section -->
+        <div id="editor-pane">
+            <div id="editor-container" class="h-full w-full"></div>
         </div>
-    </div>
 
-    <!-- Floating Draggable Button -->
-    <div id="floating-settings-btn" title="Settings (Drag to move)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-    </div>
-
-    <!-- Settings Overlay -->
-    <div id="settings-overlay" class="settings-overlay" onclick="toggleSettings()"></div>
-
-    <!-- Settings Sidebar -->
-    <aside id="settings-panel">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold">Editor Settings</h2>
-            <button onclick="toggleSettings()" class="text-gray-400 hover:text-white">&times;</button>
-        </div>
-        
-        <div class="space-y-6">
-            <!-- Status Info -->
-            <div class="bg-[#1e1e1e] p-3 rounded-lg border border-gray-700">
-                <div class="flex items-center text-sm text-gray-300">
-                    <span id="save-status-dot" class="status-dot status-saved"></span>
-                    <span id="save-status-text">All changes synced</span>
-                </div>
-            </div>
-
-            <!-- Layout Slider -->
-            <div>
-                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Split Ratio (<span id="ratio-label">50</span>%)</label>
-                <input type="range" id="layout-slider" min="5" max="95" value="50" oninput="updateLayout(this.value)">
-            </div>
-
-            <hr class="border-gray-700">
-
-            <!-- Font Size -->
-            <div>
-                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Font Size</label>
-                <select id="font-size" class="w-full bg-[#1e1e1e] border border-gray-700 rounded px-2 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" onchange="updateEditorSetting('fontSize', parseInt(this.value))">
-                    <option value="12">12px</option>
-                    <option value="14" selected>14px</option>
-                    <option value="16">16px</option>
-                    <option value="18">18px</option>
-                    <option value="20">22px</option>
-                </select>
-            </div>
-
-            <!-- Preview Theme -->
-            <div>
-                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Preview Canvas Bg</label>
-                <div class="flex gap-2">
-                    <button onclick="setPreviewBg('white')" class="w-8 h-8 rounded-full border border-gray-600 bg-white" title="Light"></button>
-                    <button onclick="setPreviewBg('#121212')" class="w-8 h-8 rounded-full border border-gray-600 bg-[#121212]" title="Dark"></button>
-                    <button onclick="setPreviewBg('#f0f0f0')" class="w-8 h-8 rounded-full border border-gray-600 bg-[#f0f0f0]" title="Gray"></button>
-                </div>
-            </div>
-
-            <!-- Editor Features -->
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <label class="text-xs font-medium text-gray-400 uppercase tracking-wider">Line Numbers</label>
-                    <input type="checkbox" id="line-numbers" checked onchange="updateEditorSetting('lineNumbers', this.checked ? 'on' : 'off')">
-                </div>
-                <div class="flex items-center justify-between">
-                    <label class="text-xs font-medium text-gray-400 uppercase tracking-wider">Word Wrap</label>
-                    <input type="checkbox" id="word-wrap" checked onchange="updateEditorSetting('wordWrap', this.checked ? 'on' : 'off')">
-                </div>
-                <div class="flex items-center justify-between">
-                    <label class="text-xs font-medium text-gray-400 uppercase tracking-wider">Minimap</label>
-                    <input type="checkbox" id="show-minimap" onchange="updateMinimap(this.checked)">
-                </div>
+        <!-- Draggable Bar -->
+        <div id="resizer">
+            <div id="settings-trigger" title="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             </div>
             
-            <hr class="border-gray-700">
-
-            <!-- Actions -->
-            <div class="space-y-2">
-                <button onclick="downloadCode()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4M7 10l5 5 5-5M12 15V3"/></svg>
-                    Download HTML
-                </button>
-                <button onclick="clearEditor()" class="w-full py-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded text-sm font-medium transition-colors border border-red-900/50">
-                    Clear Editor
-                </button>
+            <!-- Settings Panel -->
+            <div id="settings-panel">
+                <div class="p-3 border-b border-gray-700 font-bold text-sm bg-[#2d2d2d] flex justify-between items-center">
+                    <span>Editor Settings</span>
+                    <button id="close-settings" class="hover:text-red-400 p-1">✕</button>
+                </div>
+                <div class="settings-content">
+                    <div class="setting-item">
+                        <label class="setting-label">Theme</label>
+                        <select id="set-theme">
+                            <option value="vs-dark">Visual Studio Dark</option>
+                            <option value="vs">Visual Studio Light</option>
+                            <option value="hc-black">High Contrast</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Font Size</label>
+                        <input type="number" id="set-fontsize" value="14" min="8" max="32">
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Word Wrap</label>
+                        <select id="set-wordwrap">
+                            <option value="on">On</option>
+                            <option value="off">Off</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Line Numbers</label>
+                        <select id="set-linenumbers">
+                            <option value="on">On</option>
+                            <option value="off">Off</option>
+                            <option value="relative">Relative</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Minimap</label>
+                        <select id="set-minimap">
+                            <option value="false">Hidden</option>
+                            <option value="true">Visible</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Cursor Style</label>
+                        <select id="set-cursor">
+                            <option value="line">Line</option>
+                            <option value="block">Block</option>
+                            <option value="underline">Underline</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Tab Size</label>
+                        <select id="set-tabsize">
+                            <option value="2">2 Spaces</option>
+                            <option value="4" selected>4 Spaces</option>
+                            <option value="8">8 Spaces</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Cursor Blinking</label>
+                        <select id="set-blinking">
+                            <option value="blink">Blink</option>
+                            <option value="smooth">Smooth</option>
+                            <option value="phase">Phase</option>
+                            <option value="expand">Expand</option>
+                            <option value="solid">Solid</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Auto Closing Brackets</label>
+                        <select id="set-autoclose">
+                            <option value="always">Always</option>
+                            <option value="never">Never</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Semantic Highlighting</label>
+                        <select id="set-semantic">
+                            <option value="true">Enabled</option>
+                            <option value="false">Disabled</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Scroll Beyond Last Line</label>
+                        <select id="set-scrollpast">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Render Whitespace</label>
+                        <select id="set-whitespace">
+                            <option value="none">None</option>
+                            <option value="boundary">Boundary</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Format On Paste</label>
+                        <select id="set-formatpaste">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
-    </aside>
 
+        <!-- Preview Section -->
+        <div id="preview-pane">
+            <iframe id="preview-frame"></iframe>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    
     <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
+
         let editor;
-        let previewUrl = null;
-        let saveTimeout;
-        
-        const defaultCode = `Type HTML here to get started`;
+        const editorPane = document.getElementById('editor-pane');
+        const resizer = document.getElementById('resizer');
+        const container = document.getElementById('container');
+        const previewFrame = document.getElementById('preview-frame');
+        const settingsTrigger = document.getElementById('settings-trigger');
+        const settingsPanel = document.getElementById('settings-panel');
+        const closeSettings = document.getElementById('close-settings');
 
-        // DRAGGABLE LOGIC
-        const dragBtn = document.getElementById('floating-settings-btn');
-        let isDragging = false;
-        let dragStartX, dragStartY;
-        let btnStartX, btnStartY;
+        window.onload = function() {
+            require(['vs/editor/editor.main'], function() {
+                editor = monaco.editor.create(document.getElementById('editor-container'), {
+                    value: "Type HTML to get started",
+                    language: 'html',
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    fontFamily: "'Fira Code', monospace",
+                    fontSize: 14,
+                    fontLigatures: true,
+                    minimap: { enabled: false },
+                    padding: { top: 20 },
+                    wordWrap: 'on',
+                    cursorBlinking: 'smooth'
+                });
 
-        dragBtn.addEventListener('mousedown', (e) => {
-            isDragging = false; // Reset on mousedown
-            dragStartX = e.clientX;
-            dragStartY = e.clientY;
-            btnStartX = dragBtn.offsetLeft;
-            btnStartY = dragBtn.offsetTop;
-            
-            const onMouseMove = (moveEvent) => {
-                const dx = moveEvent.clientX - dragStartX;
-                const dy = moveEvent.clientY - dragStartY;
-                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-                    isDragging = true;
-                    dragBtn.style.left = (btnStartX + dx) + 'px';
-                    dragBtn.style.top = (btnStartY + dy) + 'px';
-                    dragBtn.style.right = 'auto';
-                    dragBtn.style.bottom = 'auto';
-                }
-            };
-
-            const onMouseUp = () => {
-                window.removeEventListener('mousemove', onMouseMove);
-                window.removeEventListener('mouseup', onMouseUp);
-                if (!isDragging) {
-                    toggleSettings();
-                }
-            };
-
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('mouseup', onMouseUp);
-        });
-
-        // Initialize Monaco
-        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
-        require(['vs/editor/editor.main'], function () {
-            editor = monaco.editor.create(document.getElementById('editor-container'), {
-                value: defaultCode,
-                language: 'html',
-                theme: 'vs-dark',
-                automaticLayout: true,
-                fontSize: 14,
-                tabSize: 2,
-                wordWrap: 'on',
-                minimap: { enabled: false },
-                padding: { top: 20 },
-                lineNumbers: 'on',
-                cursorBlinking: 'smooth',
-                cursorSmoothCaretAnimation: "on",
-                smoothScrolling: true
-            });
-
-            editor.onDidChangeModelContent(() => {
-                handleEditorChange();
-            });
-
-            updatePreview();
-        });
-
-        function handleEditorChange() {
-            // Update status indicator
-            const dot = document.getElementById('save-status-dot');
-            const text = document.getElementById('save-status-text');
-            dot.className = 'status-dot status-typing';
-            text.innerText = 'Syncing...';
-
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
+                editor.onDidChangeModelContent(() => updatePreview());
                 updatePreview();
-                dot.className = 'status-dot status-saved';
-                text.innerText = 'All changes synced';
-            }, 500);
-        }
+                setupResizer();
+                setupSettings();
+            });
+        };
 
         function updatePreview() {
-            if (!editor) return;
             const code = editor.getValue();
-            const iframe = document.getElementById('preview-frame');
-            if (previewUrl) URL.revokeObjectURL(previewUrl);
+            // Create a preview only if there's actual HTML content
             const blob = new Blob([code], { type: 'text/html' });
-            previewUrl = URL.createObjectURL(blob);
-            iframe.src = previewUrl;
+            const url = URL.createObjectURL(blob);
+            previewFrame.src = url;
         }
 
-        function toggleSettings() {
-            const panel = document.getElementById('settings-panel');
-            const overlay = document.getElementById('settings-overlay');
-            panel.classList.toggle('open');
-            overlay.classList.toggle('open');
+        function setupResizer() {
+            let isResizing = false;
+            
+            resizer.addEventListener('mousedown', (e) => {
+                if (settingsTrigger.contains(e.target) || settingsPanel.contains(e.target)) return;
+                isResizing = true;
+                container.classList.add('resizing');
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                const containerWidth = container.offsetWidth;
+                let newWidth = (e.clientX / containerWidth) * 100;
+                if (newWidth < 5) newWidth = 5;
+                if (newWidth > 95) newWidth = 95;
+                editorPane.style.width = `${newWidth}%`;
+                if (editor) editor.layout();
+            });
+
+            document.addEventListener('mouseup', () => {
+                isResizing = false;
+                container.classList.remove('resizing');
+            });
         }
 
-        function updateLayout(value) {
-            const editorCont = document.getElementById('editor-container');
-            const previewCont = document.getElementById('preview-container');
-            const label = document.getElementById('ratio-label');
-            editorCont.style.width = value + '%';
-            previewCont.style.width = (100 - value) + '%';
-            label.innerText = value;
-            if (editor) editor.layout();
+        function setupSettings() {
+            settingsPanel.addEventListener('mousedown', (e) => e.stopPropagation());
+            settingsPanel.addEventListener('click', (e) => e.stopPropagation());
+
+            settingsTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsPanel.classList.toggle('active');
+            });
+
+            closeSettings.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsPanel.classList.remove('active');
+            });
+
+            document.addEventListener('mousedown', (e) => {
+                if (!settingsPanel.contains(e.target) && !settingsTrigger.contains(e.target)) {
+                    settingsPanel.classList.remove('active');
+                }
+            });
+
+            const apply = (id, callback) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', (e) => {
+                        callback(e.target.value);
+                    });
+                }
+            };
+
+            apply('set-theme', val => monaco.editor.setTheme(val));
+            apply('set-fontsize', val => editor.updateOptions({ fontSize: parseInt(val) }));
+            apply('set-wordwrap', val => editor.updateOptions({ wordWrap: val }));
+            apply('set-linenumbers', val => editor.updateOptions({ lineNumbers: val }));
+            apply('set-minimap', val => editor.updateOptions({ minimap: { enabled: val === 'true' } }));
+            apply('set-cursor', val => editor.updateOptions({ cursorStyle: val }));
+            apply('set-tabsize', val => editor.getModel().updateOptions({ tabSize: parseInt(val) }));
+            apply('set-blinking', val => editor.updateOptions({ cursorBlinking: val }));
+            apply('set-autoclose', val => editor.updateOptions({ autoClosingBrackets: val }));
+            apply('set-semantic', val => editor.updateOptions({ 'semanticHighlighting.enabled': val === 'true' }));
+            apply('set-scrollpast', val => editor.updateOptions({ scrollBeyondLastLine: val === 'true' }));
+            apply('set-whitespace', val => editor.updateOptions({ renderWhitespace: val }));
+            apply('set-formatpaste', val => editor.updateOptions({ formatOnPaste: val === 'true' }));
         }
 
-        function updateEditorSetting(key, value) {
-            if (editor) {
-                const options = {};
-                options[key] = value;
-                editor.updateOptions(options);
-            }
-        }
-
-        function updateMinimap(enabled) {
-            if (editor) editor.updateOptions({ minimap: { enabled } });
-        }
-
-        function setPreviewBg(color) {
-            document.getElementById('preview-container').style.backgroundColor = color;
-            const iframe = document.getElementById('preview-frame');
-            iframe.style.backgroundColor = color;
-        }
-
-        function clearEditor() {
-            if (confirm('Are you sure you want to clear all code?')) {
-                editor.setValue('');
-            }
-        }
-
-        function downloadCode() {
-            const text = editor.getValue();
-            const blob = new Blob([text], { type: 'text/html' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'project.html';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-
-        window.addEventListener('resize', () => {
-            if (editor) editor.layout();
-        });
+        window.addEventListener('resize', () => { if (editor) editor.layout(); });
     </script>
 </body>
 </html>
