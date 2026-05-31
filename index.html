@@ -195,6 +195,16 @@
   align-items: center;
   display: flex;
 }
+
+#more-mods {
+  padding: none;
+  background-color: none;
+}
+
+#more-mods:hover {
+    padding-left: none !important;
+    padding-right: none !important;
+}
   </style>
 </head>
 <body>
@@ -226,7 +236,7 @@
   
     
     
-<div class="spacing" style="padding-top:100px;"/>
+<div class="spacing" style="padding-top:50px;"/>
     <h2>popular projects</h2>
 
 </div>
@@ -236,7 +246,7 @@
 <div class="tab-content">
 <!--backrooms-->
 <a href="https://www.curseforge.com/minecraft-bedrock/addons/infinite-backrooms-generator" style="padding:0px 0px;color: #bebebe;background-color:#3e4344">  
-<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1357/813/256/256/638881985200731048.jpg" style="width: 100px"><br>infinite<br>backrooms<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 15K+</dl><addon>Addon</addon></div></a>    
+<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1357/813/256/256/638881985200731048.jpg" style="width: 100px"><br>infinite<br>backrooms<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 20K+</dl><addon>Addon</addon></div></a>    
   
   
 <!--totemless-->
@@ -248,7 +258,7 @@
 
 <!--crimson-->
 <a href="https://www.curseforge.com/minecraft-bedrock/maps/survival-world-achievements-on" style="padding:0px 0px;color: #bebebe;background-color:#3e4344">
-<div class="mod"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG0e_mg7hV4JdGmzZRLTRdCA7m1hyW581cvA&s" style="width: 100px"><br>survival<br>world<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2.5K+</dl><world>World</world></div></a>
+<div class="mod"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG0e_mg7hV4JdGmzZRLTRdCA7m1hyW581cvA&s" style="width: 100px"><br>survival<br>world<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 3K+</dl><world>World</world></div></a>
 
   
 <div class="spacing" />
@@ -271,24 +281,37 @@
 
 <!--cobwebs-->
 <a href="https://www.curseforge.com/minecraft-bedrock/texture-packs/visible-cobwebs" style="padding:0px 0px;color: #bebebe;background-color:#3e4344">
-<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1632/412/256/256/639046079134890666.png" style="width: 100px"><br>visible<br>cobwebs<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 3.5K+</dl><texture>Textures</texture></div></a>
+<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1632/412/256/256/639046079134890666.png" style="width: 100px"><br>visible<br>cobwebs<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 4K+</dl><texture>Textures</texture></div></a>
     
     
     
 
 <!--fov-->
 <a href="https://www.curseforge.com/minecraft-bedrock/texture-packs/quick-fov" style="padding:0px 0px;color: #bebebe;background-color:#3e4344">
-<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1603/462/256/256/639035782637432315.png" style="width: 100px"><br>quick<br>fov<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 1.5k+</dl><texture>Textures</texture></div></a>
+<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1603/462/256/256/639035782637432315.png" style="width: 100px"><br>quick<br>fov<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2k+</dl><texture>Textures</texture></div></a>
     
     
 
 
   </div>
+  <div class="spacing" style="padding: 50px;">
+
+
+<h2>more mods!</h2>
+<p>sometimes i post exclusive mods here.</p>
+<a style="user-select: none; cursor: pointer;" href="https://hello.mcbcode.com/more-mods">
+click here to view the downloads!
+</a>
+
+
+
+
   <div class="spacing">
 
 
 <h2>if only this was a mod...</h2>
 <p>drop your mod ideas here</p>
+
 <form>
 <textarea id="idea" placeholder="what if you made a..." required></textarea>
 <div class="spacing" style="padding: 2px;"></div>
@@ -336,7 +359,7 @@ submitBtn.addEventListener("click", async (e) => {
     const data = await res.json();
 
     if (data.success) {
-      formMessage.textContent = `<br>idea submitted!`;
+      formMessage.textContent = `idea submitted!`;
       ideaText.value = "";
       nameInput.value = "";
     } else {
