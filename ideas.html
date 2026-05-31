@@ -72,8 +72,29 @@
     }
     .submit:hover { background-color: #5acaff; }
 
+    /* sort bar */
+    .sort-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .sort-btn {
+      background: #323738;
+      color: #6b7172;
+      border: none;
+      font-family: mcfont;
+      font-size: 13px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: color 0.1s, background 0.1s;
+    }
+    .sort-btn:hover { color: #bebebe; }
+    .sort-btn.active { color: #00b2ff; background: #2a3a40; }
+
     #ideas-container {
-      margin-top: 40px;
+      margin-top: 20px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -85,11 +106,13 @@
       padding: 16px;
       text-align: left;
       border-left: 4px solid #00b2ff;
-      transition: border-color 0.2s ease;
+      transition: border-color 0.2s ease, border-left-width 0.2s ease;
     }
-    .idea-post.mega {
-      border-left-color: #05ee93;
-    }
+    .idea-post.mega { border-left-color: #05ee93; }
+    .idea-post.hot-1 { border-left-width: 5px; }
+    .idea-post.hot-2 { border-left-width: 7px; }
+    .idea-post.hot-3 { border-left-width: 10px; }
+
     .idea-meta {
       display: flex;
       align-items: center;
@@ -97,29 +120,13 @@
       flex-wrap: wrap;
       font-size: 13px;
     }
-    .idea-num {
-      color: #00b2ff;
-      font-family: mcfontb;
-    }
-    .idea-post.mega .idea-num {
-      color: #05ee93;
-    }
-    .idea-username {
-      color: #00b2ff;
-      font-family: mcfontb;
-    }
-    .idea-post.mega .idea-username {
-      color: #05ee93;
-    }
-    .idea-date {
-      color: #6b7172;
-      font-size: 12px;
-    }
-    .idea-text {
-      margin-top: 8px;
-      color: #ebebeb;
-      word-wrap: break-word;
-    }
+    .idea-num { color: #00b2ff; font-family: mcfontb; }
+    .idea-post.mega .idea-num { color: #05ee93; }
+    .idea-username { color: #00b2ff; font-family: mcfontb; }
+    .idea-post.mega .idea-username { color: #05ee93; }
+    .idea-date { color: #6b7172; font-size: 12px; }
+    .idea-text { margin-top: 8px; color: #ebebeb; word-wrap: break-word; }
+
     .idea-footer {
       margin-top: 10px;
       display: flex;
@@ -149,10 +156,7 @@
       flex-shrink: 0;
       transition: border-color 0.1s, background 0.1s;
     }
-    .upvote-label.voted .upvote-box {
-      border-color: #00b2ff;
-      background: #00b2ff22;
-    }
+    .upvote-label.voted .upvote-box { border-color: #00b2ff; background: #00b2ff22; }
     .upvote-label.voted { color: #00b2ff; }
     .upvote-label.voted .upvote-box::after {
       content: '';
@@ -186,9 +190,7 @@
       transition: background 0.1s;
     }
     .mega-label.voted { color: #05ee93; }
-    .mega-label.voted .mega-box {
-      background: #05ee9322;
-    }
+    .mega-label.voted .mega-box { background: #05ee9322; }
     .mega-label.voted .mega-box::after {
       content: '';
       width: 8px;
@@ -196,12 +198,82 @@
       background: #05ee93;
       display: block;
     }
-    .mega-credit {
-      font-size: 12px;
-      color: #6b7172;
-      margin-top: 6px;
-    }
+    .mega-credit { font-size: 12px; color: #6b7172; margin-top: 6px; }
     .spacing { padding-top: 50px; }
+
+    /* muv button in corner */
+    #muv-btn {
+      position: fixed;
+      bottom: 14px;
+      right: 14px;
+      width: 18px;
+      height: 18px;
+      background: #2a2e2f;
+      border: 1px solid #383d3e;
+      cursor: pointer;
+      opacity: 0.35;
+      transition: opacity 0.15s;
+      z-index: 100;
+    }
+    #muv-btn:hover { opacity: 0.7; }
+
+    /* muv modal */
+    #muv-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000000aa;
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    #muv-modal.open { display: flex; }
+    #muv-box {
+      background: #212425;
+      border: 1px solid #383d3e;
+      padding: 20px;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #muv-box p { padding: 0; margin: 0; font-size: 13px; color: #6b7172; }
+    #muv-input {
+      height: 36px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+      background: #323738;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: mcfont;
+      padding: 6px 8px;
+      letter-spacing: 3px;
+    }
+    #muv-submit {
+      background: #00b2ff;
+      color: #000;
+      border: none;
+      font-family: mcfont;
+      font-size: 14px;
+      padding: 7px 0;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    #muv-submit:hover { background: #5acaff; }
+    #muv-submit.active-mode { background: #05ee93; color: #000; }
+    #muv-error { color: #ff4444; font-size: 12px; min-height: 14px; }
+    #muv-close {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      color: #6b7172;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
   </style>
 </head>
 <body>
@@ -225,12 +297,33 @@
         <p>more ideas made by other people</p>
       </div>
 
+      <div class="sort-bar">
+        <button class="sort-btn active" data-sort="newest">newest</button>
+        <button class="sort-btn" data-sort="oldest">oldest</button>
+        <button class="sort-btn" data-sort="most">most upvotes</button>
+        <button class="sort-btn" data-sort="least">least upvotes</button>
+      </div>
+
       <div id="ideas-container">
         <p>loading ideas...</p>
       </div>
     </div>
   </div>
   <br><br><br><br><br>
+
+  <!-- muv corner button -->
+  <div id="muv-btn" title=""></div>
+
+  <!-- muv modal -->
+  <div id="muv-modal">
+    <div id="muv-box">
+      <button id="muv-close">x</button>
+      <p>enter secret to enable mega upvotes</p>
+      <input id="muv-input" type="password" placeholder="secret" autocomplete="off" />
+      <div id="muv-error"></div>
+      <button id="muv-submit">unlock</button>
+    </div>
+  </div>
 
   <script>
     const API_URL = "https://ideas-hello.mcbcode.com";
@@ -241,6 +334,11 @@
     const formMessage = document.querySelector("#form-message");
     const ideasContainer = document.querySelector("#ideas-container");
 
+    let muvSecret = null;
+    let allIdeas = [];
+    let currentSort = "newest";
+
+    // --- localStorage helpers ---
     function getVoted() {
       try { return JSON.parse(localStorage.getItem("voted_ideas") || "[]"); }
       catch { return []; }
@@ -248,6 +346,10 @@
     function markVoted(id) {
       const v = getVoted();
       if (!v.includes(String(id))) v.push(String(id));
+      localStorage.setItem("voted_ideas", JSON.stringify(v));
+    }
+    function unmarkVoted(id) {
+      const v = getVoted().filter(x => x !== String(id));
       localStorage.setItem("voted_ideas", JSON.stringify(v));
     }
     function getMegaVoted() {
@@ -260,10 +362,80 @@
       localStorage.setItem("mega_voted_ideas", JSON.stringify(v));
     }
 
-    function isMuvMode() {
-      const i = ideaInput.value;
-      const n = nameInput.value;
-      return i.length > 0 && n.length > 0 && i === n;
+    // --- muv modal ---
+    const muvBtn = document.querySelector("#muv-btn");
+    const muvModal = document.querySelector("#muv-modal");
+    const muvClose = document.querySelector("#muv-close");
+    const muvInput = document.querySelector("#muv-input");
+    const muvSubmit = document.querySelector("#muv-submit");
+    const muvError = document.querySelector("#muv-error");
+
+    muvBtn.addEventListener("click", () => muvModal.classList.add("open"));
+    muvClose.addEventListener("click", () => { muvModal.classList.remove("open"); muvError.textContent = ""; muvInput.value = ""; });
+    muvModal.addEventListener("click", (e) => { if (e.target === muvModal) { muvModal.classList.remove("open"); muvError.textContent = ""; muvInput.value = ""; } });
+
+    muvSubmit.addEventListener("click", async () => {
+      if (muvSubmit.classList.contains("active-mode")) {
+        muvSecret = null;
+        muvSubmit.classList.remove("active-mode");
+        muvSubmit.textContent = "unlock";
+        muvModal.classList.remove("open");
+        renderIdeas();
+        return;
+      }
+
+      const val = muvInput.value;
+      if (!val) { muvError.textContent = "enter the secret"; return; }
+
+      // verify by attempting a dummy mega patch — worker will 403 if wrong
+      try {
+        const res = await fetch(API_URL, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json", "X-MUV-Secret": val },
+          body: JSON.stringify({ id: 0, type: "mega_check" })
+        });
+        const data = await res.json();
+        if (res.status === 403) {
+          muvError.textContent = "wrong secret";
+          return;
+        }
+        muvSecret = val;
+        muvSubmit.classList.add("active-mode");
+        muvSubmit.textContent = "disable";
+        muvError.textContent = "";
+        muvModal.classList.remove("open");
+        renderIdeas();
+      } catch {
+        muvError.textContent = "network error";
+      }
+    });
+
+    // --- sort ---
+    document.querySelectorAll(".sort-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentSort = btn.dataset.sort;
+        renderIdeas();
+      });
+    });
+
+    function getSorted(ideas) {
+      const copy = [...ideas];
+      if (currentSort === "newest") return copy.sort((a, b) => b.ideaNumber - a.ideaNumber);
+      if (currentSort === "oldest") return copy.sort((a, b) => a.ideaNumber - b.ideaNumber);
+      if (currentSort === "most") return copy.sort((a, b) => b.upvotes - a.upvotes);
+      if (currentSort === "least") return copy.sort((a, b) => a.upvotes - b.upvotes);
+      return copy;
+    }
+
+    function hotClass(upvotes, max) {
+      if (max === 0) return "";
+      const ratio = upvotes / max;
+      if (ratio >= 0.75) return " hot-3";
+      if (ratio >= 0.4) return " hot-2";
+      if (ratio >= 0.15) return " hot-1";
+      return "";
     }
 
     function formatDate(ts) {
@@ -274,148 +446,161 @@
       return months[d.getUTCMonth()] + " " + d.getUTCDate() + ", " + d.getUTCFullYear();
     }
 
-    async function loadIdeas() {
-      try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error("fetch failed");
-        const ideas = await res.json();
+    function renderIdeas() {
+      if (!allIdeas.length) {
+        ideasContainer.innerHTML = "<p>no ideas yet. be the first!</p>";
+        return;
+      }
 
-        if (!ideas.length) {
-          ideasContainer.innerHTML = "<p>no ideas yet. be the first!</p>";
-          return;
-        }
+      const voted = getVoted();
+      const megaVoted = getMegaVoted();
+      const sorted = getSorted(allIdeas);
+      const maxUpvotes = Math.max(...allIdeas.map(p => p.upvotes || 0));
 
-        const voted = getVoted();
-        const megaVoted = getMegaVoted();
-        const muvMode = isMuvMode();
+      ideasContainer.innerHTML = "";
 
-        ideasContainer.innerHTML = "";
+      sorted.forEach((post, index) => {
+        const isMega = post.mega_upvoted === 1;
+        const hasVoted = voted.includes(String(post.ideaNumber));
+        const hasMegaVoted = megaVoted.includes(String(post.ideaNumber));
+        const num = post.ideaNumber;
+        const hot = hotClass(post.upvotes || 0, maxUpvotes);
 
-        ideas.forEach((post, index) => {
-          const isMega = post.mega_upvoted === 1;
-          const hasVoted = voted.includes(String(post.ideaNumber));
-          const hasMegaVoted = megaVoted.includes(String(post.ideaNumber));
-          const num = ideas.length - index;
+        const div = document.createElement("div");
+        div.className = "idea-post" + (isMega ? " mega" : "") + hot;
 
-          const div = document.createElement("div");
-          div.className = "idea-post" + (isMega ? " mega" : "");
+        const meta = document.createElement("div");
+        meta.className = "idea-meta";
+        meta.innerHTML =
+          '<span class="idea-num">#' + num + '</span>' +
+          '<span style="color:#6b7172">|</span>' +
+          '<span class="idea-username">' + escapeHTML(post.name || "anonymous") + '</span>' +
+          '<span style="color:#6b7172">|</span>' +
+          '<span class="idea-date">' + formatDate(post.timestamp) + '</span>';
 
-          const meta = document.createElement("div");
-          meta.className = "idea-meta";
-          meta.innerHTML =
-            '<span class="idea-num">#' + num + '</span>' +
-            '<span style="color:#6b7172">|</span>' +
-            '<span class="idea-username">' + escapeHTML(post.name || "anonymous") + '</span>' +
-            '<span style="color:#6b7172">|</span>' +
-            '<span class="idea-date">' + formatDate(post.timestamp) + '</span>';
+        const textEl = document.createElement("div");
+        textEl.className = "idea-text";
+        textEl.textContent = post.idea;
 
-          const textEl = document.createElement("div");
-          textEl.className = "idea-text";
-          textEl.textContent = post.idea;
+        const footer = document.createElement("div");
+        footer.className = "idea-footer";
 
-          const footer = document.createElement("div");
-          footer.className = "idea-footer";
+        // upvote
+        const upvoteLabel = document.createElement("label");
+        upvoteLabel.className = "upvote-label" + (hasVoted ? " voted" : "");
 
-          // regular upvote
-          const upvoteLabel = document.createElement("label");
-          upvoteLabel.className = "upvote-label" + (hasVoted ? " voted" : "");
+        const upvoteChk = document.createElement("input");
+        upvoteChk.type = "checkbox";
+        upvoteChk.checked = hasVoted;
 
-          const upvoteChk = document.createElement("input");
-          upvoteChk.type = "checkbox";
-          upvoteChk.checked = hasVoted;
+        const upvoteBox = document.createElement("span");
+        upvoteBox.className = "upvote-box";
 
-          const upvoteBox = document.createElement("span");
-          upvoteBox.className = "upvote-box";
+        const upvoteCount = document.createElement("span");
+        upvoteCount.textContent = post.upvotes || 0;
 
-          const upvoteCount = document.createElement("span");
-          upvoteCount.textContent = post.upvotes || 0;
+        upvoteLabel.appendChild(upvoteChk);
+        upvoteLabel.appendChild(upvoteBox);
+        upvoteLabel.appendChild(upvoteCount);
 
-          upvoteLabel.appendChild(upvoteChk);
-          upvoteLabel.appendChild(upvoteBox);
-          upvoteLabel.appendChild(upvoteCount);
+        let isVoted = hasVoted;
+        upvoteLabel.addEventListener("click", async () => {
+          if (isVoted) {
+            // unvote
+            isVoted = false;
+            upvoteLabel.classList.remove("voted");
+            upvoteCount.textContent = Math.max(0, parseInt(upvoteCount.textContent) - 1);
+            post.upvotes = Math.max(0, (post.upvotes || 0) - 1);
+            unmarkVoted(post.ideaNumber);
+            try {
+              await fetch(API_URL, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: post.ideaNumber, type: "unvote" })
+              });
+            } catch {}
+          } else {
+            // vote
+            isVoted = true;
+            upvoteLabel.classList.add("voted");
+            upvoteCount.textContent = parseInt(upvoteCount.textContent) + 1;
+            post.upvotes = (post.upvotes || 0) + 1;
+            markVoted(post.ideaNumber);
+            try {
+              await fetch(API_URL, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: post.ideaNumber, type: "upvote" })
+              });
+            } catch {}
+          }
+        });
 
-          if (!hasVoted) {
-            upvoteLabel.addEventListener("click", async () => {
-              upvoteLabel.classList.add("voted");
-              upvoteCount.textContent = parseInt(upvoteCount.textContent) + 1;
-              markVoted(post.ideaNumber);
-              upvoteLabel.style.pointerEvents = "none";
+        footer.appendChild(upvoteLabel);
+
+        // mega upvote
+        if (muvSecret) {
+          const megaLabel = document.createElement("label");
+          megaLabel.className = "mega-label" + (hasMegaVoted ? " voted" : "");
+
+          const megaChk = document.createElement("input");
+          megaChk.type = "checkbox";
+          megaChk.checked = hasMegaVoted;
+
+          const megaBox = document.createElement("span");
+          megaBox.className = "mega-box";
+
+          const megaText = document.createElement("span");
+          megaText.textContent = "mega upvote";
+
+          megaLabel.appendChild(megaChk);
+          megaLabel.appendChild(megaBox);
+          megaLabel.appendChild(megaText);
+
+          if (!hasMegaVoted) {
+            megaLabel.addEventListener("click", async () => {
+              megaLabel.classList.add("voted");
+              div.classList.add("mega");
+              markMegaVoted(post.ideaNumber);
+              megaLabel.style.pointerEvents = "none";
+              const creditEl = div.querySelector(".mega-credit");
+              if (creditEl) creditEl.style.display = "block";
               try {
                 await fetch(API_URL, {
                   method: "PATCH",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ id: post.ideaNumber, type: "upvote" })
+                  headers: { "Content-Type": "application/json", "X-MUV-Secret": muvSecret },
+                  body: JSON.stringify({ id: post.ideaNumber, type: "mega" })
                 });
               } catch {}
             });
           } else {
-            upvoteLabel.style.pointerEvents = "none";
+            megaLabel.style.pointerEvents = "none";
           }
 
-          footer.appendChild(upvoteLabel);
+          footer.appendChild(megaLabel);
+        }
 
-          // mega upvote — only shown when both textboxes have the same value
-          if (muvMode) {
-            const megaLabel = document.createElement("label");
-            megaLabel.className = "mega-label" + (hasMegaVoted ? " voted" : "");
+        div.appendChild(meta);
+        div.appendChild(textEl);
+        div.appendChild(footer);
 
-            const megaChk = document.createElement("input");
-            megaChk.type = "checkbox";
-            megaChk.checked = hasMegaVoted;
+        if (isMega) {
+          const credit = document.createElement("div");
+          credit.className = "mega-credit";
+          credit.textContent = "(This idea was upvoted by idktoast)";
+          div.appendChild(credit);
+        }
 
-            const megaBox = document.createElement("span");
-            megaBox.className = "mega-box";
+        ideasContainer.appendChild(div);
+      });
+    }
 
-            const megaText = document.createElement("span");
-            megaText.textContent = "mega upvote";
-
-            megaLabel.appendChild(megaChk);
-            megaLabel.appendChild(megaBox);
-            megaLabel.appendChild(megaText);
-
-            if (!hasMegaVoted) {
-              megaLabel.addEventListener("click", async () => {
-                const secret = ideaInput.value;
-                megaLabel.classList.add("voted");
-                div.classList.add("mega");
-                markMegaVoted(post.ideaNumber);
-                megaLabel.style.pointerEvents = "none";
-
-                const creditEl = div.querySelector(".mega-credit");
-                if (creditEl) creditEl.style.display = "block";
-
-                try {
-                  await fetch(API_URL, {
-                    method: "PATCH",
-                    headers: {
-                      "Content-Type": "application/json",
-                      "X-MUV-Secret": secret
-                    },
-                    body: JSON.stringify({ id: post.ideaNumber, type: "mega" })
-                  });
-                } catch {}
-              });
-            } else {
-              megaLabel.style.pointerEvents = "none";
-            }
-
-            footer.appendChild(megaLabel);
-          }
-
-          div.appendChild(meta);
-          div.appendChild(textEl);
-          div.appendChild(footer);
-
-          if (isMega) {
-            const credit = document.createElement("div");
-            credit.className = "mega-credit";
-            credit.textContent = "(This idea was upvoted by idktoast)";
-            div.appendChild(credit);
-          }
-
-          ideasContainer.appendChild(div);
-        });
-
+    async function loadIdeas() {
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error("fetch failed");
+        allIdeas = await res.json();
+        renderIdeas();
       } catch (err) {
         console.error(err);
         ideasContainer.innerHTML = "<p>error loading ideas.</p>";
