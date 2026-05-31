@@ -376,15 +376,7 @@
       const v = getVoted().filter(x => x !== String(id));
       localStorage.setItem("voted_ideas", JSON.stringify(v));
     }
-    function getMegaVoted() {
-      try { return JSON.parse(localStorage.getItem("mega_voted_ideas") || "[]"); }
-      catch { return []; }
-    }
-    function markMegaVoted(id) {
-      const v = getMegaVoted();
-      if (!v.includes(String(id))) v.push(String(id));
-      localStorage.setItem("mega_voted_ideas", JSON.stringify(v));
-    }
+
 
     // --- muv modal ---
     const muvBtn = document.querySelector("#muv-btn");
@@ -448,8 +440,8 @@
       const copy = [...ideas];
       if (currentSort === "newest") return copy.sort((a, b) => b.ideaNumber - a.ideaNumber);
       if (currentSort === "oldest") return copy.sort((a, b) => a.ideaNumber - b.ideaNumber);
-      if (currentSort === "most") return copy.sort((a, b) => b.upvotes - a.upvotes);
-      if (currentSort === "least") return copy.sort((a, b) => a.upvotes - b.upvotes);
+      if (currentSort === "most") return copy.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+      if (currentSort === "least") return copy.sort((a, b) => (a.upvotes || 0) - (b.upvotes || 0));
       return copy;
     }
 
@@ -477,7 +469,6 @@
       }
 
       const voted = getVoted();
-      const megaVoted = getMegaVoted();
       const sorted = getSorted(allIdeas);
       const maxUpvotes = Math.max(...allIdeas.map(p => p.upvotes || 0));
 
@@ -486,7 +477,7 @@
       sorted.forEach((post, index) => {
         const isMega = post.mega_upvoted === 1;
         const hasVoted = voted.includes(String(post.ideaNumber));
-        const hasMegaVoted = megaVoted.includes(String(post.ideaNumber));
+        const hasMegaVoted = isMega;
         const num = post.ideaNumber;
         const hot = hotClass(post.upvotes || 0, maxUpvotes);
 
@@ -573,8 +564,8 @@
             megaLabel.addEventListener("click", async () => {
               megaLabel.classList.add("voted");
               div.classList.add("mega");
-              markMegaVoted(post.ideaNumber);
               megaLabel.style.pointerEvents = "none";
+              post.mega_upvoted = 1;
               const creditEl = div.querySelector(".mega-credit");
               if (creditEl) creditEl.style.display = "block";
               try {
