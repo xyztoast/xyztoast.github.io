@@ -16,23 +16,7 @@
       font-weight: 0;
       color: #bebebe;
     }
-    .wrap {
-      min-height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      text-align: center;
-    }
-    h1 {
-      margin: 0;
-      font-family: "mcfontb", sans-serif;
-      font-size: 40px;
-      margin-top: 20vh;
-    }
     h2 { font-size: 25px; }
-    
     a {
       color: #00b2ff;
       text-decoration: none;
@@ -48,9 +32,6 @@
     }
     p { padding: 6px; }
 
-    .spacing { padding-top: 50px; }
-
-    /* Form Styles */
     .form {
       margin-left: 5%;
       margin-right: 5%;
@@ -91,7 +72,6 @@
     }
     .submit:hover { background-color: #5acaff; }
 
-    /* Idea Post Styles */
     #ideas-container {
       margin-top: 40px;
       display: flex;
@@ -105,51 +85,155 @@
       padding: 16px;
       text-align: left;
       border-left: 4px solid #00b2ff;
+      transition: border-color 0.2s ease;
     }
-    .username {
+    .idea-post.mega {
+      border-left-color: #05ee93;
+    }
+    .idea-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .idea-num {
       color: #00b2ff;
       font-family: mcfontb;
-      font-size: 14px;
+    }
+    .idea-post.mega .idea-num {
+      color: #05ee93;
+    }
+    .idea-username {
+      color: #00b2ff;
+      font-family: mcfontb;
+    }
+    .idea-post.mega .idea-username {
+      color: #05ee93;
+    }
+    .idea-date {
+      color: #6b7172;
+      font-size: 12px;
     }
     .idea-text {
       margin-top: 8px;
-      color: #fffff;
+      color: #ebebeb;
       word-wrap: break-word;
-      font-weight: 0 !important;
     }
-    
+    .idea-footer {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .upvote-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+      color: #6b7172;
+      transition: color 0.1s;
+    }
+    .upvote-label:hover { color: #bebebe; }
+    .upvote-label input[type="checkbox"] { display: none; }
+    .upvote-box {
+      width: 16px;
+      height: 16px;
+      border: 1px solid #6b7172;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color 0.1s, background 0.1s;
+    }
+    .upvote-label.voted .upvote-box {
+      border-color: #00b2ff;
+      background: #00b2ff22;
+    }
+    .upvote-label.voted { color: #00b2ff; }
+    .upvote-label.voted .upvote-box::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #00b2ff;
+      display: block;
+    }
+
+    .mega-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+      color: #6b7172;
+      transition: color 0.1s;
+    }
+    .mega-label:hover { color: #05ee93; }
+    .mega-label input[type="checkbox"] { display: none; }
+    .mega-box {
+      width: 16px;
+      height: 16px;
+      border: 1px solid #05ee93;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.1s;
+    }
+    .mega-label.voted { color: #05ee93; }
+    .mega-label.voted .mega-box {
+      background: #05ee9322;
+    }
+    .mega-label.voted .mega-box::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #05ee93;
+      display: block;
+    }
+    .mega-credit {
+      font-size: 12px;
+      color: #6b7172;
+      margin-top: 6px;
+    }
+    .spacing { padding-top: 50px; }
   </style>
 </head>
 <body>
 
-  <div class="spacing" style="padding-top: 5%;">
+  <div style="padding-top: 5%;">
     <div class="form">
       <h2>if only this was a mod...</h2>
       <p>drop your mod ideas here</p>
-      
+
       <form id="mod-form">
         <textarea id="idea-input" placeholder="what if you made a..." required></textarea>
         <div class="mod-ideas">
           <textarea id="name-input" placeholder="name" maxlength="20"></textarea>
-          <button type="submit" id="submit-btn" class="submit">submit</button>
+          <button type="submit" class="submit">submit</button>
         </div>
         <div id="form-message"></div>
       </form>
-      
+
       <div class="spacing">
         <h2>other ideas</h2>
         <p>more ideas made by other people</p>
       </div>
 
       <div id="ideas-container">
-        <p>Loading ideas...</p>
+        <p>loading ideas...</p>
       </div>
     </div>
   </div>
-<br><br><br><br><br>
+  <br><br><br><br><br>
+
   <script>
-    // --- CONFIGURATION ---
-    const API_URL = "https://ideas-hello.mcbcode.com"; 
+    const API_URL = "https://ideas-hello.mcbcode.com";
 
     const form = document.querySelector("#mod-form");
     const ideaInput = document.querySelector("#idea-input");
@@ -157,58 +241,191 @@
     const formMessage = document.querySelector("#form-message");
     const ideasContainer = document.querySelector("#ideas-container");
 
-    // 1. Fetch and Display Ideas
+    function getVoted() {
+      try { return JSON.parse(localStorage.getItem("voted_ideas") || "[]"); }
+      catch { return []; }
+    }
+    function markVoted(id) {
+      const v = getVoted();
+      if (!v.includes(String(id))) v.push(String(id));
+      localStorage.setItem("voted_ideas", JSON.stringify(v));
+    }
+    function getMegaVoted() {
+      try { return JSON.parse(localStorage.getItem("mega_voted_ideas") || "[]"); }
+      catch { return []; }
+    }
+    function markMegaVoted(id) {
+      const v = getMegaVoted();
+      if (!v.includes(String(id))) v.push(String(id));
+      localStorage.setItem("mega_voted_ideas", JSON.stringify(v));
+    }
+
+    function isMuvMode() {
+      const i = ideaInput.value;
+      const n = nameInput.value;
+      return i.length > 0 && n.length > 0 && i === n;
+    }
+
+    function formatDate(ts) {
+      if (!ts) return "";
+      const d = new Date(ts.includes("T") ? ts : ts + "Z");
+      if (isNaN(d)) return "";
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return months[d.getUTCMonth()] + " " + d.getUTCDate() + ", " + d.getUTCFullYear();
+    }
+
     async function loadIdeas() {
       try {
         const res = await fetch(API_URL);
-        if (!res.ok) throw new Error("Failed to fetch");
+        if (!res.ok) throw new Error("fetch failed");
         const ideas = await res.json();
 
-        if (ideas.length === 0) {
-          ideasContainer.innerHTML = "<p>No ideas yet. Be the first!</p>";
+        if (!ideas.length) {
+          ideasContainer.innerHTML = "<p>no ideas yet. be the first!</p>";
           return;
         }
 
-        ideasContainer.innerHTML = ideas.map(post => `
-          <div class="idea-post">
-            <div class="username">${escapeHTML(post.name || "anonymous")}</div>
-            <div class="idea-text">${escapeHTML(post.idea)}</div>
-          </div>
-        `).join('');
-      } catch (err) {
-        console.error(err);
-        ideasContainer.innerHTML = "<p>Error loading ideas.</p>";
-      }
-    }
+        const voted = getVoted();
+        const megaVoted = getMegaVoted();
+        const muvMode = isMuvMode();
 
-    // 2. Handle Upvote (PATCH)
-    async function handleUpvote(id, checkbox) {
-      if (!checkbox.checked) return; // Prevent "un-liking" for now
+        ideasContainer.innerHTML = "";
 
-      try {
-        const res = await fetch(API_URL, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: id })
+        ideas.forEach((post, index) => {
+          const isMega = post.mega_upvoted === 1;
+          const hasVoted = voted.includes(String(post.ideaNumber));
+          const hasMegaVoted = megaVoted.includes(String(post.ideaNumber));
+          const num = ideas.length - index;
+
+          const div = document.createElement("div");
+          div.className = "idea-post" + (isMega ? " mega" : "");
+
+          const meta = document.createElement("div");
+          meta.className = "idea-meta";
+          meta.innerHTML =
+            '<span class="idea-num">#' + num + '</span>' +
+            '<span style="color:#6b7172">|</span>' +
+            '<span class="idea-username">' + escapeHTML(post.name || "anonymous") + '</span>' +
+            '<span style="color:#6b7172">|</span>' +
+            '<span class="idea-date">' + formatDate(post.timestamp) + '</span>';
+
+          const textEl = document.createElement("div");
+          textEl.className = "idea-text";
+          textEl.textContent = post.idea;
+
+          const footer = document.createElement("div");
+          footer.className = "idea-footer";
+
+          // regular upvote
+          const upvoteLabel = document.createElement("label");
+          upvoteLabel.className = "upvote-label" + (hasVoted ? " voted" : "");
+
+          const upvoteChk = document.createElement("input");
+          upvoteChk.type = "checkbox";
+          upvoteChk.checked = hasVoted;
+
+          const upvoteBox = document.createElement("span");
+          upvoteBox.className = "upvote-box";
+
+          const upvoteCount = document.createElement("span");
+          upvoteCount.textContent = post.upvotes || 0;
+
+          upvoteLabel.appendChild(upvoteChk);
+          upvoteLabel.appendChild(upvoteBox);
+          upvoteLabel.appendChild(upvoteCount);
+
+          if (!hasVoted) {
+            upvoteLabel.addEventListener("click", async () => {
+              upvoteLabel.classList.add("voted");
+              upvoteCount.textContent = parseInt(upvoteCount.textContent) + 1;
+              markVoted(post.ideaNumber);
+              upvoteLabel.style.pointerEvents = "none";
+              try {
+                await fetch(API_URL, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ id: post.ideaNumber, type: "upvote" })
+                });
+              } catch {}
+            });
+          } else {
+            upvoteLabel.style.pointerEvents = "none";
+          }
+
+          footer.appendChild(upvoteLabel);
+
+          // mega upvote — only shown when both textboxes have the same value
+          if (muvMode) {
+            const megaLabel = document.createElement("label");
+            megaLabel.className = "mega-label" + (hasMegaVoted ? " voted" : "");
+
+            const megaChk = document.createElement("input");
+            megaChk.type = "checkbox";
+            megaChk.checked = hasMegaVoted;
+
+            const megaBox = document.createElement("span");
+            megaBox.className = "mega-box";
+
+            const megaText = document.createElement("span");
+            megaText.textContent = "mega upvote";
+
+            megaLabel.appendChild(megaChk);
+            megaLabel.appendChild(megaBox);
+            megaLabel.appendChild(megaText);
+
+            if (!hasMegaVoted) {
+              megaLabel.addEventListener("click", async () => {
+                const secret = ideaInput.value;
+                megaLabel.classList.add("voted");
+                div.classList.add("mega");
+                markMegaVoted(post.ideaNumber);
+                megaLabel.style.pointerEvents = "none";
+
+                const creditEl = div.querySelector(".mega-credit");
+                if (creditEl) creditEl.style.display = "block";
+
+                try {
+                  await fetch(API_URL, {
+                    method: "PATCH",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "X-MUV-Secret": secret
+                    },
+                    body: JSON.stringify({ id: post.ideaNumber, type: "mega" })
+                  });
+                } catch {}
+              });
+            } else {
+              megaLabel.style.pointerEvents = "none";
+            }
+
+            footer.appendChild(megaLabel);
+          }
+
+          div.appendChild(meta);
+          div.appendChild(textEl);
+          div.appendChild(footer);
+
+          if (isMega) {
+            const credit = document.createElement("div");
+            credit.className = "mega-credit";
+            credit.textContent = "(This idea was upvoted by idktoast)";
+            div.appendChild(credit);
+          }
+
+          ideasContainer.appendChild(div);
         });
 
-        if (res.ok) {
-          const countSpan = document.getElementById(`count-${id}`);
-          countSpan.textContent = parseInt(countSpan.textContent) + 1;
-          checkbox.disabled = true; // Disable to prevent spam
-        }
       } catch (err) {
-        console.error("Upvote failed:", err);
+        console.error(err);
+        ideasContainer.innerHTML = "<p>error loading ideas.</p>";
       }
     }
 
-    // 3. Handle Submit (POST)
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      
       const idea = ideaInput.value.trim();
       const name = nameInput.value.trim() || "anonymous";
-
       if (!idea) return;
 
       formMessage.style.color = "#fff";
@@ -220,30 +437,26 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ idea, name })
         });
-
         const data = await res.json();
-
         if (data.success) {
           formMessage.innerHTML = "<br>idea submitted!";
           ideaInput.value = "";
           nameInput.value = "";
-          loadIdeas(); // Refresh the list
+          loadIdeas();
         } else {
           formMessage.textContent = "oops, something went wrong!";
         }
-      } catch (err) {
+      } catch {
         formMessage.textContent = "network error";
       }
     });
 
-    // Helper to prevent script injection
     function escapeHTML(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
+      const d = document.createElement("div");
+      d.textContent = str;
+      return d.innerHTML;
     }
 
-    // Initial Load
     loadIdeas();
   </script>
 
