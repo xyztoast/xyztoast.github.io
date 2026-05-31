@@ -108,7 +108,31 @@
       border-left: 4px solid #00b2ff;
       transition: border-color 0.2s ease, border-left-width 0.2s ease;
     }
-    .idea-post.mega { border-left-color: #05ee93; }
+    .idea-post.mega {
+      border-left-color: #05ee93;
+      background-color: #05ee93;
+    }
+    .idea-post.mega .idea-num,
+    .idea-post.mega .idea-username,
+    .idea-post.mega .idea-date,
+    .idea-post.mega .idea-text,
+    .idea-post.mega .idea-meta,
+    .idea-post.mega .upvote-label,
+    .idea-post.mega .mega-label,
+    .idea-post.mega .mega-credit,
+    .idea-post.mega span {
+      color: #212425 !important;
+    }
+    .idea-post.mega .upvote-box {
+      border-color: #212425;
+    }
+    .idea-post.mega .upvote-label.voted .upvote-box {
+      border-color: #212425;
+      background: #21242533;
+    }
+    .idea-post.mega .upvote-label.voted .upvote-box::after {
+      background: #212425;
+    }
     .idea-post.hot-1 { border-left-width: 5px; }
     .idea-post.hot-2 { border-left-width: 7px; }
     .idea-post.hot-3 { border-left-width: 10px; }
@@ -485,13 +509,9 @@
         const footer = document.createElement("div");
         footer.className = "idea-footer";
 
-        // upvote
-        const upvoteLabel = document.createElement("label");
+        // upvote — use div not label to avoid checkbox double-fire
+        const upvoteLabel = document.createElement("div");
         upvoteLabel.className = "upvote-label" + (hasVoted ? " voted" : "");
-
-        const upvoteChk = document.createElement("input");
-        upvoteChk.type = "checkbox";
-        upvoteChk.checked = hasVoted;
 
         const upvoteBox = document.createElement("span");
         upvoteBox.className = "upvote-box";
@@ -499,14 +519,12 @@
         const upvoteCount = document.createElement("span");
         upvoteCount.textContent = post.upvotes || 0;
 
-        upvoteLabel.appendChild(upvoteChk);
         upvoteLabel.appendChild(upvoteBox);
         upvoteLabel.appendChild(upvoteCount);
 
         let isVoted = hasVoted;
         upvoteLabel.addEventListener("click", async () => {
           if (isVoted) {
-            // unvote
             isVoted = false;
             upvoteLabel.classList.remove("voted");
             upvoteCount.textContent = Math.max(0, parseInt(upvoteCount.textContent) - 1);
@@ -520,7 +538,6 @@
               });
             } catch {}
           } else {
-            // vote
             isVoted = true;
             upvoteLabel.classList.add("voted");
             upvoteCount.textContent = parseInt(upvoteCount.textContent) + 1;
@@ -540,12 +557,8 @@
 
         // mega upvote
         if (muvSecret) {
-          const megaLabel = document.createElement("label");
+          const megaLabel = document.createElement("div");
           megaLabel.className = "mega-label" + (hasMegaVoted ? " voted" : "");
-
-          const megaChk = document.createElement("input");
-          megaChk.type = "checkbox";
-          megaChk.checked = hasMegaVoted;
 
           const megaBox = document.createElement("span");
           megaBox.className = "mega-box";
@@ -553,7 +566,6 @@
           const megaText = document.createElement("span");
           megaText.textContent = "mega upvote";
 
-          megaLabel.appendChild(megaChk);
           megaLabel.appendChild(megaBox);
           megaLabel.appendChild(megaText);
 
