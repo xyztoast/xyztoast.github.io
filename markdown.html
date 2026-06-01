@@ -3,395 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Editor | v2</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown.min.css">
+    <title>Modern Markdown Editor</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-            background-color: #1e1e1e;
-        }
-        .main-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            position: relative;
-        }
-        #editor-pane {
-            height: 100%;
-            min-width: 100px;
-            width: 50%;
-            position: relative;
-        }
-        #editor-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 100%;
-            width: 100%;
-        }
-        #preview-pane {
-            flex-grow: 1;
-            height: 100%;
-            min-width: 100px;
-            overflow-y: auto;
-        }
-        #resizer {
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
             width: 8px;
-            cursor: col-resize;
-            background-color: #2d2d2d;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            position: relative;
+            height: 8px;
         }
-        #resizer:hover, .resizing #resizer {
-            background-color: #3b82f6;
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
         }
-        #resizer::after {
-            content: "";
-            width: 2px;
-            height: 30px;
-            background-color: #444;
-            border-radius: 2px;
-        }
-        /* Gear Button */
-        #settings-trigger {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 32px;
-            height: 32px;
-            background: #3b82f6;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            z-index: 30;
-            transition: transform 0.2s;
-        }
-        #settings-trigger:hover {
-            transform: translateX(-50%) scale(1.1) rotate(45deg);
-        }
-        /* Settings Panel */
-        #settings-panel {
-            position: absolute;
-            bottom: 60px;
-            left: -136px; 
-            width: 280px;
-            max-height: 70vh;
-            background: #252526;
-            border: 1px solid #454545;
-            border-radius: 8px;
-            z-index: 40;
-            display: none;
-            flex-direction: column;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            overflow: hidden;
-            cursor: default;
-        }
-        #settings-panel.active {
-            display: flex;
-        }
-        .settings-content {
-            overflow-y: auto;
-            padding: 16px;
-        }
-        .setting-item {
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .setting-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #888;
-            font-weight: bold;
-        }
-        select, input {
-            background: #3c3c3c;
-            border: 1px solid #555;
-            color: white;
-            padding: 4px 8px;
+        ::-webkit-scrollbar-thumb {
+            background: #333;
             border-radius: 4px;
-            font-size: 13px;
-            outline: none;
         }
-        select:focus { border-color: #3b82f6; }
-        .resizing { cursor: col-resize; user-select: none; }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+        /* Style markdown preview output */
+        .prose pre {
+            background-color: #2d3748;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            color: #fff;
+        }
+        .prose code {
+            font-family: monospace;
+        }
     </style>
 </head>
-<body class="text-white">
+<body class="bg-[#1e1e1e] text-gray-200 h-screen flex flex-col overflow-hidden font-sans">
 
-    <div class="main-container" id="container">
-        <div id="editor-pane">
-            <div id="editor-container"></div>
+    <header class="h-12 border-b border-[#2d2d2d] bg-[#181818] flex items-center justify-between px-6 z-10 select-none">
+        <div class="flex items-center gap-2">
+            <span class="text-emerald-400 font-bold text-lg">⚡</span>
+            <h1 class="font-semibold text-sm tracking-wide text-gray-300">MONACO.MD</h1>
+        </div>
+        <div class="text-xs text-gray-500 font-mono">Markdown Live Preview</div>
+    </header>
+
+    <main id="container" class="flex flex-1 w-full relative overflow-hidden">
+        
+        <div id="left-panel" class="h-full min-w-[200px]" style="width: 50%;">
+            <div id="editor" class="w-full h-full"></div>
         </div>
 
-        <div id="resizer">
-            <div id="settings-trigger" title="Settings">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            </div>            
-            <div id="settings-panel">
-                <div class="p-3 border-b border-gray-700 font-bold text-sm bg-[#2d2d2d] flex justify-between items-center">
-                    <span>Editor Settings</span>
-                    <button id="close-settings" class="hover:text-red-400 p-1">✕</button>
-                </div>
-                <div class="settings-content">
-                    <div class="setting-item">
-                        <label class="setting-label">Theme</label>
-                        <select id="set-theme">
-                            <option value="vs-dark">Visual Studio Dark</option>
-                            <option value="vs">Visual Studio Light</option>
-                            <option value="hc-black">High Contrast</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Font Size</label>
-                        <input type="number" id="set-fontsize" value="14" min="8" max="32">
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Word Wrap</label>
-                        <select id="set-wordwrap">
-                            <option value="on">On</option>
-                            <option value="off">Off</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Line Numbers</label>
-                        <select id="set-linenumbers">
-                            <option value="on">On</option>
-                            <option value="off">Off</option>
-                            <option value="relative">Relative</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Minimap</label>
-                        <select id="set-minimap">
-                            <option value="false">Hidden</option>
-                            <option value="true">Visible</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Cursor Style</label>
-                        <select id="set-cursor">
-                            <option value="line">Line</option>
-                            <option value="block">Block</option>
-                            <option value="underline">Underline</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Tab Size</label>
-                        <select id="set-tabsize">
-                            <option value="2">2 Spaces</option>
-                            <option value="4" selected>4 Spaces</option>
-                            <option value="8">8 Spaces</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Cursor Blinking</label>
-                        <select id="set-blinking">
-                            <option value="blink">Blink</option>
-                            <option value="smooth">Smooth</option>
-                            <option value="phase">Phase</option>
-                            <option value="expand">Expand</option>
-                            <option value="solid">Solid</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Auto Closing Brackets</label>
-                        <select id="set-autoclose">
-                            <option value="always">Always</option>
-                            <option value="never">Never</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Semantic Highlighting</label>
-                        <select id="set-semantic">
-                            <option value="true">Enabled</option>
-                            <option value="false">Disabled</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Scroll Beyond Last Line</label>
-                        <select id="set-scrollpast">
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Render Whitespace</label>
-                        <select id="set-whitespace">
-                            <option value="none">None</option>
-                            <option value="boundary">Boundary</option>
-                            <option value="all">All</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Format On Paste</label>
-                        <select id="set-formatpaste">
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
-                </div>
+        <div id="resizer" class="w-1.5 h-full bg-[#2d2d2d] hover:bg-emerald-500 active:bg-emerald-600 cursor-col-resize transition-colors duration-150 z-20 relative flex items-center justify-center">
+            <div class="w-[2px] h-6 bg-gray-600 rounded"></div>
+        </div>
+
+        <div id="right-panel" class="h-full bg-[#1a1a1a] overflow-y-auto min-w-[200px] p-8 flex-1">
+            <div id="preview" class="prose max-w-none text-gray-300 
+                prose-headings:text-gray-100 prose-headings:font-semibold
+                prose-h1:text-3xl prose-h1:border-b prose-h1:border-[#2d2d2d] prose-h1:pb-2
+                prose-h2:text-2xl prose-h2:mt-6
+                prose-p:leading-relaxed prose-p:my-4
+                prose-a:text-emerald-400 hover:prose-a:underline
+                prose-strong:text-white
+                prose-ul:list-disc prose-ul:ml-6
+                prose-ol:list-decimal prose-ol:ml-6
+                prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-400">
             </div>
         </div>
 
-        <div id="preview-pane" class="p-8 bg-white">
-            <div id="markdown-output" class="markdown-body"></div>
-        </div>
-    </div>
+    </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
-    
     <script>
-        // Map paths for Monaco Editor modules
-        require.config({ 
-            paths: { 
-                'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs',
-                // Explicitly tell the Monaco AMD loader where to securely fetch Marked
-                'marked': 'https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min'
+        // --- 1. Default Content ---
+        const initialMarkdown = `# Welcome to the Monaco Markdown Editor!
+
+This is a modern, high-performance Markdown editor powered by the **Monaco Editor** engine.
+
+## Features
+* **Live Preview:** Real-time updates as you type.
+* **Draggable Splitter:** Adjust the panels to fit your workflow.
+* **Monaco Power:** Code completion, multi-cursor editing, and robust shortcuts.
+
+### Code Block Example
+\`\`\`javascript
+const greeting = "Hello World";
+function sayHello() {
+    console.log(greeting);
+}
+\`\`\`
+
+> "Simplicity is the ultimate sophistication." — Leonardo da Vinci
+`;
+
+        // --- 2. Initialize Monaco Editor ---
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+
+        require(['vs/editor/editor.main'], function () {
+            // Configure marked options for security/rendering
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+
+            const editorContainer = document.getElementById('editor');
+            const previewContainer = document.getElementById('preview');
+
+            // Create Editor instance
+            const editor = monaco.editor.create(editorContainer, {
+                value: initialMarkdown,
+                language: 'markdown',
+                theme: 'vs-dark',
+                automaticLayout: true, // Forces Monaco to adapt when container size changes
+                fontFamily: 'Fira Code, JetBrains Mono, Cascadia Code, monospace',
+                fontSize: 14,
+                lineHeight: 22,
+                minimap: { enabled: false },
+                wordWrap: 'on',
+                padding: { top: 16, bottom: 16 },
+                scrollbar: {
+                    verticalScrollbarSize: 10,
+                    horizontalScrollbarSize: 10
+                }
+            });
+
+            // Function to update preview
+            function updatePreview() {
+                const rawMarkdown = editor.getValue();
+                previewContainer.innerHTML = marked.parse(rawMarkdown);
             }
-        });
 
-        let editor;
-        let markedModule; // Stores the secure internal reference to the transpiler
-        const editorPane = document.getElementById('editor-pane');
-        const resizer = document.getElementById('resizer');
-        const container = document.getElementById('container');
-        const markdownOutput = document.getElementById('markdown-output');
-        const settingsTrigger = document.getElementById('settings-trigger');
-        const settingsPanel = document.getElementById('settings-panel');
-        const closeSettings = document.getElementById('close-settings');
+            // Listen for changes
+            editor.onDidChangeModelContent(updatePreview);
 
-        const initialMarkdownValue = `# Markdown Editor v2\n\nWelcome! Type markdown syntax here to test preview compilation structural changes instantly.\n\n## Syntax Features Supported\n* **Bold text** & *Italics*\n* Inline code blocks: \`const mcb = true;\`\n* Dynamic checkbox target tracking grids:\n  - [x] Syntax layout updates\n  - [ ] Deploy workspace templates\n\n\`\`\`javascript\n// Code syntax formatting block example\nfunction greetCreator() {\n    console.log("Hello Bedrock Addon Developers!");\n}\n\`\`\``;
+            // Initial render
+            updatePreview();
 
-        window.onload = function() {
-            // Force the require script module loader to completely pull down both libraries before rendering anything
-            require(['vs/editor/editor.main', 'marked'], function(monacoMain, marked) {
-                // Safely extract the marked parser function, handling all module variations
-                markedModule = marked;
+            // --- 3. Draggable Splitter Functionality ---
+            const container = document.getElementById('container');
+            const leftPanel = document.getElementById('left-panel');
+            const resizer = document.getElementById('resizer');
+
+            let isDragging = false;
+
+            resizer.addEventListener('mousedown', function (e) {
+                isDragging = true;
+                // Add an overlay class or pointer-events block to prevent iframe/text selections from hijacking drag
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            });
+
+            document.addEventListener('mousemove', function (e) {
+                if (!isDragging) return;
+
+                // Calculate width percentages relative to main container bounds
+                const containerRect = container.getBoundingClientRect();
+                const currentX = e.clientX - containerRect.left;
                 
-                editor = monaco.editor.create(document.getElementById('editor-container'), {
-                    value: initialMarkdownValue,
-                    language: 'markdown', 
-                    theme: 'vs-dark',
-                    automaticLayout: true,
-                    fontFamily: "'Fira Code', monospace",
-                    fontSize: 14,
-                    fontLigatures: true,
-                    minimap: { enabled: false },
-                    padding: { top: 20 },
-                    wordWrap: 'on',
-                    cursorBlinking: 'smooth'
-                });
+                let widthPercentage = (currentX / containerRect.width) * 100;
 
-                editor.onDidChangeModelContent(() => updatePreview());
-                updatePreview();
-                setupResizer();
-                setupSettings();
-            });
-        };
+                // Set hard bounds so panels don't disappear completely
+                if (widthPercentage < 15) widthPercentage = 15;
+                if (widthPercentage > 85) widthPercentage = 85;
 
-        function updatePreview() {
-            if (!editor || !markedModule) return;
-            const rawMarkdown = editor.getValue();
-            
-            // Execute compilation through the module scope reference to bypass window restrictions
-            if (markedModule.parse) {
-                markdownOutput.innerHTML = markedModule.parse(rawMarkdown);
-            } else if (typeof markedModule === 'function') {
-                markdownOutput.innerHTML = markedModule(rawMarkdown);
-            } else if (window.marked && window.marked.marked) {
-                markdownOutput.innerHTML = window.marked.marked.parse(rawMarkdown);
-            } else {
-                markdownOutput.innerHTML = rawMarkdown;
-            }
-        }
-
-        function setupResizer() {
-            let isResizing = false;
-            
-            resizer.addEventListener('mousedown', (e) => {
-                if (settingsTrigger.contains(e.target) || settingsPanel.contains(e.target)) return;
-                isResizing = true;
-                container.classList.add('resizing');
+                leftPanel.style.width = `${widthPercentage}%`;
+                
+                // Note: 'automaticLayout: true' in Monaco configuration will 
+                // automatically pick up this resizing event seamlessly.
             });
 
-            document.addEventListener('mousemove', (e) => {
-                if (!isResizing) return;
-                const containerWidth = container.offsetWidth;
-                let newWidth = (e.clientX / containerWidth) * 100;
-                if (newWidth < 5) newWidth = 5;
-                if (newWidth > 95) newWidth = 95;
-                editorPane.style.width = `${newWidth}%`;
-                if (editor) editor.layout();
-            });
-
-            document.addEventListener('mouseup', () => {
-                isResizing = false;
-                container.classList.remove('resizing');
-            });
-        }
-
-        function setupSettings() {
-            settingsPanel.addEventListener('mousedown', (e) => e.stopPropagation());
-            settingsPanel.addEventListener('click', (e) => e.stopPropagation());
-
-            settingsTrigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                settingsPanel.classList.toggle('active');
-            });
-
-            closeSettings.addEventListener('click', (e) => {
-                e.stopPropagation();
-                settingsPanel.classList.remove('active');
-            });
-
-            document.addEventListener('mousedown', (e) => {
-                if (!settingsPanel.contains(e.target) && !settingsTrigger.contains(e.target)) {
-                    settingsPanel.classList.remove('active');
+            document.addEventListener('mouseup', function () {
+                if (isDragging) {
+                    isDragging = false;
+                    document.body.style.cursor = 'default';
+                    document.body.style.userSelect = 'auto';
                 }
             });
-
-            const apply = (id, callback) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('change', (e) => {
-                        callback(e.target.value);
-                    });
-                }
-            };
-
-            apply('set-theme', val => monaco.editor.setTheme(val));
-            apply('set-fontsize', val => editor.updateOptions({ fontSize: parseInt(val) }));
-            apply('set-wordwrap', val => editor.updateOptions({ wordWrap: val }));
-            apply('set-linenumbers', val => editor.updateOptions({ lineNumbers: val }));
-            apply('set-minimap', val => editor.updateOptions({ minimap: { enabled: val === 'true' } }));
-            apply('set-cursor', val => editor.updateOptions({ cursorStyle: val }));
-            apply('set-tabsize', val => editor.getModel().updateOptions({ tabSize: parseInt(val) }));
-            apply('set-blinking', val => editor.updateOptions({ cursorBlinking: val }));
-            apply('set-autoclose', val => editor.updateOptions({ autoClosingBrackets: val }));
-            apply('set-semantic', val => editor.updateOptions({ 'semanticHighlighting.enabled': val === 'true' }));
-            apply('set-scrollpast', val => editor.updateOptions({ scrollBeyondLastLine: val === 'true' }));
-            apply('set-whitespace', val => editor.updateOptions({ renderWhitespace: val }));
-            apply('set-formatpaste', val => editor.updateOptions({ formatOnPaste: val === 'true' }));
-        }
-
-        window.addEventListener('resize', () => { if (editor) editor.layout(); });
+        });
     </script>
 </body>
 </html>
