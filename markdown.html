@@ -25,10 +25,10 @@
             height: 100%;
             min-width: 100px;
             width: 50%;
-            position: relative; /* CRITICAL: Gives Monaco a relative anchor */
+            position: relative;
         }
         #editor-container {
-            position: absolute; /* CRITICAL: Forces Monaco to fill the pane exactly */
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;
@@ -39,7 +39,6 @@
         #preview-pane {
             flex-grow: 1;
             height: 100%;
-            background: #ffffff;
             min-width: 100px;
             overflow-y: auto;
         }
@@ -251,18 +250,25 @@
             </div>
         </div>
 
-        <div id="preview-pane" class="p-8">
+        <div id="preview-pane" class="p-8 bg-white">
             <div id="markdown-output" class="markdown-body"></div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
     
     <script>
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
+        // Map paths for Monaco Editor modules
+        require.config({ 
+            paths: { 
+                'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs',
+                // Explicitly tell the Monaco AMD loader where to securely fetch Marked
+                'marked': 'https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min'
+            }
+        });
 
         let editor;
+        let markedModule; // Stores the secure internal reference to the transpiler
         const editorPane = document.getElementById('editor-pane');
         const resizer = document.getElementById('resizer');
         const container = document.getElementById('container');
@@ -274,7 +280,11 @@
         const initialMarkdownValue = `# Markdown Editor v2\n\nWelcome! Type markdown syntax here to test preview compilation structural changes instantly.\n\n## Syntax Features Supported\n* **Bold text** & *Italics*\n* Inline code blocks: \`const mcb = true;\`\n* Dynamic checkbox target tracking grids:\n  - [x] Syntax layout updates\n  - [ ] Deploy workspace templates\n\n\`\`\`javascript\n// Code syntax formatting block example\nfunction greetCreator() {\n    console.log("Hello Bedrock Addon Developers!");\n}\n\`\`\``;
 
         window.onload = function() {
-            require(['vs/editor/editor.main'], function() {
+            // Force the require script module loader to completely pull down both libraries before rendering anything
+            require(['vs/editor/editor.main', 'marked'], function(monacoMain, marked) {
+                // Safely extract the marked parser function, handling all module variations
+                markedModule = marked;
+                
                 editor = monaco.editor.create(document.getElementById('editor-container'), {
                     value: initialMarkdownValue,
                     language: 'markdown', 
@@ -297,8 +307,19 @@
         };
 
         function updatePreview() {
+            if (!editor || !markedModule) return;
             const rawMarkdown = editor.getValue();
-            markdownOutput.innerHTML = marked.parse(rawMarkdown);
+            
+            // Execute compilation through the module scope reference to bypass window restrictions
+            if (markedModule.parse) {
+                markdownOutput.innerHTML = markedModule.parse(rawMarkdown);
+            } else if (typeof markedModule === 'function') {
+                markdownOutput.innerHTML = markedModule(rawMarkdown);
+            } else if (window.marked && window.marked.marked) {
+                markdownOutput.innerHTML = window.marked.marked.parse(rawMarkdown);
+            } else {
+                markdownOutput.innerHTML = rawMarkdown;
+            }
         }
 
         function setupResizer() {
