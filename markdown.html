@@ -25,13 +25,23 @@
             height: 100%;
             min-width: 100px;
             width: 50%;
+            position: relative; /* CRITICAL: Gives Monaco a relative anchor */
+        }
+        #editor-container {
+            position: absolute; /* CRITICAL: Forces Monaco to fill the pane exactly */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 100%;
+            width: 100%;
         }
         #preview-pane {
             flex-grow: 1;
             height: 100%;
             background: #ffffff;
             min-width: 100px;
-            overflow-y: auto; /* Allow preview container box scrolling */
+            overflow-y: auto;
         }
         #resizer {
             width: 8px;
@@ -128,7 +138,7 @@
 
     <div class="main-container" id="container">
         <div id="editor-pane">
-            <div id="editor-container" class="h-full w-full"></div>
+            <div id="editor-container"></div>
         </div>
 
         <div id="resizer">
@@ -192,3 +202,175 @@
                         </select>
                     </div>
                     <div class="setting-item">
+                        <label class="setting-label">Cursor Blinking</label>
+                        <select id="set-blinking">
+                            <option value="blink">Blink</option>
+                            <option value="smooth">Smooth</option>
+                            <option value="phase">Phase</option>
+                            <option value="expand">Expand</option>
+                            <option value="solid">Solid</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Auto Closing Brackets</label>
+                        <select id="set-autoclose">
+                            <option value="always">Always</option>
+                            <option value="never">Never</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Semantic Highlighting</label>
+                        <select id="set-semantic">
+                            <option value="true">Enabled</option>
+                            <option value="false">Disabled</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Scroll Beyond Last Line</label>
+                        <select id="set-scrollpast">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Render Whitespace</label>
+                        <select id="set-whitespace">
+                            <option value="none">None</option>
+                            <option value="boundary">Boundary</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">Format On Paste</label>
+                        <select id="set-formatpaste">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="preview-pane" class="p-8">
+            <div id="markdown-output" class="markdown-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+    
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
+
+        let editor;
+        const editorPane = document.getElementById('editor-pane');
+        const resizer = document.getElementById('resizer');
+        const container = document.getElementById('container');
+        const markdownOutput = document.getElementById('markdown-output');
+        const settingsTrigger = document.getElementById('settings-trigger');
+        const settingsPanel = document.getElementById('settings-panel');
+        const closeSettings = document.getElementById('close-settings');
+
+        const initialMarkdownValue = `# Markdown Editor v2\n\nWelcome! Type markdown syntax here to test preview compilation structural changes instantly.\n\n## Syntax Features Supported\n* **Bold text** & *Italics*\n* Inline code blocks: \`const mcb = true;\`\n* Dynamic checkbox target tracking grids:\n  - [x] Syntax layout updates\n  - [ ] Deploy workspace templates\n\n\`\`\`javascript\n// Code syntax formatting block example\nfunction greetCreator() {\n    console.log("Hello Bedrock Addon Developers!");\n}\n\`\`\``;
+
+        window.onload = function() {
+            require(['vs/editor/editor.main'], function() {
+                editor = monaco.editor.create(document.getElementById('editor-container'), {
+                    value: initialMarkdownValue,
+                    language: 'markdown', 
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    fontFamily: "'Fira Code', monospace",
+                    fontSize: 14,
+                    fontLigatures: true,
+                    minimap: { enabled: false },
+                    padding: { top: 20 },
+                    wordWrap: 'on',
+                    cursorBlinking: 'smooth'
+                });
+
+                editor.onDidChangeModelContent(() => updatePreview());
+                updatePreview();
+                setupResizer();
+                setupSettings();
+            });
+        };
+
+        function updatePreview() {
+            const rawMarkdown = editor.getValue();
+            markdownOutput.innerHTML = marked.parse(rawMarkdown);
+        }
+
+        function setupResizer() {
+            let isResizing = false;
+            
+            resizer.addEventListener('mousedown', (e) => {
+                if (settingsTrigger.contains(e.target) || settingsPanel.contains(e.target)) return;
+                isResizing = true;
+                container.classList.add('resizing');
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                const containerWidth = container.offsetWidth;
+                let newWidth = (e.clientX / containerWidth) * 100;
+                if (newWidth < 5) newWidth = 5;
+                if (newWidth > 95) newWidth = 95;
+                editorPane.style.width = `${newWidth}%`;
+                if (editor) editor.layout();
+            });
+
+            document.addEventListener('mouseup', () => {
+                isResizing = false;
+                container.classList.remove('resizing');
+            });
+        }
+
+        function setupSettings() {
+            settingsPanel.addEventListener('mousedown', (e) => e.stopPropagation());
+            settingsPanel.addEventListener('click', (e) => e.stopPropagation());
+
+            settingsTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsPanel.classList.toggle('active');
+            });
+
+            closeSettings.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsPanel.classList.remove('active');
+            });
+
+            document.addEventListener('mousedown', (e) => {
+                if (!settingsPanel.contains(e.target) && !settingsTrigger.contains(e.target)) {
+                    settingsPanel.classList.remove('active');
+                }
+            });
+
+            const apply = (id, callback) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', (e) => {
+                        callback(e.target.value);
+                    });
+                }
+            };
+
+            apply('set-theme', val => monaco.editor.setTheme(val));
+            apply('set-fontsize', val => editor.updateOptions({ fontSize: parseInt(val) }));
+            apply('set-wordwrap', val => editor.updateOptions({ wordWrap: val }));
+            apply('set-linenumbers', val => editor.updateOptions({ lineNumbers: val }));
+            apply('set-minimap', val => editor.updateOptions({ minimap: { enabled: val === 'true' } }));
+            apply('set-cursor', val => editor.updateOptions({ cursorStyle: val }));
+            apply('set-tabsize', val => editor.getModel().updateOptions({ tabSize: parseInt(val) }));
+            apply('set-blinking', val => editor.updateOptions({ cursorBlinking: val }));
+            apply('set-autoclose', val => editor.updateOptions({ autoClosingBrackets: val }));
+            apply('set-semantic', val => editor.updateOptions({ 'semanticHighlighting.enabled': val === 'true' }));
+            apply('set-scrollpast', val => editor.updateOptions({ scrollBeyondLastLine: val === 'true' }));
+            apply('set-whitespace', val => editor.updateOptions({ renderWhitespace: val }));
+            apply('set-formatpaste', val => editor.updateOptions({ formatOnPaste: val === 'true' }));
+        }
+
+        window.addEventListener('resize', () => { if (editor) editor.layout(); });
+    </script>
+</body>
+</html>
