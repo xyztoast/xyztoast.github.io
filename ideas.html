@@ -18,11 +18,8 @@
     }
     h2 { font-size: 25px; }
     a {
-      color: #00b2ff;
-      text-decoration: none;
-      padding: 8px;
-      white-space: nowrap;
-      background-color: #323738;
+      color: #00b2ff; text-decoration: none; padding: 8px;
+      white-space: nowrap; background-color: #323738;
       transition: background-color 0.1s ease-in-out, padding 0.1s ease-in-out;
     }
     a:hover { background-color: #44494a; color: #5acaff; padding: 8px 26px; }
@@ -62,10 +59,7 @@
       border-left: 4px solid #00b2ff;
       transition: border-color 0.2s ease;
     }
-    .idea-post.mega {
-      border-left-color: #05ee93;
-      background-color: #05ee93;
-    }
+    .idea-post.mega { border-left-color: #05ee93; background-color: #05ee93; }
     .idea-post.mega * { color: #212425 !important; }
     .idea-post.mega .upvote-arrow { border-bottom-color: #212425 !important; }
     .idea-post.mega .upvote-label.voted .upvote-arrow { border-bottom-color: #212425 !important; }
@@ -73,6 +67,10 @@
     .idea-post.mega .mega-label.voted .mega-arrow { border-bottom-color: #212425 !important; }
     .idea-post.mega .mod-response { background: #04c97a; border-left-color: #212425; }
     .idea-post.mega .response-input { background: #04c97a; color: #212425; }
+    .idea-post.mega .replies-section { background: #04c97a; border-top-color: #21242533; }
+    .idea-post.mega .reply-item { border-bottom-color: #21242522; }
+    .idea-post.mega .reply-input { background: #05ee93; color: #212425; }
+    .idea-post.mega .reply-input::placeholder { color: #21242588; }
 
     .idea-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
     .idea-num { color: #00b2ff; font-family: mcfontb; }
@@ -101,8 +99,7 @@
       border-left: 6px solid transparent;
       border-right: 6px solid transparent;
       border-bottom: 10px solid #6b7172;
-      flex-shrink: 0;
-      transition: border-bottom-color 0.1s;
+      flex-shrink: 0; transition: border-bottom-color 0.1s;
     }
     .upvote-label.voted { color: #00b2ff; }
     .upvote-label.voted .upvote-arrow { border-bottom-color: #00b2ff; }
@@ -119,14 +116,14 @@
       border-left: 6px solid transparent;
       border-right: 6px solid transparent;
       border-bottom: 10px solid #6b7172;
-      flex-shrink: 0;
-      transition: border-bottom-color 0.1s;
+      flex-shrink: 0; transition: border-bottom-color 0.1s;
     }
     .mega-label.voted { color: #05ee93; }
     .mega-label.voted .mega-arrow { border-bottom-color: #05ee93; }
 
     .mega-credit { font-size: 12px; color: #6b7172; margin-top: 6px; }
 
+    /* mod response block */
     .mod-response {
       margin-top: 12px; padding: 10px 12px;
       background: #212425; border-left: 3px solid #00b2ff;
@@ -134,6 +131,41 @@
     .mod-response-header { font-size: 12px; color: #00b2ff; font-family: mcfontb; margin-bottom: 4px; }
     .mod-response-text { font-size: 13px; color: #bebebe; word-wrap: break-word; }
 
+    /* replies */
+    .replies-section {
+      background: #2a2e2f;
+      border-top: 1px solid #3a3f40;
+      margin-top: 0;
+      padding: 10px 12px;
+    }
+    .reply-item {
+      padding: 6px 0;
+      border-bottom: 1px solid #3a3f4044;
+      font-size: 13px;
+    }
+    .reply-item:last-of-type { border-bottom: none; }
+    .reply-name { color: #00b2ff; font-family: mcfontb; font-size: 12px; }
+    .reply-date { color: #6b7172; font-size: 11px; margin-left: 6px; }
+    .reply-text { color: #bebebe; margin-top: 2px; word-wrap: break-word; }
+    .reply-form { display: flex; gap: 6px; margin-top: 8px; }
+    .reply-input {
+      flex: 1; background: #323738; border: none; outline: none;
+      font-family: mcfont; font-size: 13px; color: #fff;
+      padding: 6px 8px; height: 32px; box-sizing: border-box; resize: none;
+    }
+    .reply-name-input {
+      width: 90px; background: #323738; border: none; outline: none;
+      font-family: mcfont; font-size: 13px; color: #fff;
+      padding: 6px 8px; height: 32px; box-sizing: border-box;
+    }
+    .reply-submit {
+      background: #00b2ff; color: #000; border: none;
+      font-family: mcfont; font-size: 12px; padding: 0 10px;
+      cursor: pointer; transition: background 0.1s; white-space: nowrap;
+    }
+    .reply-submit:hover { background: #5acaff; }
+
+    /* mod response input (muv mode) */
     .response-input-wrap { margin-top: 10px; display: flex; gap: 6px; }
     .response-input {
       flex: 1; background: #212425; border: none; outline: none;
@@ -265,7 +297,6 @@
       localStorage.setItem("voted_ideas", JSON.stringify(getVoted().filter(x => x !== String(id))));
     }
 
-    // muv modal
     muvBtn.addEventListener("click", () => muvModal.classList.add("open"));
     muvClose.addEventListener("click", closeModal);
     muvModal.addEventListener("click", (e) => { if (e.target === muvModal) closeModal(); });
@@ -298,7 +329,6 @@
       } catch { muvError.textContent = "network error"; }
     });
 
-    // sort
     document.querySelectorAll(".sort-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
@@ -331,6 +361,85 @@
       return d.innerHTML;
     }
 
+    function buildRepliesSection(post) {
+      const section = document.createElement("div");
+      section.className = "replies-section";
+
+      const replies = post.replies || [];
+      replies.forEach(r => {
+        const item = document.createElement("div");
+        item.className = "reply-item";
+        item.innerHTML =
+          '<span class="reply-name">' + escapeHTML(r.name) + '</span>' +
+          '<span class="reply-date">' + formatDate(r.timestamp) + '</span>' +
+          '<div class="reply-text">' + escapeHTML(r.reply) + '</div>';
+        section.appendChild(item);
+      });
+
+      // reply form
+      const replyForm = document.createElement("div");
+      replyForm.className = "reply-form";
+
+      const replyNameInput = document.createElement("input");
+      replyNameInput.className = "reply-name-input";
+      replyNameInput.placeholder = "name";
+      replyNameInput.maxLength = 20;
+      replyNameInput.type = "text";
+
+      const replyTextInput = document.createElement("textarea");
+      replyTextInput.className = "reply-input";
+      replyTextInput.placeholder = "reply...";
+
+      const replyBtn = document.createElement("button");
+      replyBtn.className = "reply-submit";
+      replyBtn.textContent = "reply";
+
+      replyBtn.addEventListener("click", async () => {
+        const replyText = replyTextInput.value.trim();
+        const replyName = replyNameInput.value.trim() || "anonymous";
+        if (!replyText) return;
+
+        replyBtn.textContent = "...";
+        replyBtn.disabled = true;
+
+        try {
+          const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: "reply", ideaNumber: post.ideaNumber, name: replyName, reply: replyText })
+          });
+          const data = await res.json();
+          if (data.success) {
+            // add the reply to the section immediately
+            const newReply = { name: replyName, reply: replyText, timestamp: new Date().toISOString() };
+            post.replies = post.replies || [];
+            post.replies.push(newReply);
+
+            const item = document.createElement("div");
+            item.className = "reply-item";
+            item.innerHTML =
+              '<span class="reply-name">' + escapeHTML(newReply.name) + '</span>' +
+              '<span class="reply-date">' + formatDate(newReply.timestamp) + '</span>' +
+              '<div class="reply-text">' + escapeHTML(newReply.reply) + '</div>';
+            section.insertBefore(item, replyForm);
+
+            replyTextInput.value = "";
+            replyNameInput.value = "";
+          }
+        } catch {}
+
+        replyBtn.textContent = "reply";
+        replyBtn.disabled = false;
+      });
+
+      replyForm.appendChild(replyNameInput);
+      replyForm.appendChild(replyTextInput);
+      replyForm.appendChild(replyBtn);
+      section.appendChild(replyForm);
+
+      return section;
+    }
+
     function buildCard(post) {
       const isMega = post.mega_upvoted === 1;
       const hasVoted = getVoted().includes(String(post.ideaNumber));
@@ -350,13 +459,12 @@
         '<span class="idea-date">' + formatDate(post.timestamp) + '</span>';
       div.appendChild(meta);
 
-      // text
+      // idea text
       const textEl = document.createElement("div");
       textEl.className = "idea-text";
       textEl.textContent = isLong ? post.idea.slice(0, CHAR_LIMIT) + "..." : post.idea;
       div.appendChild(textEl);
 
-      // read more
       if (isLong) {
         let expanded = false;
         const readMore = document.createElement("button");
@@ -404,7 +512,7 @@
       });
       footer.appendChild(upvoteLabel);
 
-      // mega upvote (muv mode only)
+      // mega (muv mode)
       if (muvSecret) {
         const megaLabel = document.createElement("div");
         megaLabel.className = "mega-label" + (isMega ? " voted" : "");
@@ -424,15 +532,12 @@
             if (creditEl) creditEl.style.display = "block";
             try { await fetch(API_URL, { method: "PATCH", headers: { "Content-Type": "application/json", "X-MUV-Secret": muvSecret }, body: JSON.stringify({ id: post.ideaNumber, type: "mega" }) }); } catch {}
           });
-        } else {
-          megaLabel.style.pointerEvents = "none";
-        }
+        } else { megaLabel.style.pointerEvents = "none"; }
         footer.appendChild(megaLabel);
       }
 
       div.appendChild(footer);
 
-      // mega credit
       if (isMega) {
         const credit = document.createElement("div");
         credit.className = "mega-credit";
@@ -440,7 +545,7 @@
         div.appendChild(credit);
       }
 
-      // mod response display
+      // mod response
       if (post.response) {
         const respWrap = document.createElement("div");
         respWrap.className = "mod-response";
@@ -455,10 +560,13 @@
         div.appendChild(respWrap);
       }
 
-      // mod response input (muv mode only)
+      // replies section always shown
+      div.appendChild(buildRepliesSection(post));
+
+      // response input (muv mode)
       if (muvSecret) {
-        const respWrap = document.createElement("div");
-        respWrap.className = "response-input-wrap";
+        const respInputWrap = document.createElement("div");
+        respInputWrap.className = "response-input-wrap";
         const respInput = document.createElement("textarea");
         respInput.className = "response-input";
         respInput.placeholder = post.response ? "edit response..." : "add response...";
@@ -481,9 +589,9 @@
             }
           } catch {}
         });
-        respWrap.appendChild(respInput);
-        respWrap.appendChild(respBtn);
-        div.appendChild(respWrap);
+        respInputWrap.appendChild(respInput);
+        respInputWrap.appendChild(respBtn);
+        div.appendChild(respInputWrap);
       }
 
       return div;
