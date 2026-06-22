@@ -255,7 +255,12 @@
 <div class="tab-content">
 <!--backrooms-->
 <a href="https://www.curseforge.com/minecraft-bedrock/addons/infinite-backrooms-generator" style="padding:0px 0px;color: #bebebe;background-color:#3e4344">  
-<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1357/813/256/256/638881985200731048.jpg" style="width: 100px"><br>infinite<br>backrooms<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 25K+</dl><addon>Addon</addon></div></a>    
+<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1357/813/256/256/638881985200731048.jpg" style="width: 100px"><br>infinite<br>backrooms<br>
+<dl>
+    <img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px">
+ 0
+ </dl>
+ <addon>Addon</addon></div></a>    
   
   
 <!--totemless-->
@@ -331,7 +336,47 @@ click here to view the downloads!
 
 
 
-  
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const els = document.querySelectorAll("dl[data-id]");
+
+  for (const el of els) {
+    const id = el.dataset.id;
+
+    try {
+      const res = await fetch(
+        "https://curseforge-api-key.vercel.app/api/cf?endpoint=mods/" + id
+      );
+
+      const json = await res.json();
+console.log(json);
+      const downloads = json?.data?.downloadCount;
+
+      if (typeof downloads !== "number") continue;
+
+      let formatted = downloads;
+
+      if (downloads >= 1_000_000) {
+        formatted = (downloads / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M+";
+      } else if (downloads >= 1_000) {
+        formatted = (downloads / 1_000).toFixed(1).replace(/\.0$/, "") + "K+";
+      }
+
+      // ONLY replace text node (this is the key fix)
+      for (const node of el.childNodes) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = " " + formatted;
+        }
+      }
+
+    } catch (e) {
+      console.log("fail", id, e);
+    }
+  }
+});
+</script>
+
 <script data-goatcounter="https://idktoast.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </body>
