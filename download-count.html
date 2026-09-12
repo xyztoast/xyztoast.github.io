@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>idktoast — CurseForge Downloads</title>
+<style>
+  :root {
+    --bg: #0c0c0c;
+    --accent: #05ee93;
+    --accent-dim: #05ee9355;
+    --text-dim: #8a8a8a;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+
+  .wrap {
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .label {
+    color: var(--text-dim);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .label span {
+    color: var(--accent);
+  }
+
+  .counter {
+    font-family: 'SF Mono', 'Consolas', 'Menlo', monospace;
+    font-size: clamp(3rem, 12vw, 8rem);
+    font-weight: 700;
+    color: #f4f4f4;
+    text-shadow: 0 0 18px var(--accent-dim), 0 0 40px rgba(5, 238, 147, 0.15);
+    letter-spacing: 0.03em;
+    transition: text-shadow 0.3s ease;
+    min-width: 1ch;
+  }
+
+  .counter.bump {
+    text-shadow: 0 0 28px var(--accent), 0 0 60px rgba(5, 238, 147, 0.35);
+  }
+
+  .digit {
+    display: inline-block;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease;
+  }
+
+  .digit.roll {
+    animation: roll 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @keyframes roll {
+    0%   { transform: translateY(-0.4em); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .sub {
+    margin-top: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .dot.error {
+    background: #ff4d4d;
+    box-shadow: 0 0 8px #ff4d4d;
+    animation: none;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.75); }
+  }
+
+  .error-text {
+    color: #ff6b6b;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="label">Total Downloads · <span>idktoast</span></div>
+  <div class="counter" id="counter">—</div>
+  <div class="sub">
+    <span class="dot" id="statusDot"></span>
+    <span id="statusText">connecting…</span>
+  </div>
+</div>
+
+<script>
+  const WORKER_URL = "https://downloadcount.mcbcode.workers.dev";
+  const POLL_MS = 5000;
+
+  const counterEl = document.getElementById("counter");
+  const dotEl = document.getElementById("statusDot");
+  const statusEl = document.getElementById("statusText");
+
+  let currentValue = null;
+  let displayedValue = null;
+  let animFrame = null;
+
+  function formatNumber(n) {
+    return n.toLocaleString("en-US");
+  }
+
+  function renderDigits(str, animate) {
+    counterEl.innerHTML = "";
+    for (const ch of str) {
+      const span = document.createElement("span");
+      span.className = "digit" + (animate ? " roll" : "");
+      span.textContent = ch;
+      counterEl.appendChild(span);
+    }
+  }
+
+  // Count from displayedValue up to target over ~900ms
+  function animateTo(target) {
+    if (displayedValue === null) {
+      displayedValue = target;
+      renderDigits(formatNumber(target), false);
+      return;
+    }
+    if (target === displayedValue) return;
+
+    cancelAnimationFrame(animFrame);
+    const start = displayedValue;
+    const delta = target - start;
+    const duration = 900;
+    const startTime = performance.now();
+
+    counterEl.classList.add("bump");
+
+    function step(now) {
+      const t = Math.min(1, (now - startTime) / duration);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const value = Math.round(start + delta * eased);
+      renderDigits(formatNumber(value), false);
+
+      if (t < 1) {
+        animFrame = requestAnimationFrame(step);
+      } else {
+        renderDigits(formatNumber(target), true);
+        displayedValue = target;
+        setTimeout(() => counterEl.classList.remove("bump"), 300);
+      }
+    }
+    animFrame = requestAnimationFrame(step);
+  }
+
+  async function poll() {
+    try {
+      const res = await fetch(WORKER_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      if (typeof data.downloads !== "number") throw new Error("bad payload");
+
+      currentValue = data.downloads;
+      animateTo(currentValue);
+
+      dotEl.classList.remove("error");
+      statusEl.textContent = "live · updates every 5s";
+      statusEl.classList.remove("error-text");
+    } catch (err) {
+      dotEl.classList.add("error");
+      statusEl.textContent = "connection error, retrying…";
+      statusEl.classList.add("error-text");
+    }
+  }
+
+  poll();
+  setInterval(poll, POLL_MS);
+</script>
+
+</body>
+</html>
