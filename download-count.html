@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://hello.mcbcode.com/theme.css">
 <title>idktoast — CurseForge Downloads</title>
 <style>
   :root {
@@ -21,8 +22,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     overflow: hidden;
+    font-family: mcfont;
   }
 
   .wrap {
@@ -32,9 +33,7 @@
 
   .label {
     color: var(--text-dim);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: 2em;
     margin-bottom: 1rem;
   }
 
@@ -43,7 +42,6 @@
   }
 
   .counter {
-    font-family: 'SF Mono', 'Consolas', 'Menlo', monospace;
     font-size: clamp(3rem, 12vw, 8rem);
     font-weight: 700;
     color: #f4f4f4;
@@ -51,6 +49,7 @@
     letter-spacing: 0.03em;
     transition: text-shadow 0.3s ease;
     min-width: 1ch;
+    font-family: mcfontb;
   }
 
   .counter.bump {
@@ -180,8 +179,10 @@
   async function poll() {
     try {
       const res = await fetch(WORKER_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data) {
+        throw new Error((data && data.error) || "HTTP " + res.status);
+      }
       if (data.error) throw new Error(data.error);
       if (typeof data.downloads !== "number") throw new Error("bad payload");
 
