@@ -193,7 +193,7 @@
       statusEl.classList.remove("error-text");
     } catch (err) {
       dotEl.classList.add("error");
-      statusEl.textContent = "connection error, retrying…";
+      statusEl.textContent = "error: " + (err.message || err) + " · retrying…";
       statusEl.classList.add("error-text");
     }
   }
