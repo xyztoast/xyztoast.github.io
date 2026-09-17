@@ -1,182 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Markdown Editor</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
-    <style>
-        /* Custom scrollbar for a cleaner look */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e1e1e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #444;
-        }
-        /* Style markdown preview output */
-        .prose pre {
-            background-color: #2d3748;
-            padding: 1rem;
-            border-radius: 0.375rem;
-            color: #fff;
-        }
-        .prose code {
-            font-family: monospace;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Markdown Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg: #1e1e1e;
+    --panel-bg: #252526;
+    --border: #3c3c3c;
+    --text: #d4d4d4;
+    --accent: #569cd6;
+    --toolbar-bg: #2d2d2d;
+    --preview-bg: #1e1e1e;
+    --preview-text: #d4d4d4;
+    --code-bg: #2d2d2d;
+    --link: #4fa8ff;
+    --table-border: #3c3c3c;
+    --table-head-bg: #2a2a2a;
+    --table-stripe: #252525;
+    --blockquote-text: #a0a0a0;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f5f5f5;
+      --panel-bg: #ffffff;
+      --border: #ddd;
+      --text: #222;
+      --toolbar-bg: #eeeeee;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1e1e1e;
+    --panel-bg: #252526;
+    --border: #3c3c3c;
+    --text: #d4d4d4;
+    --toolbar-bg: #2d2d2d;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+  }
+  #toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--toolbar-bg);
+    border-bottom: 1px solid var(--border);
+    height: 44px;
+    flex-shrink: 0;
+  }
+  #toolbar .title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: auto;
+    color: var(--text);
+  }
+  button.tbtn {
+    background: var(--panel-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  button.tbtn:hover { filter: brightness(1.2); }
+  #main {
+    display: flex;
+    height: calc(100% - 44px);
+    width: 100%;
+  }
+  #editor-pane, #preview-pane {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  #editor-pane { width: 50%; min-width: 150px; }
+  #preview-pane {
+    width: 50%;
+    min-width: 150px;
+    background: var(--preview-bg);
+    overflow-y: auto;
+  }
+  #divider {
+    width: 6px;
+    background: var(--border);
+    cursor: col-resize;
+    flex-shrink: 0;
+  }
+  #divider:hover { background: var(--accent); }
+  #editor-container { width: 100%; height: 100%; }
+  #preview {
+    color: var(--preview-text);
+    padding: 24px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-size: 15px;
+    word-wrap: break-word;
+  }
+  #preview h1, #preview h2, #preview h3, #preview h4 {
+    border-bottom: 1px solid var(--table-border);
+    padding-bottom: 6px;
+    margin-top: 24px;
+  }
+  #preview h1 { font-size: 1.8em; }
+  #preview h2 { font-size: 1.4em; }
+  #preview code {
+    background: var(--code-bg);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 0.9em;
+  }
+  #preview pre {
+    background: var(--code-bg);
+    padding: 12px 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  #preview pre code { background: none; padding: 0; }
+  #preview blockquote {
+    border-left: 4px solid var(--table-border);
+    margin: 0;
+    padding: 4px 16px;
+    color: var(--blockquote-text);
+  }
+  #preview table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    display: block;
+    overflow-x: auto;
+  }
+  #preview th, #preview td {
+    border: 1px solid var(--table-border);
+    padding: 6px 13px;
+  }
+  #preview th {
+    background: var(--table-head-bg);
+    font-weight: 600;
+  }
+  #preview tr:nth-child(2n) { background: var(--table-stripe); }
+  #preview img { max-width: 100%; }
+  #preview a { color: var(--link); }
+  #preview input[type="checkbox"] { margin-right: 6px; }
+  #preview hr { border: none; border-top: 1px solid var(--table-border); margin: 24px 0; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+
+  @media (max-width: 700px) {
+    #main { flex-direction: column; }
+    #editor-pane, #preview-pane { width: 100% !important; height: 50%; }
+    #divider { width: 100%; height: 6px; cursor: row-resize; }
+  }
+</style>
 </head>
-<body class="bg-[#1e1e1e] text-gray-200 h-screen flex flex-col overflow-hidden font-sans">
+<body>
 
-    <header class="h-12 border-b border-[#2d2d2d] bg-[#181818] flex items-center justify-between px-6 z-10 select-none">
-        <div class="flex items-center gap-2">
-            <span class="text-emerald-400 font-bold text-lg">⚡</span>
-            <h1 class="font-semibold text-sm tracking-wide text-gray-300">MONACO.MD</h1>
-        </div>
-        <div class="text-xs text-gray-500 font-mono">Markdown Live Preview</div>
-    </header>
+<div id="toolbar">
+  <span class="title">Markdown Editor</span>
+  <button class="tbtn" id="btn-upload">Open .md</button>
+  <button class="tbtn" id="btn-download">Save .md</button>
+  <button class="tbtn" id="btn-clear">Clear</button>
+</div>
 
-    <main id="container" class="flex flex-1 w-full relative overflow-hidden">
-        
-        <div id="left-panel" class="h-full min-w-[200px]" style="width: 50%;">
-            <div id="editor" class="w-full h-full"></div>
-        </div>
+<div id="main">
+  <div id="editor-pane">
+    <div id="editor-container"></div>
+  </div>
+  <div id="divider"></div>
+  <div id="preview-pane">
+    <div id="preview"></div>
+  </div>
+</div>
 
-        <div id="resizer" class="w-1.5 h-full bg-[#2d2d2d] hover:bg-emerald-500 active:bg-emerald-600 cursor-col-resize transition-colors duration-150 z-20 relative flex items-center justify-center">
-            <div class="w-[2px] h-6 bg-gray-600 rounded"></div>
-        </div>
+<input type="file" id="file-input" accept=".md,.markdown,.txt" style="display:none">
 
-        <div id="right-panel" class="h-full bg-[#1a1a1a] overflow-y-auto min-w-[200px] p-8 flex-1">
-            <div id="preview" class="prose max-w-none text-gray-300 
-                prose-headings:text-gray-100 prose-headings:font-semibold
-                prose-h1:text-3xl prose-h1:border-b prose-h1:border-[#2d2d2d] prose-h1:pb-2
-                prose-h2:text-2xl prose-h2:mt-6
-                prose-p:leading-relaxed prose-p:my-4
-                prose-a:text-emerald-400 hover:prose-a:underline
-                prose-strong:text-white
-                prose-ul:list-disc prose-ul:ml-6
-                prose-ol:list-decimal prose-ol:ml-6
-                prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-400">
-            </div>
-        </div>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/loader.js"></script>
+<script>
+  marked.setOptions({ gfm: true, breaks: false });
 
-    </main>
+  const DEFAULT_TEXT = "# Welcome to your Markdown Editor\n\n" +
+    "Type on the left, see the rendered preview on the right.\n\n" +
+    "## Features\n\n" +
+    "- **Bold**, *italic*, ~~strikethrough~~\n" +
+    "- Nested lists\n" +
+    "  - like this\n" +
+    "- [x] Task done\n" +
+    "- [ ] Task pending\n\n" +
+    "### Tables\n\n" +
+    "| Feature | Supported |\n" +
+    "|---------|-----------|\n" +
+    "| Tables | Yes |\n" +
+    "| Code blocks | Yes |\n" +
+    "| Links | Yes |\n\n" +
+    "### Code\n\n" +
+    "```javascript\n" +
+    "function hello() {\n" +
+    "  console.log('hello world');\n" +
+    "}\n" +
+    "```\n\n" +
+    "> Blockquote example\n\n" +
+    "---\n\n" +
+    "[A link](https://example.com) and `inline code`.\n";
 
-    <script>
-        // --- 1. Default Content ---
-        const initialMarkdown = `# Welcome to the Monaco Markdown Editor!
+  let editor;
+  const STORAGE_KEY = "md-editor-content";
 
-This is a modern, high-performance Markdown editor powered by the **Monaco Editor** engine.
+  function renderPreview(text) {
+    const rawHtml = marked.parse(text);
+    const clean = DOMPurify.sanitize(rawHtml);
+    document.getElementById("preview").innerHTML = clean;
+  }
 
-## Features
-* **Live Preview:** Real-time updates as you type.
-* **Draggable Splitter:** Adjust the panels to fit your workflow.
-* **Monaco Power:** Code completion, multi-cursor editing, and robust shortcuts.
+  function loadSaved() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved !== null ? saved : DEFAULT_TEXT;
+    } catch (e) {
+      return DEFAULT_TEXT;
+    }
+  }
 
-### Code Block Example
-\`\`\`javascript
-const greeting = "Hello World";
-function sayHello() {
-    console.log(greeting);
-}
-\`\`\`
+  function saveContent(text) {
+    try { localStorage.setItem(STORAGE_KEY, text); } catch (e) {}
+  }
 
-> "Simplicity is the ultimate sophistication." — Leonardo da Vinci
-`;
+  require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs" } });
+  require(["vs/editor/editor.main"], function () {
+    const startText = loadSaved();
 
-        // --- 2. Initialize Monaco Editor ---
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    monaco.editor.setTheme(prefersDark ? "vs-dark" : "vs-dark");
 
-        require(['vs/editor/editor.main'], function () {
-            // Configure marked options for security/rendering
-            marked.setOptions({
-                breaks: true,
-                gfm: true
-            });
+    editor = monaco.editor.create(document.getElementById("editor-container"), {
+      value: startText,
+      language: "markdown",
+      theme: "vs-dark",
+      automaticLayout: true,
+      wordWrap: "on",
+      minimap: { enabled: false },
+      fontSize: 14,
+      scrollBeyondLastLine: false,
+      padding: { top: 12 }
+    });
 
-            const editorContainer = document.getElementById('editor');
-            const previewContainer = document.getElementById('preview');
+    renderPreview(startText);
 
-            // Create Editor instance
-            const editor = monaco.editor.create(editorContainer, {
-                value: initialMarkdown,
-                language: 'markdown',
-                theme: 'vs-dark',
-                automaticLayout: true, // Forces Monaco to adapt when container size changes
-                fontFamily: 'Fira Code, JetBrains Mono, Cascadia Code, monospace',
-                fontSize: 14,
-                lineHeight: 22,
-                minimap: { enabled: false },
-                wordWrap: 'on',
-                padding: { top: 16, bottom: 16 },
-                scrollbar: {
-                    verticalScrollbarSize: 10,
-                    horizontalScrollbarSize: 10
-                }
-            });
+    editor.onDidChangeModelContent(() => {
+      const val = editor.getValue();
+      const prevScrollTop = previewPane.scrollTop;
+      renderPreview(val);
+      previewPane.scrollTop = prevScrollTop;
+      saveContent(val);
+    });
 
-            // Function to update preview
-            function updatePreview() {
-                const rawMarkdown = editor.getValue();
-                previewContainer.innerHTML = marked.parse(rawMarkdown);
-            }
+    // Sync preview scroll to editor scroll position
+    let syncingFromEditor = false;
+    let syncingFromPreview = false;
 
-            // Listen for changes
-            editor.onDidChangeModelContent(updatePreview);
+    editor.onDidScrollChange(() => {
+      if (syncingFromPreview) return;
+      const scrollTop = editor.getScrollTop();
+      const scrollHeight = editor.getScrollHeight() - editor.getLayoutInfo().height;
+      const pct = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
 
-            // Initial render
-            updatePreview();
+      const preview = previewPane;
+      const targetTop = pct * (preview.scrollHeight - preview.clientHeight);
 
-            // --- 3. Draggable Splitter Functionality ---
-            const container = document.getElementById('container');
-            const leftPanel = document.getElementById('left-panel');
-            const resizer = document.getElementById('resizer');
+      syncingFromEditor = true;
+      preview.scrollTop = targetTop;
+      requestAnimationFrame(() => { syncingFromEditor = false; });
+    });
 
-            let isDragging = false;
+    previewPane.addEventListener("scroll", () => {
+      if (syncingFromEditor) return;
+      const pct = previewPane.scrollTop / (previewPane.scrollHeight - previewPane.clientHeight || 1);
+      const scrollHeight = editor.getScrollHeight() - editor.getLayoutInfo().height;
+      const targetTop = pct * scrollHeight;
 
-            resizer.addEventListener('mousedown', function (e) {
-                isDragging = true;
-                // Add an overlay class or pointer-events block to prevent iframe/text selections from hijacking drag
-                document.body.style.cursor = 'col-resize';
-                document.body.style.userSelect = 'none';
-            });
+      syncingFromPreview = true;
+      editor.setScrollTop(targetTop);
+      requestAnimationFrame(() => { syncingFromPreview = false; });
+    });
+  });
 
-            document.addEventListener('mousemove', function (e) {
-                if (!isDragging) return;
+  // Divider drag-to-resize
+  const divider = document.getElementById("divider");
+  const editorPane = document.getElementById("editor-pane");
+  const previewPane = document.getElementById("preview-pane");
+  const mainEl = document.getElementById("main");
+  let dragging = false;
 
-                // Calculate width percentages relative to main container bounds
-                const containerRect = container.getBoundingClientRect();
-                const currentX = e.clientX - containerRect.left;
-                
-                let widthPercentage = (currentX / containerRect.width) * 100;
+  divider.addEventListener("mousedown", () => { dragging = true; document.body.style.userSelect = "none"; });
+  window.addEventListener("mouseup", () => { dragging = false; document.body.style.userSelect = ""; });
+  window.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    const isVertical = window.innerWidth > 700;
+    if (isVertical) {
+      const rect = mainEl.getBoundingClientRect();
+      let pct = ((e.clientX - rect.left) / rect.width) * 100;
+      pct = Math.min(85, Math.max(15, pct));
+      editorPane.style.width = pct + "%";
+      previewPane.style.width = (100 - pct) + "%";
+    }
+  });
 
-                // Set hard bounds so panels don't disappear completely
-                if (widthPercentage < 15) widthPercentage = 15;
-                if (widthPercentage > 85) widthPercentage = 85;
+  // Toolbar actions
+  document.getElementById("btn-clear").addEventListener("click", () => {
+    if (confirm("Clear all content?")) {
+      editor.setValue("");
+      editor.focus();
+    }
+  });
 
-                leftPanel.style.width = `${widthPercentage}%`;
-                
-                // Note: 'automaticLayout: true' in Monaco configuration will 
-                // automatically pick up this resizing event seamlessly.
-            });
+  document.getElementById("btn-download").addEventListener("click", () => {
+    const text = editor.getValue();
+    const blob = new Blob([text], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "document.md";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
 
-            document.addEventListener('mouseup', function () {
-                if (isDragging) {
-                    isDragging = false;
-                    document.body.style.cursor = 'default';
-                    document.body.style.userSelect = 'auto';
-                }
-            });
-        });
-    </script>
+  document.getElementById("btn-upload").addEventListener("click", () => {
+    document.getElementById("file-input").click();
+  });
+
+  document.getElementById("file-input").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      editor.setValue(ev.target.result);
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+</script>
+
 </body>
 </html>
