@@ -42,14 +42,30 @@
       white-space: nowrap;
       gap-top: 50px;
       background-color: #323738;
-      transition: background-color 0.1s ease-in-out, padding 0.1s ease-in-out;
+      transition: background-color 0.1s ease-in-out;
     }
     
+    #link {
+        gap: 0px;
+        background-color: transparent;
+        padding: 6px;
+        border-radius: 6px;
+    }
+
+    #link img {
+        padding: 12px;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    #link img:hover {
+        background-color: #bebebe50;
+        padding: 12px;
+        border-radius: 6px;
+    }
+
     a:hover {
       background-color: #44494a;
       color: #5acaff;
-      padding: 8px 26px;
-
     }
     
     p {
@@ -72,8 +88,8 @@
 
   .mcbc {
     position: fixed;
-    left: 5px;
-    top: 10px;
+    left: 0px;
+    top: 0px;
     height: 50px;
     width: 50px;
   }
@@ -221,18 +237,30 @@
     <h1><img src="https://media.forgecdn.net/avatars/1645/362/639050852084521204.png" style="width:40px; border-radius: 10px;"> idktoast</h1>
     
     
-    <p>im a minecraft bedrock mod creator and i like experimenting with code. <br><br>my links are below</p>
+    <p>minecraft bedrock creator and i like experimenting with code. <br><br>my links are below</p>
      <div class="links">
       <div class="thing">
-      <a href="https://www.curseforge.com/members/idktoast/projects" target="_blank" rel="noopener noreferrer"><img src="https://cdn2.unrealengine.com/egs-curseforge-overwolf-ic1-400x400-efe6f7172cef.png?resize=1&w=480&h=270&quality=medium" style="width:15px;">
- curseforge</a>
-      
-      
-      <a href="https://mcpedl.com/user/idktoast" target="_blank" target="_blank" rel="noopener noreferrer"><img src="https://play-lh.googleusercontent.com/TceQB0Nblpisd_9lviAXli7-POotAtrx7E7RCMvBVZQkFntzOSQl94_xJkW3_14vSS0" style="width:15px"> mcpedl</a>
-      
-      
-      <a href="https://github.com/xyztoast/xyztoast.github.io" target="_blank" rel="noopener noreferrer"><img src="https://cdn-icons-png.flaticon.com/256/25/25231.png" style="width:15px; padding-top: 24px;"> github repository</a>
+      <a href="https://www.curseforge.com/members/idktoast/projects" id="link" target="_blank"><img src="https://mcbcode.com/img/icons/curseforge_symbol.svg" style="width:50px;"></a>
+            
+      <a href="https://github.com/xyztoast" id="link" target="_blank"><img src="https://mcbcode.com/img/icons/github_symbol.svg" style="width:50px;"></a>
 
+      <a href="https://www.xbox.com/play/user/zytoast" id="link" target="_blank" target="_blank"><img src="https://mcbcode.com/img/icons/xbox_symbol.svg" style="width:50px"></a>
+
+      <br>
+
+      <a href="https://hello.mcbcode.com/404" id="link" target="_blank" target="_blank"><img src="https://mcbcode.com/img/icons/discord_symbol.svg" style="width:50px"></a>
+
+      <a href="https://linktr.ee/idktoast" id="link" target="_blank" target="_blank"><img src="https://mcbcode.com/img/icons/linktree_symbol.svg" style="width:50px"></a>
+
+      <a href="https://ko-fi.com/idktoast" id="link" target="_blank" target="_blank"><img src="https://mcbcode.com/img/icons/kofi_symbol.svg" style="width:50px"></a>
+
+      <br>
+
+      <a href="https://twitch.tv/idktoastt" id="link" target="_blank" target="_blank"><img src="https://mcbcode.com/img/icons/twitch_symbol.svg" style="width:50px"></a>
+
+      <a href="https://monkeytype.com/profile/idktoast" id="link" target="_blank" target="_blank"><img src="https://raw.githubusercontent.com/monkeytype-hub/monkeytype-icon/master/monkeytype-icon/logo-svg/gruvbox_dark.svg" style="width:50px; align-content: center;"></a>
+
+      <a href="https://mcbcode.com/profile/idktoast" id="link" target="_blank" target="_blank" ><img src="https://mcbcode.com/img/icons/blank.png" style="width:50px; align-content: center; border-radius: 24px;"></a>
 <br><br><br>      
 
 <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#00b2ff', 'X8X51J5WEA');kofiwidget2.draw();</script> 
@@ -242,9 +270,7 @@
     </div>
     
     
-     <a style="background-color: transparent; padding:8px 8px;" href="https://mcbcode.com"><div class="mcbc"><img src="https://xyztoast.github.io/icons/mcbcode.png" style="height:40px;width:40px;padding:0;" title="mcbCode editor">
-     <p>mcbCode</p>
-     </div></a>
+     <a style="background-color: transparent; padding:8px 8px;" href="https://mcbcode.com"><div class="mcbc"><p style="display: flex; align-items: center; color: #05ee93; background-color: #0c0c0c; line-height: 0; padding: 16px; border-top: 12px solid #0c0c0c; border-bottom-right-radius: 12px; font-size: 24px;"><img src="https://mcbcode.com/img/icons/default.png" style="height:40px;width:40px;padding:0;" title="mcbCode editor"><span style="color: #ffffff; gap:">mcb</span>Code</p></div></a>
   
   
   
@@ -307,7 +333,7 @@
 
 <!--fov-->
 <a href="https://www.curseforge.com/minecraft-bedrock/addons/mob-npcs" style="padding:0px 0px;color: #bebebe;background-color:#3e4344">
-<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1939/5/256/256/639204422130342131.png" style="width: 100px"><br>mob<br>npcs<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2.5k+</dl><texture>Textures</texture></div></a>
+<div class="mod"><img src="https://media.forgecdn.net/avatars/thumbnails/1939/5/256/256/639204422130342131.png" style="width: 100px"><br>mob<br>npcs<br><dl><img src="https://xyztoast2.github.io/icon/dl.png" style="width:18px"> 2.5k+</dl><addon>Addon</addon></div></a>
     
     
 
