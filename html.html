@@ -3,278 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Editor | v2</title>
+    <title>HTML Editor | v3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-            background-color: #1e1e1e;
-        }
+        body, html { height: 100%; margin: 0; overflow: hidden; background-color: #000; }
         .main-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            position: relative;
+            --split: 50%;
+            display: flex; height: 100vh; width: 100vw;
+            overflow: hidden; position: relative; background: #000;
         }
-        #editor-pane {
-            height: 100%;
-            min-width: 100px;
-            width: 50%;
-        }
+        #editor-pane { height: 100%; width: var(--split); min-width: 100px; flex: none; }
         #preview-pane {
-            flex-grow: 1;
-            height: 100%;
-            background: white;
-            min-width: 100px;
+            flex: 1; height: 100%; min-width: 100px; position: relative;
+            background: #000; overflow: hidden; isolation: isolate;
         }
+        /* two stacked iframes: the new one loads hidden, then swaps in (no flash) */
+        .pf { position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: #fff; visibility: hidden; }
+        .pf.front { visibility: visible; z-index: 2; }
+        #drag-shield { position: absolute; inset: 0; z-index: 5; display: none; }
+        .resizing #drag-shield { display: block; }
+
         #resizer {
-            width: 8px;
-            cursor: col-resize;
-            background-color: #2d2d2d;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            position: relative;
+            width: 8px; cursor: col-resize; background-color: #2d2d2d;
+            transition: background-color 0.2s; display: flex; align-items: center;
+            justify-content: center; z-index: 20; position: relative; touch-action: none;
         }
-        #resizer:hover, .resizing #resizer {
-            background-color: #3b82f6;
-        }
-        #resizer::after {
-            content: "";
-            width: 2px;
-            height: 30px;
-            background-color: #444;
-            border-radius: 2px;
-        }
+        #resizer:hover, .resizing #resizer { background-color: #3b82f6; }
+        #resizer::after { content: ""; width: 2px; height: 30px; background-color: #444; border-radius: 2px; }
+        .resizing { cursor: col-resize; user-select: none; -webkit-user-select: none; }
 
-        /* Gear Button */
+        /* curtain mode: preview keeps full width, editor slides over it */
+        .curtain #preview-pane { position: absolute; inset: 0; min-width: 0; }
+        .curtain #editor-pane { position: absolute; left: 0; top: 0; z-index: 15; min-width: 0; box-shadow: 4px 0 16px rgba(0,0,0,0.5); }
+        .curtain #resizer { position: absolute; top: 0; bottom: 0; left: var(--split); z-index: 20; }
+
         #settings-trigger {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 32px;
-            height: 32px;
-            background: #3b82f6;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            z-index: 30;
-            transition: transform 0.2s;
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 32px; height: 32px; background: #3b82f6; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 30; transition: transform 0.2s;
         }
-        #settings-trigger:hover {
-            transform: translateX(-50%) scale(1.1) rotate(45deg);
-        }
-
-        /* Settings Panel */
+        #settings-trigger:hover { transform: translateX(-50%) scale(1.1) rotate(45deg); }
         #settings-panel {
-            position: absolute;
-            bottom: 60px;
-            left: -136px; 
-            width: 280px;
-            max-height: 70vh;
-            background: #252526;
-            border: 1px solid #454545;
-            border-radius: 8px;
-            z-index: 40;
-            display: none;
-            flex-direction: column;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            overflow: hidden;
-            cursor: default;
+            position: absolute; bottom: 60px; left: -136px; width: 280px; max-height: 70vh;
+            background: #252526; border: 1px solid #454545; border-radius: 8px; z-index: 40;
+            display: none; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            overflow: hidden; cursor: default;
         }
-        #settings-panel.active {
-            display: flex;
-        }
-        .settings-content {
-            overflow-y: auto;
-            padding: 16px;
-        }
-        .setting-item {
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .setting-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #888;
-            font-weight: bold;
-        }
+        #settings-panel.active { display: flex; }
+        .settings-content { overflow-y: auto; padding: 16px; }
+        .setting-item { margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
+        .setting-label { font-size: 11px; text-transform: uppercase; color: #888; font-weight: bold; }
         select, input {
-            background: #3c3c3c;
-            border: 1px solid #555;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 13px;
-            outline: none;
+            background: #3c3c3c; border: 1px solid #555; color: white; padding: 4px 8px;
+            border-radius: 4px; font-size: 13px; outline: none;
         }
         select:focus { border-color: #3b82f6; }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .btn {
+            background: #3b82f6; color: white; border: none; border-radius: 4px;
+            padding: 8px; font-size: 13px; cursor: pointer; margin-bottom: 8px; width: 100%;
         }
-        .resizing { cursor: col-resize; user-select: none; }
-        .resizing iframe { pointer-events: none; }
+        .btn:hover { background: #2563eb; }
+
+        /* fullscreen previews */
+        #fs-overlay { position: fixed; inset: 0; background: #000; z-index: 100; display: none; }
+        #fs-overlay.on { display: block; }
+        #fs-frame { position: absolute; transform-origin: 0 0; border: none; background: #fff; }
+        #fs-back {
+            position: absolute; top: 12px; left: 12px; z-index: 2; background: rgba(30,30,30,0.85);
+            color: white; border: 1px solid #555; border-radius: 6px; padding: 6px 14px;
+            font-size: 13px; cursor: pointer;
+        }
+        #fs-back:hover { background: #3b82f6; }
     </style>
 </head>
 <body class="text-white">
 
     <div class="main-container" id="container">
-        <!-- Code Section -->
         <div id="editor-pane">
             <div id="editor-container" class="h-full w-full"></div>
         </div>
 
-        <!-- Draggable Bar -->
         <div id="resizer">
             <div id="settings-trigger" title="Settings">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             </div>
-            
-            <!-- Settings Panel -->
+
             <div id="settings-panel">
                 <div class="p-3 border-b border-gray-700 font-bold text-sm bg-[#2d2d2d] flex justify-between items-center">
                     <span>Editor Settings</span>
                     <button id="close-settings" class="hover:text-red-400 p-1">✕</button>
                 </div>
                 <div class="settings-content">
-                    <div class="setting-item">
-                        <label class="setting-label">Theme</label>
-                        <select id="set-theme">
-                            <option value="vs-dark">Visual Studio Dark</option>
-                            <option value="vs">Visual Studio Light</option>
-                            <option value="hc-black">High Contrast</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Font Size</label>
-                        <input type="number" id="set-fontsize" value="14" min="8" max="32">
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Word Wrap</label>
-                        <select id="set-wordwrap">
-                            <option value="on">On</option>
-                            <option value="off">Off</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Line Numbers</label>
-                        <select id="set-linenumbers">
-                            <option value="on">On</option>
-                            <option value="off">Off</option>
-                            <option value="relative">Relative</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Minimap</label>
-                        <select id="set-minimap">
-                            <option value="false">Hidden</option>
-                            <option value="true">Visible</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Cursor Style</label>
-                        <select id="set-cursor">
-                            <option value="line">Line</option>
-                            <option value="block">Block</option>
-                            <option value="underline">Underline</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Tab Size</label>
-                        <select id="set-tabsize">
-                            <option value="2">2 Spaces</option>
-                            <option value="4" selected>4 Spaces</option>
-                            <option value="8">8 Spaces</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Cursor Blinking</label>
-                        <select id="set-blinking">
-                            <option value="blink">Blink</option>
-                            <option value="smooth">Smooth</option>
-                            <option value="phase">Phase</option>
-                            <option value="expand">Expand</option>
-                            <option value="solid">Solid</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Auto Closing Brackets</label>
-                        <select id="set-autoclose">
-                            <option value="always">Always</option>
-                            <option value="never">Never</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Semantic Highlighting</label>
-                        <select id="set-semantic">
-                            <option value="true">Enabled</option>
-                            <option value="false">Disabled</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Scroll Beyond Last Line</label>
-                        <select id="set-scrollpast">
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Render Whitespace</label>
-                        <select id="set-whitespace">
-                            <option value="none">None</option>
-                            <option value="boundary">Boundary</option>
-                            <option value="all">All</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label class="setting-label">Format On Paste</label>
-                        <select id="set-formatpaste">
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
+                    <button class="btn" id="fs-169">Fullscreen Preview 16:9</button>
+                    <button class="btn" id="fs-916">Fullscreen Preview 9:16</button>
+
+                    <div class="setting-item"><label class="setting-label">Curtain Mode</label>
+                        <select id="set-curtain"><option value="off">Off</option><option value="on">On</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Sync Scroll</label>
+                        <select id="set-sync"><option value="off">Off</option><option value="on">On</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Autocomplete</label>
+                        <select id="set-autocomplete"><option value="on">On</option><option value="off">Off</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Theme</label>
+                        <select id="set-theme"><option value="vs-dark">Visual Studio Dark</option><option value="vs">Visual Studio Light</option><option value="hc-black">High Contrast</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Font Size</label>
+                        <input type="number" id="set-fontsize" value="14" min="8" max="32"></div>
+                    <div class="setting-item"><label class="setting-label">Word Wrap</label>
+                        <select id="set-wordwrap"><option value="on">On</option><option value="off">Off</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Line Numbers</label>
+                        <select id="set-linenumbers"><option value="on">On</option><option value="off">Off</option><option value="relative">Relative</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Minimap</label>
+                        <select id="set-minimap"><option value="false">Hidden</option><option value="true">Visible</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Cursor Style</label>
+                        <select id="set-cursor"><option value="line">Line</option><option value="block">Block</option><option value="underline">Underline</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Tab Size</label>
+                        <select id="set-tabsize"><option value="2">2 Spaces</option><option value="4" selected>4 Spaces</option><option value="8">8 Spaces</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Cursor Blinking</label>
+                        <select id="set-blinking"><option value="blink">Blink</option><option value="smooth">Smooth</option><option value="phase">Phase</option><option value="expand">Expand</option><option value="solid">Solid</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Auto Closing Brackets</label>
+                        <select id="set-autoclose"><option value="always">Always</option><option value="never">Never</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Semantic Highlighting</label>
+                        <select id="set-semantic"><option value="true">Enabled</option><option value="false">Disabled</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Scroll Beyond Last Line</label>
+                        <select id="set-scrollpast"><option value="true">Yes</option><option value="false">No</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Render Whitespace</label>
+                        <select id="set-whitespace"><option value="none">None</option><option value="boundary">Boundary</option><option value="all">All</option></select></div>
+                    <div class="setting-item"><label class="setting-label">Format On Paste</label>
+                        <select id="set-formatpaste"><option value="true">Yes</option><option value="false">No</option></select></div>
                 </div>
             </div>
         </div>
 
-        <!-- Preview Section -->
         <div id="preview-pane">
-            <iframe id="preview-frame"></iframe>
+            <iframe id="frame-a" class="pf"></iframe>
+            <iframe id="frame-b" class="pf"></iframe>
+            <div id="drag-shield"></div>
         </div>
     </div>
 
+    <div id="fs-overlay">
+        <button id="fs-back">Go back</button>
+        <iframe id="fs-frame"></iframe>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
-    
+
     <script>
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
 
-        let editor;
-        const editorPane = document.getElementById('editor-pane');
-        const resizer = document.getElementById('resizer');
-        const container = document.getElementById('container');
-        const previewFrame = document.getElementById('preview-frame');
-        const settingsTrigger = document.getElementById('settings-trigger');
-        const settingsPanel = document.getElementById('settings-panel');
-        const closeSettings = document.getElementById('close-settings');
+        const $ = (id) => document.getElementById(id);
+        const container = $('container');
+        const resizer = $('resizer');
+        const settingsTrigger = $('settings-trigger');
+        const settingsPanel = $('settings-panel');
+        const closeSettings = $('close-settings');
+        const frames = [$('frame-a'), $('frame-b')];
+        const fsOverlay = $('fs-overlay');
+        const fsFrame = $('fs-frame');
 
-        window.onload = function() {
-            require(['vs/editor/editor.main'], function() {
-                editor = monaco.editor.create(document.getElementById('editor-container'), {
+        let editor;
+        let syncOn = false;
+        let previewTimer = null;
+        let seq = 0;
+        let fsSize = null;
+        const ignoreUntil = { editor: 0, preview: 0 };
+        const now = () => performance.now();
+        const liveFrame = () => frames.find(f => f.classList.contains('front'));
+        const QUICK_ON = { other: true, comments: false, strings: true };
+
+        window.onload = function () {
+            require(['vs/editor/editor.main'], function () {
+                editor = monaco.editor.create($('editor-container'), {
                     value: "Type HTML to get started",
                     language: 'html',
                     theme: 'vs-dark',
@@ -285,51 +185,205 @@
                     minimap: { enabled: false },
                     padding: { top: 20 },
                     wordWrap: 'on',
-                    cursorBlinking: 'smooth'
+                    cursorBlinking: 'smooth',
+                    quickSuggestions: QUICK_ON,
+                    quickSuggestionsDelay: 60,
+                    suggestOnTriggerCharacters: true,
+                    acceptSuggestionOnEnter: 'on',
+                    tabCompletion: 'on',
+                    snippetSuggestions: 'top'
                 });
 
-                editor.onDidChangeModelContent(() => updatePreview());
+                editor.onDidChangeModelContent(schedulePreview);
                 updatePreview();
                 setupResizer();
                 setupSettings();
+                setupScrollSync();
+                setupAutocomplete();
+                setupFullscreen();
             });
         };
 
-        function updatePreview() {
-            const code = editor.getValue();
-            // Create a preview only if there's actual HTML content
-            const blob = new Blob([code], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            previewFrame.src = url;
+        /* ---------- live preview (double buffered, keeps scroll, no flash) ---------- */
+        function schedulePreview() {
+            clearTimeout(previewTimer);
+            previewTimer = setTimeout(updatePreview, 120);
         }
 
+        function updatePreview() {
+            const code = editor.getValue();
+            const live = liveFrame();
+            const target = frames.find(f => f !== live);
+            let x = 0, y = 0;
+            if (live) {
+                try { x = live.contentWindow.scrollX; y = live.contentWindow.scrollY; } catch (e) {}
+            }
+            const mine = ++seq;
+            target.onload = () => {
+                if (mine !== seq) return;
+                const w = target.contentWindow;
+                try {
+                    w.scrollTo({ left: x, top: y, behavior: 'instant' });
+                    w.addEventListener('scroll', () => onPreviewScroll(w), { passive: true });
+                } catch (e) {}
+                ignoreUntil.preview = now() + 150;
+                target.classList.add('front');
+                if (live) live.classList.remove('front');
+            };
+            target.srcdoc = code;
+        }
+
+        /* ---------- resizer ---------- */
         function setupResizer() {
-            let isResizing = false;
-            
-            resizer.addEventListener('mousedown', (e) => {
+            let dragging = false;
+
+            resizer.addEventListener('pointerdown', (e) => {
                 if (settingsTrigger.contains(e.target) || settingsPanel.contains(e.target)) return;
-                isResizing = true;
+                dragging = true;
+                try { resizer.setPointerCapture(e.pointerId); } catch (err) {}
                 container.classList.add('resizing');
+                e.preventDefault();
             });
 
-            document.addEventListener('mousemove', (e) => {
-                if (!isResizing) return;
-                const containerWidth = container.offsetWidth;
-                let newWidth = (e.clientX / containerWidth) * 100;
-                if (newWidth < 5) newWidth = 5;
-                if (newWidth > 95) newWidth = 95;
-                editorPane.style.width = `${newWidth}%`;
+            resizer.addEventListener('pointermove', (e) => {
+                if (!dragging) return;
+                let pct = (e.clientX / container.offsetWidth) * 100;
+                pct = Math.min(95, Math.max(5, pct));
+                container.style.setProperty('--split', pct + '%');
                 if (editor) editor.layout();
             });
 
-            document.addEventListener('mouseup', () => {
-                isResizing = false;
+            const stop = () => {
+                dragging = false;
                 container.classList.remove('resizing');
+            };
+            ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => resizer.addEventListener(ev, stop));
+            window.addEventListener('blur', stop);
+        }
+
+        /* ---------- scroll sync ---------- */
+        function editorMax() { return Math.max(0, editor.getScrollHeight() - editor.getLayoutInfo().height); }
+        function winMax(w) { return Math.max(0, w.document.documentElement.scrollHeight - w.innerHeight); }
+
+        function setupScrollSync() {
+            editor.onDidScrollChange((e) => {
+                if (!syncOn || !e.scrollTopChanged || now() < ignoreUntil.editor) return;
+                const f = liveFrame();
+                const em = editorMax();
+                if (!f || !em) return;
+                try {
+                    const w = f.contentWindow;
+                    ignoreUntil.preview = now() + 120;
+                    w.scrollTo({ top: (editor.getScrollTop() / em) * winMax(w), behavior: 'instant' });
+                } catch (err) {}
             });
         }
 
+        function onPreviewScroll(w) {
+            const f = liveFrame();
+            if (!syncOn || !f || f.contentWindow !== w || now() < ignoreUntil.preview) return;
+            try {
+                const pm = winMax(w);
+                if (!pm) return;
+                ignoreUntil.editor = now() + 120;
+                editor.setScrollTop((w.scrollY / pm) * editorMax());
+            } catch (err) {}
+        }
+
+        /* ---------- autocomplete (monaco already knows html tags, attributes, css props) ---------- */
+        function setupAutocomplete() {
+            const PSEUDO_CLASSES = ['hover','focus','active','visited','link','any-link','focus-visible','focus-within','disabled','enabled','checked','indeterminate','required','optional','valid','invalid','user-valid','user-invalid','in-range','out-of-range','read-only','read-write','placeholder-shown','default','autofill','target','target-within','empty','root','fullscreen','modal','popover-open','first-child','last-child','only-child','first-of-type','last-of-type','only-of-type','nth-child(${1:n})','nth-last-child(${1:n})','nth-of-type(${1:n})','nth-last-of-type(${1:n})','not(${1})','is(${1})','where(${1})','has(${1})','lang(${1})','dir(${1})'];
+            const PSEUDO_ELEMENTS = ['before','after','first-line','first-letter','selection','placeholder','marker','backdrop','file-selector-button','cue','part(${1})','slotted(${1})','-webkit-scrollbar','-webkit-scrollbar-thumb','-webkit-scrollbar-track'];
+            const AT_RULES = ['media','keyframes','font-face','import','supports','container','layer','property','charset','namespace','page'];
+
+            // true when the cursor is inside a normal rule block like a { | }
+            function inDeclarationBlock(css) {
+                const stack = [];
+                let start = 0;
+                for (let i = 0; i < css.length; i++) {
+                    const c = css[i];
+                    if (c === '{') { stack.push(css.slice(start, i).trim()); start = i + 1; }
+                    else if (c === '}') { stack.pop(); start = i + 1; }
+                    else if (c === ';') { start = i + 1; }
+                }
+                const top = stack[stack.length - 1];
+                return !!top && !/^@(media|supports|container|layer|document)/.test(top);
+            }
+
+            monaco.languages.registerCompletionItemProvider('html', {
+                triggerCharacters: [':', '@'],
+                provideCompletionItems(model, pos) {
+                    const empty = { suggestions: [] };
+                    const line = model.getLineContent(pos.lineNumber).slice(0, pos.column - 1);
+                    const m = line.match(/(@|::?)([\w-]*)$/);
+                    if (!m) return empty;
+
+                    const before = model.getValueInRange({
+                        startLineNumber: 1, startColumn: 1,
+                        endLineNumber: pos.lineNumber, endColumn: pos.column
+                    });
+                    const s = before.lastIndexOf('<style');
+                    if (s < 0 || s < before.lastIndexOf('</style')) return empty;
+                    const gt = before.indexOf('>', s);
+                    if (gt < 0) return empty;
+                    const css = before.slice(gt + 1).replace(/\/\*[\s\S]*?\*\//g, '');
+                    if (inDeclarationBlock(css)) return empty;
+
+                    const list = m[1] === '@' ? AT_RULES : (m[1] === '::' ? PSEUDO_ELEMENTS : PSEUDO_CLASSES);
+                    const label = m[1] === '@' ? 'CSS at-rule' : (m[1] === '::' ? 'CSS pseudo-element' : 'CSS pseudo-class');
+                    const range = {
+                        startLineNumber: pos.lineNumber, endLineNumber: pos.lineNumber,
+                        startColumn: pos.column - m[2].length, endColumn: pos.column
+                    };
+                    return {
+                        suggestions: list.map(item => ({
+                            label: item.replace(/\(.*\)/, '()'),
+                            kind: monaco.languages.CompletionItemKind.Keyword,
+                            insertText: item,
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            detail: label,
+                            range
+                        }))
+                    };
+                }
+            });
+        }
+
+        /* ---------- fullscreen previews ---------- */
+        function setupFullscreen() {
+            $('fs-169').addEventListener('click', () => openFs(1920, 1080));
+            $('fs-916').addEventListener('click', () => openFs(1080, 1920));
+            $('fs-back').addEventListener('click', closeFs);
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && fsSize) closeFs(); });
+            window.addEventListener('resize', fitFs);
+        }
+
+        function openFs(w, h) {
+            settingsPanel.classList.remove('active');
+            fsSize = { w, h };
+            fsFrame.style.width = w + 'px';
+            fsFrame.style.height = h + 'px';
+            fsFrame.srcdoc = editor.getValue();
+            fsOverlay.classList.add('on');
+            fitFs();
+        }
+
+        function fitFs() {
+            if (!fsSize) return;
+            const s = Math.min(window.innerWidth / fsSize.w, window.innerHeight / fsSize.h);
+            fsFrame.style.transform = 'scale(' + s + ')';
+            fsFrame.style.left = (window.innerWidth - fsSize.w * s) / 2 + 'px';
+            fsFrame.style.top = (window.innerHeight - fsSize.h * s) / 2 + 'px';
+        }
+
+        function closeFs() {
+            fsOverlay.classList.remove('on');
+            fsFrame.srcdoc = '';
+            fsSize = null;
+        }
+
+        /* ---------- settings ---------- */
         function setupSettings() {
-            settingsPanel.addEventListener('mousedown', (e) => e.stopPropagation());
             settingsPanel.addEventListener('click', (e) => e.stopPropagation());
 
             settingsTrigger.addEventListener('click', (e) => {
@@ -342,21 +396,23 @@
                 settingsPanel.classList.remove('active');
             });
 
-            document.addEventListener('mousedown', (e) => {
+            document.addEventListener('pointerdown', (e) => {
                 if (!settingsPanel.contains(e.target) && !settingsTrigger.contains(e.target)) {
                     settingsPanel.classList.remove('active');
                 }
             });
 
             const apply = (id, callback) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('change', (e) => {
-                        callback(e.target.value);
-                    });
-                }
+                const el = $(id);
+                if (el) el.addEventListener('change', (e) => callback(e.target.value));
             };
 
+            apply('set-curtain', val => { container.classList.toggle('curtain', val === 'on'); editor.layout(); });
+            apply('set-sync', val => { syncOn = val === 'on'; });
+            apply('set-autocomplete', val => editor.updateOptions({
+                quickSuggestions: val === 'on' ? QUICK_ON : false,
+                suggestOnTriggerCharacters: val === 'on'
+            }));
             apply('set-theme', val => monaco.editor.setTheme(val));
             apply('set-fontsize', val => editor.updateOptions({ fontSize: parseInt(val) }));
             apply('set-wordwrap', val => editor.updateOptions({ wordWrap: val }));
