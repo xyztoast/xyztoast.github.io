@@ -175,7 +175,7 @@
         window.onload = function () {
             require(['vs/editor/editor.main'], function () {
                 editor = monaco.editor.create($('editor-container'), {
-                    value: "Type HTML to get started",
+                    value: "<!doctype html>\n<html lang=\"en\">\n<head>\n\n<title>html</title>\n\n<style>\n\n\n\n</style>\n</head>\n<body>\n\n\n\n\n</body>\n</html>",
                     language: 'html',
                     theme: 'vs-dark',
                     automaticLayout: true,
